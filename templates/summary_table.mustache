@@ -1,0 +1,60 @@
+{{!
+  Template: summary_table.mustache
+
+  Context:
+    rows              - array  Student summary rows (see renderer.php)
+    url_export        - string Excel export URL
+    threshold_notice  - string Formatted threshold notice
+    str_export        - string Localised export button label
+
+  @package mod_attendancecontrol
+  @copyright 2026 Kings Corner Formación Profesional
+  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="mod-attendancecontrol-report" data-region="attendancecontrol-report">
+
+  {{! Export button }}
+  <div class="d-flex justify-content-end mb-3">
+    <a href="{{url_export}}" class="btn btn-success">
+      {{str_export}}
+    </a>
+  </div>
+
+  {{! Threshold notice }}
+  <p class="text-muted small mb-3">{{threshold_notice}}</p>
+
+  {{! Summary table }}
+  <div class="table-responsive">
+    <table class="table table-hover table-sm generaltable" data-region="summary-table">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">{{#str}} studentname, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} presences, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} lates, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} justifiedabsences, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} unjustifiedabsences, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} equivalenthours, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} attendancepct, mod_attendancecontrol {{/str}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#rows}}
+        <tr class="{{#below_threshold}}table-danger{{/below_threshold}}">
+          <td>
+            <a href="{{url_detail}}">{{student_name}}</a>
+          </td>
+          <td class="text-center">{{presences}}</td>
+          <td class="text-center">{{lates}}</td>
+          <td class="text-center">{{justified}}</td>
+          <td class="text-center">{{unjustified}}</td>
+          <td class="text-center">{{equiv_hours}}</td>
+          <td class="text-center fw-semibold {{#below_threshold}}text-danger{{/below_threshold}}">
+            {{pct}}%
+          </td>
+        </tr>
+        {{/rows}}
+      </tbody>
+    </table>
+  </div>
+
+</div>

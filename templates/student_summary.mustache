@@ -1,0 +1,62 @@
+{{!
+  Template: student_summary.mustache
+
+  Shown to students on view.php when they have viewownattendance capability.
+
+  Context:
+    presences        - int
+    lates            - int
+    justified        - int
+    unjustified      - int
+    pct              - string  Formatted attendance percentage
+    below_threshold  - bool
+    url_breakdown    - string  URL to student_detail.php
+    str_breakdown    - string  Localised link label
+
+  @package mod_attendancecontrol
+  @copyright 2026 Kings Corner Formación Profesional
+  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="mod-attendancecontrol-student-summary" data-region="student-summary">
+
+  <div class="card {{#below_threshold}}border-danger{{/below_threshold}}">
+    <div class="card-header fw-semibold">
+      {{#str}} myattendance, mod_attendancecontrol {{/str}}
+    </div>
+    <div class="card-body">
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-3">
+        <div class="col">
+          <div class="text-muted small">{{#str}} presences, mod_attendancecontrol {{/str}}</div>
+          <div class="fs-5 fw-bold text-success">{{presences}}</div>
+        </div>
+        <div class="col">
+          <div class="text-muted small">{{#str}} lates, mod_attendancecontrol {{/str}}</div>
+          <div class="fs-5 fw-bold text-warning">{{lates}}</div>
+        </div>
+        <div class="col">
+          <div class="text-muted small">{{#str}} justifiedabsences, mod_attendancecontrol {{/str}}</div>
+          <div class="fs-5 fw-bold text-info">{{justified}}</div>
+        </div>
+        <div class="col">
+          <div class="text-muted small">{{#str}} unjustifiedabsences, mod_attendancecontrol {{/str}}</div>
+          <div class="fs-5 fw-bold text-danger">{{unjustified}}</div>
+        </div>
+      </div>
+
+      <p class="fs-3 fw-bold {{#below_threshold}}text-danger{{/below_threshold}}">
+        {{pct}}%
+      </p>
+
+      {{#below_threshold}}
+      <div class="alert alert-danger" role="alert">
+        {{#str}} alertthresholdreached, mod_attendancecontrol {{/str}}
+      </div>
+      {{/below_threshold}}
+
+      <a href="{{url_breakdown}}" class="btn btn-outline-primary">
+        {{str_breakdown}}
+      </a>
+    </div>
+  </div>
+
+</div>

@@ -77,3 +77,9 @@ When starting a new implementation task:
 - 11.6 Gestión de Sesiones
 
 ### 12. Glosario (PRD lines 600–610) — `[ ] Pending`
+
+---
+
+## Technical Debt
+
+- **License conflict**: `LICENSE.md` is currently "All Rights Reserved" (private project). The PRD specifies GPL v3+, which is mandatory for any plugin distributed through the Moodle plugin directory. If distribution is ever planned, `LICENSE.md` must be replaced with GPL v3+ and the license header added to every source file.

@@ -1,0 +1,86 @@
+{{!
+  Template: session_list.mustache
+
+  Context:
+    cmid         - int   Course-module ID
+    url_today    - string URL to record today's attendance
+    url_report   - string URL to the full report
+    url_prevweek - string URL for previous week navigation
+    url_nextweek - string URL for next week navigation
+    week_label   - string Formatted week range label
+    sessions     - array  Session objects (see renderer.php)
+    hassessions  - bool   Whether there are sessions this week
+    str_register - string Localised button label
+    str_report   - string Localised button label
+    str_prev     - string Localised nav label
+    str_next     - string Localised nav label
+
+  @package mod_attendancecontrol
+  @copyright 2026 Kings Corner Formación Profesional
+  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="mod-attendancecontrol-view" data-region="attendancecontrol-view">
+
+  {{! Action buttons }}
+  <div class="d-flex gap-2 mb-4">
+    <a href="{{url_today}}" class="btn btn-primary">
+      {{str_register}}
+    </a>
+    <a href="{{url_report}}" class="btn btn-secondary">
+      {{str_report}}
+    </a>
+  </div>
+
+  {{! Week navigation }}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <a href="{{url_prevweek}}" class="btn btn-outline-secondary btn-sm">
+      {{str_prev}}
+    </a>
+    <span class="fw-semibold">{{week_label}}</span>
+    <a href="{{url_nextweek}}" class="btn btn-outline-secondary btn-sm">
+      {{str_next}}
+    </a>
+  </div>
+
+  {{! Session table }}
+  {{#hassessions}}
+  <div class="table-responsive">
+    <table class="table table-hover table-sm generaltable" data-region="session-table">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">{{#str}} sessiondate, mod_attendancecontrol {{/str}}</th>
+          <th scope="col">{{#str}} sessionschedule, mod_attendancecontrol {{/str}}</th>
+          <th scope="col">{{#str}} sessionstatus, mod_attendancecontrol {{/str}}</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#sessions}}
+        <tr class="{{#is_today}}table-info fw-bold{{/is_today}}">
+          <td>{{date_label}}</td>
+          <td>{{schedule}}</td>
+          <td>
+            {{#is_recorded}}
+              <span class="badge bg-success">{{status_label}}</span>
+            {{/is_recorded}}
+            {{^is_recorded}}
+              <span class="badge bg-warning text-dark">{{status_label}}</span>
+            {{/is_recorded}}
+          </td>
+          <td>
+            <a href="{{url_record}}" class="btn btn-sm btn-outline-primary">
+              {{#str}} recordattendance, mod_attendancecontrol {{/str}}
+            </a>
+          </td>
+        </tr>
+        {{/sessions}}
+      </tbody>
+    </table>
+  </div>
+  {{/hassessions}}
+
+  {{^hassessions}}
+  <p class="text-muted">{{#str}} nosessionsthisweek, mod_attendancecontrol {{/str}}</p>
+  {{/hassessions}}
+
+</div>

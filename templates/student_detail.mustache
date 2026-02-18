@@ -1,0 +1,62 @@
+{{!
+  Template: student_detail.mustache
+
+  Context:
+    student_name     - string  Full name
+    pct              - string  Formatted attendance percentage
+    below_threshold  - bool    True if below the alert threshold
+    rows             - array   Session detail rows (see renderer.php)
+
+  @package mod_attendancecontrol
+  @copyright 2026 Kings Corner Formación Profesional
+  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="mod-attendancecontrol-detail" data-region="student-detail">
+
+  {{! Student attendance summary header }}
+  <div class="card mb-4 {{#below_threshold}}border-danger{{/below_threshold}}">
+    <div class="card-body">
+      <h5 class="card-title">{{student_name}}</h5>
+      <p class="card-text fs-4 fw-bold {{#below_threshold}}text-danger{{/below_threshold}}">
+        {{#str}} attendancepct, mod_attendancecontrol {{/str}}: {{pct}}%
+      </p>
+      {{#below_threshold}}
+      <div class="alert alert-danger mb-0" role="alert">
+        {{#str}} alertthresholdreached, mod_attendancecontrol {{/str}}
+      </div>
+      {{/below_threshold}}
+    </div>
+  </div>
+
+  {{! Per-session breakdown table }}
+  <h5>{{#str}} sessionbreakdown, mod_attendancecontrol {{/str}}</h5>
+  <div class="table-responsive">
+    <table class="table table-hover table-sm generaltable" data-region="session-detail-table">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">{{#str}} sessiondate, mod_attendancecontrol {{/str}}</th>
+          <th scope="col">{{#str}} sessionschedule, mod_attendancecontrol {{/str}}</th>
+          <th scope="col" class="text-center">{{#str}} totalhours, mod_attendancecontrol {{/str}}</th>
+          <th scope="col">{{#str}} sessionstatus, mod_attendancecontrol {{/str}}</th>
+          <th scope="col">{{#str}} remarks, mod_attendancecontrol {{/str}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#rows}}
+        <tr class="attendancecontrol-status-{{status_code}}">
+          <td>{{date}}</td>
+          <td>{{schedule}}</td>
+          <td class="text-center">{{duration}}</td>
+          <td>
+            <span class="badge attendancecontrol-badge-{{status_code}}">
+              {{status_label}}
+            </span>
+          </td>
+          <td class="text-muted small">{{remarks}}</td>
+        </tr>
+        {{/rows}}
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/attendancecontrol/db" VERSION="20260218" COMMENT="XMLDB file for mod/attendancecontrol"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <!--
+      Main instance table.
+      One record per activity instance added to a course.
+    -->
+    <TABLE NAME="attendancecontrol" COMMENT="Each attendancecontrol activity instance">
+      <FIELDS>
+        <FIELD NAME="id"                          TYPE="int"    LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="course"                      TYPE="int"    LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course ID"/>
+        <FIELD NAME="name"                        TYPE="char"   LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="intro"                       TYPE="text"               NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="introformat"                 TYPE="int"    LENGTH="4"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="groupid"                     TYPE="int"    LENGTH="10" NOTNULL="true"  SEQUENCE="false" COMMENT="Moodle group ID"/>
+        <FIELD NAME="total_hours"                 TYPE="int"    LENGTH="5"  NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="course_start_date"           TYPE="int"    LENGTH="10" NOTNULL="true"  SEQUENCE="false" COMMENT="Unix timestamp"/>
+        <FIELD NAME="course_end_date"             TYPE="int"    LENGTH="10" NOTNULL="true"  SEQUENCE="false" COMMENT="Unix timestamp"/>
+        <FIELD NAME="max_unjustified_absence_pct" TYPE="number" LENGTH="5"  NOTNULL="true"  SEQUENCE="false" DECIMALS="2" DEFAULT="15.00"/>
+        <FIELD NAME="delay_to_unjustified_ratio"  TYPE="number" LENGTH="5"  NOTNULL="true"  SEQUENCE="false" DECIMALS="2" DEFAULT="0.50"/>
+        <FIELD NAME="justified_to_unjustified_ratio" TYPE="number" LENGTH="5" NOTNULL="true" SEQUENCE="false" DECIMALS="2" DEFAULT="0.50"/>
+        <FIELD NAME="timecreated"                 TYPE="int"    LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="timemodified"                TYPE="int"    LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+
+    <!--
+      Weekly schedule slots (recurrent, one per day+time combination).
+    -->
+    <TABLE NAME="attendancecontrol_schedule" COMMENT="Weekly recurring time slots for a plugin instance">
+      <FIELDS>
+        <FIELD NAME="id"                   TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="attendancecontrolid"  TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="day_of_week"          TYPE="int"  LENGTH="1"  NOTNULL="true" SEQUENCE="false" COMMENT="1=Mon … 7=Sun"/>
+        <FIELD NAME="start_time"           TYPE="char" LENGTH="5"  NOTNULL="true" SEQUENCE="false" COMMENT="HH:MM"/>
+        <FIELD NAME="end_time"             TYPE="char" LENGTH="5"  NOTNULL="true" SEQUENCE="false" COMMENT="HH:MM"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_instance" TYPE="foreign" FIELDS="attendancecontrolid" REFTABLE="attendancecontrol" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_instance" UNIQUE="false" FIELDS="attendancecontrolid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!--
+      Holidays configured per instance.
+    -->
+    <TABLE NAME="attendancecontrol_holiday" COMMENT="Non-teaching days (holidays) for a plugin instance">
+      <FIELDS>
+        <FIELD NAME="id"                   TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="attendancecontrolid"  TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="holiday_date"         TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Unix timestamp (midnight)"/>
+        <FIELD NAME="description"          TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_instance" TYPE="foreign" FIELDS="attendancecontrolid" REFTABLE="attendancecontrol" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+
+    <!--
+      Generated sessions (one per schedule slot × calendar day, excluding holidays).
+    -->
+    <TABLE NAME="attendancecontrol_session" COMMENT="Individual teaching sessions generated from the schedule">
+      <FIELDS>
+        <FIELD NAME="id"                   TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="attendancecontrolid"  TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="session_date"         TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Unix timestamp (midnight)"/>
+        <FIELD NAME="start_time"           TYPE="char" LENGTH="5"  NOTNULL="true" SEQUENCE="false" COMMENT="HH:MM"/>
+        <FIELD NAME="end_time"             TYPE="char" LENGTH="5"  NOTNULL="true" SEQUENCE="false" COMMENT="HH:MM"/>
+        <FIELD NAME="duration_hours"       TYPE="int"  LENGTH="3"  NOTNULL="true" SEQUENCE="false" COMMENT="ceil(duration_minutes/60)"/>
+        <FIELD NAME="status"               TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="0=pending 1=recorded"/>
+        <FIELD NAME="timecreated"          TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified"         TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_instance" TYPE="foreign" FIELDS="attendancecontrolid" REFTABLE="attendancecontrol" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_instance_date" UNIQUE="false" FIELDS="attendancecontrolid, session_date"/>
+      </INDEXES>
+    </TABLE>
+
+    <!--
+      Attendance records (one per student × session).
+    -->
+    <TABLE NAME="attendancecontrol_record" COMMENT="Individual student attendance record per session">
+      <FIELDS>
+        <FIELD NAME="id"           TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="sessionid"    TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid"       TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Student user ID"/>
+        <FIELD NAME="status"       TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="0" SEQUENCE="false"
+               COMMENT="0=unregistered 1=present 2=late 3=justified 4=unjustified"/>
+        <FIELD NAME="remarks"      TYPE="text"             NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="recorded_by"  TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Teacher user ID"/>
+        <FIELD NAME="timecreated"  TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_session" TYPE="foreign" FIELDS="sessionid" REFTABLE="attendancecontrol_session" REFFIELDS="id"/>
+        <KEY NAME="fk_user"    TYPE="foreign" FIELDS="userid"    REFTABLE="user"                      REFFIELDS="id"/>
+        <KEY NAME="uq_session_user" TYPE="unique" FIELDS="sessionid, userid"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_session_user" UNIQUE="false" FIELDS="sessionid, userid"/>
+        <INDEX NAME="idx_user"         UNIQUE="false" FIELDS="userid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

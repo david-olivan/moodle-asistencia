@@ -1,6 +1,6 @@
 # License
 
-Copyright (c) 2026 Kings Corner Formación Profesional. All rights reserved.
+Copyright (c) 2026 David Oliván Malagón. All rights reserved.
 
 This software and its source code are proprietary and confidential. No part of this
 project may be reproduced, distributed, modified, or transmitted in any form or by

@@ -19,7 +19,7 @@
  *
  * @package    mod_attendancecontrol
  * @category   test
- * @copyright  2026 Kings Corner Formación Profesional
+ * @copyright  2026 David Oliván Malagón
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

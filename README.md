@@ -1,8 +1,8 @@
-# mod_attendancecontrol
+# Mister Asistencia — mod_attendancecontrol
 
 Plugin de Moodle para el control de asistencia de alumnos en centros de formación profesional.
 
-**Autor**: Kings Corner Formación Profesional
+**Autor**: David Oliván Malagón (misterdavs)
 **Tipo**: Módulo de actividad (`mod`)
 **Plataforma**: Moodle 4.5 LTS
 **Licencia**: GPL v3+
@@ -12,7 +12,7 @@ Plugin de Moodle para el control de asistencia de alumnos en centros de formaci�
 
 ## Descripción
 
-`mod_attendancecontrol` es un módulo de actividad ligero y configurable que resuelve las limitaciones del plugin estándar `mod_attendance`: exceso de información innecesaria, reportes difíciles de interpretar y escasa adaptabilidad al flujo docente real.
+**Mister Asistencia** (`mod_attendancecontrol`) es un módulo de actividad ligero y configurable que resuelve las limitaciones del plugin estándar `mod_attendance`: exceso de información innecesaria, reportes difíciles de interpretar y escasa adaptabilidad al flujo docente real.
 
 ### Roles y capacidades
 
@@ -44,7 +44,7 @@ Plugin de Moodle para el control de asistencia de alumnos en centros de formaci�
 
 1. Copiar la carpeta del plugin en `<moodle_root>/mod/attendancecontrol/`.
 2. Acceder como administrador y completar el proceso de actualización de base de datos.
-3. Añadir la actividad **Control de Asistencia** a cualquier curso desde "Añadir una actividad o recurso".
+3. Añadir la actividad **Mister Asistencia** a cualquier curso desde "Añadir una actividad o recurso".
 
 ---
 

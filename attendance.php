@@ -127,26 +127,17 @@ foreach ($students as $student) {
     ];
 }
 
-$bulkoptions = [];
-foreach ($statusdefs as $value => $def) {
-    $bulkoptions[] = [
-        'value' => $value,
-        'label' => get_string($def['key'], 'mod_attendancecontrol'),
-    ];
-}
-
 $templatecontext = [
-    'action_url'      => (new moodle_url('/mod/attendancecontrol/attendance.php',
+    'action_url'  => (new moodle_url('/mod/attendancecontrol/attendance.php',
         ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
-    'sesskey'         => sesskey(),
-    'id'              => $cmid,
-    'sessionid'       => $sessionid,
-    'cancel_url'      => (new moodle_url('/mod/attendancecontrol/view.php', ['id' => $cmid]))->out(false),
-    'bulk_options'    => $bulkoptions,
-    'students'        => $studentrows,
-    'str_save'        => get_string('saveattendance',  'mod_attendancecontrol'),
-    'str_cancel'      => get_string('cancel'),
-    'str_markall'     => get_string('markallpresent',  'mod_attendancecontrol'),
+    'sesskey'     => sesskey(),
+    'id'          => $cmid,
+    'sessionid'   => $sessionid,
+    'cancel_url'  => (new moodle_url('/mod/attendancecontrol/view.php', ['id' => $cmid]))->out(false),
+    'students'    => $studentrows,
+    'str_save'    => get_string('saveattendance', 'mod_attendancecontrol'),
+    'str_cancel'  => get_string('cancel'),
+    'str_markall' => get_string('markallpresent', 'mod_attendancecontrol'),
 ];
 
 $PAGE->requires->js_call_amd('mod_attendancecontrol/attendance_form', 'init');

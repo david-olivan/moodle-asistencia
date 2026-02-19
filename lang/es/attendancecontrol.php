@@ -79,7 +79,7 @@ $string['nosessionsthisweek']  = 'No hay sesiones programadas para esta semana.'
 // ── attendance.php ───────────────────────────────────────────────────────────
 $string['recordattendance']  = 'Registrar asistencia';
 $string['sessionheading']    = 'Sesión: {$a}';
-$string['markallpresent']    = 'Marcar todos como:';
+$string['markallpresent']    = 'Marcar todos';
 $string['studentname']       = 'Alumno/a';
 $string['statuspresent']     = 'Presente';
 $string['statuslate']        = 'Retraso';

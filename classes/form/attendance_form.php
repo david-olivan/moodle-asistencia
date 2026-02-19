@@ -48,6 +48,9 @@ class attendance_form extends \moodleform {
         $session  = $this->_customdata['session'];
         $cm       = $this->_customdata['cm'];
 
+        // Allow the attendance_form AMD module to locate this form element.
+        $mform->updateAttributes(['data-region' => 'attendance-form']);
+
         $mform->addElement('hidden', 'id',        $cm->id);
         $mform->addElement('hidden', 'sessionid', $session->id);
         $mform->setType('id',        PARAM_INT);

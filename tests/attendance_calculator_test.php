@@ -181,4 +181,153 @@ class attendance_calculator_test extends \advanced_testcase {
             '95% should be above the 85% threshold'
         );
     }
+
+    // -----------------------------------------------------------------------
+    // AC 11.3.3 — Student below threshold is flagged correctly.
+    // -----------------------------------------------------------------------
+
+    /**
+     * A student whose equivalent absence hours exceed the allowed maximum
+     * is identified as below_threshold by the calculator.
+     *
+     * Instance: 100 total hours, threshold = 85% (max 15% unjustified).
+     * Setup: 20 hours unjustified → attendance = 80% < 85%.
+     *
+     * @covers ::compute_attendance_pct
+     * @covers ::get_threshold
+     */
+    public function test_student_below_threshold(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course  = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_user();
+
+        $instance = $this->make_instance(100, 0.5, 0.5, 15.0);
+        $instance->course       = $course->id;
+        $instance->name         = 'Below threshold test';
+        $instance->intro        = '';
+        $instance->introformat  = FORMAT_HTML;
+        $instance->groupid      = 0;
+        $instance->course_start_date  = mktime(0, 0, 0, 9, 1, 2025);
+        $instance->course_end_date    = mktime(0, 0, 0, 6, 30, 2026);
+        $instance->timecreated  = time();
+        $instance->timemodified = time();
+
+        $instance->id = $DB->insert_record('attendancecontrol', $instance);
+
+        $now    = time();
+        // Single session worth 20 h of unjustified absence → pct = 80%.
+        $sessid = $DB->insert_record('attendancecontrol_session', (object) [
+            'attendancecontrolid' => $instance->id,
+            'session_date'        => mktime(0, 0, 0, 10, 1, 2025),
+            'start_time'          => '09:00',
+            'end_time'            => '13:00',
+            'duration_hours'      => 20,
+            'status'              => 1,
+            'timecreated'         => $now,
+            'timemodified'        => $now,
+        ]);
+
+        $DB->insert_record('attendancecontrol_record', (object) [
+            'sessionid'    => $sessid,
+            'userid'       => $student->id,
+            'status'       => 4,   // unjustified.
+            'remarks'      => '',
+            'recorded_by'  => 2,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+
+        $calc      = new attendance_calculator($instance);
+        $pct       = $calc->compute_attendance_pct($student->id);
+        $threshold = $calc->get_threshold();
+
+        $this->assertEqualsWithDelta(80.0, $pct, 0.001, 'Attendance should be 80%.');
+        $this->assertLessThan($threshold, $pct, 'Student at 80% should be below the 85% threshold.');
+    }
+
+    // -----------------------------------------------------------------------
+    // AC 11.3.4 / 11.4.2 — get_student_detail returns per-session rows.
+    // -----------------------------------------------------------------------
+
+    /**
+     * get_student_detail returns one row per session ordered by date.
+     * Sessions with an attendance record return the record object;
+     * sessions without a record return null.
+     *
+     * @covers ::get_student_detail
+     */
+    public function test_get_student_detail_returns_rows(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course  = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_user();
+
+        $instance = $this->make_instance();
+        $instance->course       = $course->id;
+        $instance->name         = 'Detail test';
+        $instance->intro        = '';
+        $instance->introformat  = FORMAT_HTML;
+        $instance->groupid      = 0;
+        $instance->course_start_date  = mktime(0, 0, 0, 9, 1, 2025);
+        $instance->course_end_date    = mktime(0, 0, 0, 6, 30, 2026);
+        $instance->timecreated  = time();
+        $instance->timemodified = time();
+
+        $instance->id = $DB->insert_record('attendancecontrol', $instance);
+
+        $now = time();
+
+        // Session 1 (Sep 15) — has an attendance record.
+        $s1id = $DB->insert_record('attendancecontrol_session', (object) [
+            'attendancecontrolid' => $instance->id,
+            'session_date'        => mktime(0, 0, 0, 9, 15, 2025),
+            'start_time'          => '09:00',
+            'end_time'            => '11:00',
+            'duration_hours'      => 2,
+            'status'              => 1,
+            'timecreated'         => $now,
+            'timemodified'        => $now,
+        ]);
+        $DB->insert_record('attendancecontrol_record', (object) [
+            'sessionid'    => $s1id,
+            'userid'       => $student->id,
+            'status'       => 1,   // present.
+            'remarks'      => 'On time',
+            'recorded_by'  => 2,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+
+        // Session 2 (Sep 17) — no record yet.
+        $DB->insert_record('attendancecontrol_session', (object) [
+            'attendancecontrolid' => $instance->id,
+            'session_date'        => mktime(0, 0, 0, 9, 17, 2025),
+            'start_time'          => '09:00',
+            'end_time'            => '11:00',
+            'duration_hours'      => 2,
+            'status'              => 0,
+            'timecreated'         => $now,
+            'timemodified'        => $now,
+        ]);
+
+        $calc   = new attendance_calculator($instance);
+        $detail = $calc->get_student_detail($student->id);
+
+        $this->assertCount(2, $detail, 'Should return one entry per session.');
+
+        // First row: session with record.
+        $this->assertNotNull($detail[0]['record'], 'First session should have an attendance record.');
+        $this->assertSame(1, (int) $detail[0]['record']->status, 'Record status should be present (1).');
+        $this->assertSame('On time', $detail[0]['record']->remarks);
+
+        // Second row: session without record.
+        $this->assertNull($detail[1]['record'], 'Second session should have null record.');
+    }
 }

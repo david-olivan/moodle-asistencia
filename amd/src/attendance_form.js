@@ -18,10 +18,10 @@
  *
  * Handles the "Mark all as ..." bulk action on the attendance registration
  * form (attendance.php). When the teacher selects a status from the bulk
- * selector, all individual student selects are updated to match.
+ * selector, all radio buttons in each student row are updated to match.
  *
  * @module     mod_attendancecontrol/attendance_form
- * @copyright  2026 Kings Corner Formación Profesional
+ * @copyright  2026 David Oliván Malagón
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,38 +43,13 @@ export const init = (formSelector = 'form[data-region="attendance-form"]') => {
         return;
     }
 
-    // Apply bulk status to all student selects.
+    // Apply bulk status: check the radio with matching value in every student row.
     const applyBulk = () => {
         const value = bulkSelect.value;
-        form.querySelectorAll('select[name^="student_status"]').forEach((sel) => {
-            sel.value = value;
+        form.querySelectorAll('input[type="radio"][name^="student_status"]').forEach((radio) => {
+            radio.checked = (radio.value === value);
         });
     };
 
     bulkSelect.addEventListener('change', applyBulk);
-
-    // Collapse/expand remarks textareas by default.
-    form.querySelectorAll('textarea[name^="student_remarks"]').forEach((ta) => {
-        // Wrap in a collapsible element if not already done by Moodle.
-        const wrapper = ta.closest('.fitem');
-        if (wrapper && !wrapper.dataset.collapsible) {
-            wrapper.dataset.collapsible = 'true';
-            ta.style.display = 'none';
-
-            const toggle = document.createElement('button');
-            toggle.type = 'button';
-            toggle.className = 'btn btn-link btn-sm p-0 ms-1';
-            toggle.textContent = '[+]';
-            toggle.setAttribute('aria-expanded', 'false');
-
-            toggle.addEventListener('click', () => {
-                const expanded = toggle.getAttribute('aria-expanded') === 'true';
-                ta.style.display = expanded ? 'none' : '';
-                toggle.setAttribute('aria-expanded', String(!expanded));
-                toggle.textContent = expanded ? '[+]' : '[−]';
-            });
-
-            wrapper.querySelector('.fitemtitle')?.appendChild(toggle);
-        }
-    });
 };

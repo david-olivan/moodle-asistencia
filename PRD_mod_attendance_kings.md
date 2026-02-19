@@ -9,7 +9,7 @@
 | **Plataforma** | Moodle 4.5 LTS (última versión estable) |
 | **Idioma** | Español (es) |
 | **Soporte** | Solo web (sin soporte app móvil) |
-| **Autor** | Kings Corner Formación Profesional |
+| **Autor** | David Oliván Malagón |
 | **Licencia** | GPL v3+ (requerido por Moodle) |
 
 ---

@@ -18,7 +18,7 @@
  * Event fired when the attendance activity main page is viewed.
  *
  * @package    mod_attendancecontrol
- * @copyright  2026 Kings Corner Formación Profesional
+ * @copyright  2026 David Oliván Malagón
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

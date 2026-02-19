@@ -18,18 +18,18 @@
  * Spanish language strings for mod_attendancecontrol.
  *
  * @package    mod_attendancecontrol
- * @copyright  2026 Kings Corner Formación Profesional
+ * @copyright  2026 David Oliván Malagón
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 // ── Plugin identity ──────────────────────────────────────────────────────────
-$string['modulename']        = 'Control de Asistencia';
-$string['modulenameplural']  = 'Controles de Asistencia';
-$string['modulename_help']   = 'El módulo Control de Asistencia permite registrar la asistencia diaria del alumnado, consultar resúmenes con porcentajes y exportar los datos a Excel.';
-$string['pluginname']        = 'Control de Asistencia';
-$string['pluginadministration'] = 'Administración de Control de Asistencia';
+$string['modulename']        = 'Mister Asistencia';
+$string['modulenameplural']  = 'Mister Asistencia';
+$string['modulename_help']   = 'Mister Asistencia permite registrar la asistencia diaria del alumnado, consultar resúmenes con porcentajes y exportar los datos a Excel.';
+$string['pluginname']        = 'Mister Asistencia';
+$string['pluginadministration'] = 'Administración de Mister Asistencia';
 
 // ── mod_form: secciones y campos ─────────────────────────────────────────────
 $string['group']                   = 'Grupo de alumnos';

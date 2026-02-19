@@ -1,0 +1,95 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+    @template   mod_attendancecontrol/attendance_table
+    @copyright  2026 David Oliván Malagón
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Context variables:
+        action_url   {string} Form POST URL
+        sesskey      {string} Moodle session key
+        id           {int}    Course-module ID
+        sessionid    {int}    Session ID
+        cancel_url   {string} URL to return to without saving
+        bulk_options {array}  [{value, label}] Status options for bulk selector
+        students     {array}  [{uid, fullname, remarks, statuses: [{uid, value, label, btn_class, checked, input_id}]}]
+        str_save     {string}
+        str_cancel   {string}
+        str_markall  {string}
+}}
+<form method="post" action="{{action_url}}" data-region="attendance-form">
+    <input type="hidden" name="sesskey"   value="{{sesskey}}">
+    <input type="hidden" name="id"        value="{{id}}">
+    <input type="hidden" name="sessionid" value="{{sessionid}}">
+
+    {{! Bulk action row }}
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <label for="bulk_status" class="mb-0 fw-semibold">{{str_markall}}</label>
+        <select id="bulk_status" name="bulk_status" class="form-select form-select-sm w-auto">
+            {{#bulk_options}}
+            <option value="{{value}}">{{label}}</option>
+            {{/bulk_options}}
+        </select>
+    </div>
+
+    {{! Student attendance table }}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-bordered generaltable align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">{{#str}}studentname, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col" class="text-center text-success">{{#str}}statuspresent, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col" class="text-center text-warning">{{#str}}statuslate, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col" class="text-center text-info">{{#str}}statusjustified, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col" class="text-center text-danger">{{#str}}statusunjustified, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col">{{#str}}remarks, mod_attendancecontrol{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#students}}
+                <tr>
+                    <td class="fw-semibold">{{fullname}}</td>
+                    {{#statuses}}
+                    <td class="text-center p-1">
+                        <input class="btn-check"
+                               type="radio"
+                               name="student_status[{{uid}}]"
+                               id="{{input_id}}"
+                               value="{{value}}"
+                               autocomplete="off"
+                               {{#checked}}checked{{/checked}}>
+                        <label class="btn {{btn_class}} btn-sm py-1 px-2" for="{{input_id}}"
+                               title="{{label}}">✓</label>
+                    </td>
+                    {{/statuses}}
+                    <td class="p-1">
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="student_remarks[{{uid}}]"
+                               value="{{remarks}}"
+                               style="min-width: 130px;">
+                    </td>
+                </tr>
+                {{/students}}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">{{str_save}}</button>
+        <a href="{{cancel_url}}" class="btn btn-secondary">{{str_cancel}}</a>
+    </div>
+</form>

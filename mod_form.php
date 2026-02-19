@@ -18,7 +18,7 @@
  * Activity instance configuration form.
  *
  * @package    mod_attendancecontrol
- * @copyright  2026 Kings Corner Formación Profesional
+ * @copyright  2026 David Oliván Malagón
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -45,6 +45,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $this->standard_intro_elements();
+        $mform->setDefault('name', get_string('pluginname', 'mod_attendancecontrol'));
 
         // ----------------------------------------------------------------
         // Group selection.

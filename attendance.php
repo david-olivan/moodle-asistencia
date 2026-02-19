@@ -78,6 +78,8 @@ if ($data = $form->get_data()) {
     );
 }
 
+$PAGE->requires->js_call_amd('mod_attendancecontrol/attendance_form', 'init');
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(
     get_string('sessionheading', 'mod_attendancecontrol',

@@ -64,6 +64,18 @@ class renderer extends plugin_renderer_base {
 
         $today = mktime(0, 0, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
 
+        // Find today's first session (if any) for the direct "Register today" shortcut.
+        $todaysessions = $DB->get_records_select(
+            'attendancecontrol_session',
+            'attendancecontrolid = :id AND session_date = :today',
+            ['id' => $instance->id, 'today' => $today],
+            'start_time ASC',
+            'id',
+            0,
+            1
+        );
+        $todaysession = !empty($todaysessions) ? reset($todaysessions) : null;
+
         $sessiondata = [];
         foreach ($sessions as $s) {
             $sessiondata[] = [
@@ -83,7 +95,10 @@ class renderer extends plugin_renderer_base {
 
         $data = [
             'cmid'         => $cm->id,
-            'url_today'    => (new moodle_url('/mod/attendancecontrol/attendance.php', ['id' => $cm->id]))->out(false),
+            'url_today'    => $todaysession
+                ? (new moodle_url('/mod/attendancecontrol/attendance.php',
+                    ['id' => $cm->id, 'sessionid' => $todaysession->id]))->out(false)
+                : '',
             'url_report'   => (new moodle_url('/mod/attendancecontrol/report.php',    ['id' => $cm->id]))->out(false),
             'url_prevweek' => (new moodle_url('/mod/attendancecontrol/view.php',
                 ['id' => $cm->id, 'week' => $weekoffset - 1]))->out(false),

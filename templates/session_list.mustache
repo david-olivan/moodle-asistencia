@@ -23,9 +23,11 @@
 
   {{! Action buttons }}
   <div class="d-flex gap-2 mb-4">
+    {{#url_today}}
     <a href="{{url_today}}" class="btn btn-primary">
       {{str_register}}
     </a>
+    {{/url_today}}
     <a href="{{url_report}}" class="btn btn-secondary">
       {{str_report}}
     </a>

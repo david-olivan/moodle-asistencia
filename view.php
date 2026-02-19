@@ -55,6 +55,8 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+$PAGE->requires->js_call_amd('mod_attendancecontrol/session_navigation', 'init');
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($instance->name));
 

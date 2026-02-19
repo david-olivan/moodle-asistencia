@@ -72,8 +72,9 @@ $string['nostudentview']          = 'No tienes permisos para ver esta actividad.
 $string['sessiondate']      = 'Fecha';
 $string['sessionschedule']  = 'Horario';
 $string['sessionstatus']    = 'Estado';
-$string['statuspending']    = 'Pendiente';
-$string['statusrecorded']   = 'Registrada';
+$string['statuspending']       = 'Pendiente';
+$string['statusrecorded']      = 'Registrada';
+$string['nosessionsthisweek']  = 'No hay sesiones programadas para esta semana.';
 
 // ── attendance.php ───────────────────────────────────────────────────────────
 $string['recordattendance']  = 'Registrar asistencia';

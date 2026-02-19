@@ -175,7 +175,7 @@ class renderer extends plugin_renderer_base {
 
         $rows = [];
         foreach ($detail as $item) {
-            $statuskey = match ((int) ($item['record']->status ?? 0)) {
+            $statuskey = match ((int) ($item['record']?->status ?? 0)) {
                 1 => 'statuspresent',
                 2 => 'statuslate',
                 3 => 'statusjustified',
@@ -187,8 +187,8 @@ class renderer extends plugin_renderer_base {
                 'schedule'     => $item['session']->start_time . '–' . $item['session']->end_time,
                 'duration'     => $item['session']->duration_hours,
                 'status_label' => get_string($statuskey, 'mod_attendancecontrol'),
-                'status_code'  => (int) ($item['record']->status ?? 0),
-                'remarks'      => $item['record']->remarks ?? '',
+                'status_code'  => (int) ($item['record']?->status ?? 0),
+                'remarks'      => $item['record']?->remarks ?? '',
             ];
         }
 

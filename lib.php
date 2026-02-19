@@ -43,6 +43,9 @@ function attendancecontrol_add_instance(stdClass $data): int {
     $data->timecreated  = time();
     $data->timemodified = time();
 
+    // Convert integer N (from select) → stored float ratio 1/N.
+    attendancecontrol_convert_ratios($data);
+
     // Persist base record.
     $instanceid = $DB->insert_record('attendancecontrol', $data);
     $data->id   = $instanceid;
@@ -74,6 +77,9 @@ function attendancecontrol_update_instance(stdClass $data): bool {
 
     $data->id           = $data->instance;
     $data->timemodified = time();
+
+    // Convert integer N (from select) → stored float ratio 1/N.
+    attendancecontrol_convert_ratios($data);
 
     $DB->update_record('attendancecontrol', $data);
 
@@ -160,54 +166,82 @@ function attendancecontrol_supports(string $feature): ?bool {
 // ---------------------------------------------------------------------------
 
 /**
- * Persists schedule slots from the repeatable form element.
+ * Persists schedule slots submitted by the dynamic JS table.
  *
- * @param stdClass $data  Form data containing schedule_day, schedule_start,
- *                        schedule_end arrays from the repeating group.
+ * Reads directly from $_POST using optional_param_array() because the form
+ * inputs are injected by AMD JavaScript and are not registered with the
+ * Moodle form engine (so they are absent from the $data object).
+ *
+ * @param stdClass $data  Instance data (only $data->id is used).
  */
 function attendancecontrol_save_schedule(stdClass $data): void {
     global $DB;
 
-    if (empty($data->schedule_day)) {
-        return;
-    }
+    $days   = optional_param_array('schedule_day',   [], PARAM_INT);
+    $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
+    $ends   = optional_param_array('schedule_end',   [], PARAM_TEXT);
 
-    foreach ($data->schedule_day as $i => $day) {
+    foreach ($days as $i => $day) {
         if (empty($day)) {
             continue;
         }
-        $slot = (object) [
+        $DB->insert_record('attendancecontrol_schedule', (object) [
             'attendancecontrolid' => $data->id,
             'day_of_week'         => (int) $day,
-            'start_time'          => $data->schedule_start[$i],
-            'end_time'            => $data->schedule_end[$i],
-        ];
-        $DB->insert_record('attendancecontrol_schedule', $slot);
+            'start_time'          => clean_param($starts[$i] ?? '', PARAM_TEXT),
+            'end_time'            => clean_param($ends[$i]   ?? '', PARAM_TEXT),
+        ]);
     }
 }
 
 /**
- * Persists holiday dates from the repeatable form element.
+ * Persists holiday dates submitted by the dynamic JS table.
  *
- * @param stdClass $data  Form data containing holiday_date and
- *                        holiday_description arrays.
+ * Dates arrive as YYYY-MM-DD strings from <input type="date"> and are
+ * converted to midnight Unix timestamps before storage.
+ *
+ * @param stdClass $data  Instance data (only $data->id is used).
  */
 function attendancecontrol_save_holidays(stdClass $data): void {
     global $DB;
 
-    if (empty($data->holiday_date)) {
-        return;
-    }
+    $dates = optional_param_array('holiday_date',        [], PARAM_TEXT);
+    $descs = optional_param_array('holiday_description', [], PARAM_TEXT);
 
-    foreach ($data->holiday_date as $i => $date) {
-        if (empty($date)) {
+    foreach ($dates as $i => $dateStr) {
+        if (empty($dateStr)) {
             continue;
         }
-        $holiday = (object) [
+        // Convert YYYY-MM-DD → midnight Unix timestamp.
+        $timestamp = strtotime($dateStr . ' 00:00:00');
+        if ($timestamp === false || $timestamp <= 0) {
+            continue;
+        }
+        $DB->insert_record('attendancecontrol_holiday', (object) [
             'attendancecontrolid' => $data->id,
-            'holiday_date'        => $date,
-            'description'         => $data->holiday_description[$i] ?? '',
-        ];
-        $DB->insert_record('attendancecontrol_holiday', $holiday);
+            'holiday_date'        => $timestamp,
+            'description'         => clean_param($descs[$i] ?? '', PARAM_TEXT),
+        ]);
+    }
+}
+
+/**
+ * Converts the integer N values selected in the form to the float ratios
+ * stored in the database.
+ *
+ * The form presents "how many X equal 1 unjustified absence?" as an integer
+ * (N = 1…10).  The calculator expects a multiplier stored as 1/N.
+ * max_unjustified_absence_pct is already an integer (1–50) and needs no
+ * conversion – the NUMBER column accepts integers directly.
+ *
+ * @param stdClass $data  Form data modified in place.
+ */
+function attendancecontrol_convert_ratios(stdClass $data): void {
+    foreach (['delay_to_unjustified_ratio', 'justified_to_unjustified_ratio'] as $field) {
+        $n = (int) ($data->$field ?? 2);
+        if ($n < 1) {
+            $n = 1;
+        }
+        $data->$field = round(1.0 / $n, 6);
     }
 }

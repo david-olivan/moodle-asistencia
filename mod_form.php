@@ -41,11 +41,11 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
 
         // ----------------------------------------------------------------
         // General section (name + intro provided by moodleform_mod).
+        // No setDefault for 'name' – teacher must enter their own title.
         // ----------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $this->standard_intro_elements();
-        $mform->setDefault('name', get_string('pluginname', 'mod_attendancecontrol'));
 
         // ----------------------------------------------------------------
         // Group selection.
@@ -81,107 +81,81 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
         $mform->addRule('total_hours', null, 'nonzero', null, 'client');
 
         // ----------------------------------------------------------------
-        // Weekly schedule (repeatable).
+        // Weekly schedule – dynamic JS table (no repeat_elements).
+        // Actual <input> elements are injected by mod_attendancecontrol/mod_form AMD.
         // ----------------------------------------------------------------
         $mform->addElement('header', 'schedulehdr', get_string('schedule', 'mod_attendancecontrol'));
 
-        $repeatarray = [];
-        $repeatarray[] = $mform->createElement(
-            'select',
-            'schedule_day',
-            get_string('dayofweek', 'mod_attendancecontrol'),
-            attendancecontrol_get_day_options()
-        );
-        $repeatarray[] = $mform->createElement(
-            'text',
-            'schedule_start',
-            get_string('starttime', 'mod_attendancecontrol'),
-            ['placeholder' => 'HH:MM', 'size' => 6]
-        );
-        $repeatarray[] = $mform->createElement(
-            'text',
-            'schedule_end',
-            get_string('endtime', 'mod_attendancecontrol'),
-            ['placeholder' => 'HH:MM', 'size' => 6]
-        );
-
-        $repeatoptions = [];
-        $repeatoptions['schedule_start']['type'] = PARAM_TEXT;
-        $repeatoptions['schedule_end']['type']   = PARAM_TEXT;
-
-        $this->repeat_elements(
-            $repeatarray,
-            1,
-            $repeatoptions,
-            'schedule_count',
-            'schedule_add',
-            1,
-            get_string('addslot', 'mod_attendancecontrol')
+        $mform->addElement('html',
+            '<div class="fitem"><div class="w-100">' .
+            '<table class="table table-sm table-bordered mb-2" id="ac-schedule-table">' .
+            '<thead class="table-light"><tr>' .
+            '<th>' . get_string('dayofweek',  'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('starttime',  'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('endtime',    'mod_attendancecontrol') . '</th>' .
+            '<th></th>' .
+            '</tr></thead>' .
+            '<tbody id="ac-schedule-tbody"></tbody>' .
+            '</table>' .
+            '<button type="button" id="btn-add-schedule" class="btn btn-sm btn-secondary">' .
+            '+ ' . get_string('addslot', 'mod_attendancecontrol') .
+            '</button>' .
+            '</div></div>'
         );
 
         // ----------------------------------------------------------------
-        // Holidays (repeatable).
+        // Holidays – dynamic JS table (no repeat_elements).
         // ----------------------------------------------------------------
         $mform->addElement('header', 'holidayshdr', get_string('holidays', 'mod_attendancecontrol'));
 
-        $holidayrepeat = [];
-        $holidayrepeat[] = $mform->createElement('date_selector', 'holiday_date', get_string('holidaydate', 'mod_attendancecontrol'));
-        $holidayrepeat[] = $mform->createElement(
-            'text',
-            'holiday_description',
-            get_string('holidaydescription', 'mod_attendancecontrol'),
-            ['size' => 30]
-        );
-
-        $holidayoptions = [];
-        $holidayoptions['holiday_description']['type'] = PARAM_TEXT;
-
-        $this->repeat_elements(
-            $holidayrepeat,
-            0,
-            $holidayoptions,
-            'holiday_count',
-            'holiday_add',
-            1,
-            get_string('addholiday', 'mod_attendancecontrol')
+        $mform->addElement('html',
+            '<div class="fitem"><div class="w-100">' .
+            '<table class="table table-sm table-bordered mb-2" id="ac-holiday-table">' .
+            '<thead class="table-light"><tr>' .
+            '<th>' . get_string('holidaydate',        'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('holidaydescription', 'mod_attendancecontrol') . '</th>' .
+            '<th></th>' .
+            '</tr></thead>' .
+            '<tbody id="ac-holiday-tbody"></tbody>' .
+            '</table>' .
+            '<button type="button" id="btn-add-holiday" class="btn btn-sm btn-secondary">' .
+            '+ ' . get_string('addholiday', 'mod_attendancecontrol') .
+            '</button>' .
+            '</div></div>'
         );
 
         // ----------------------------------------------------------------
-        // Penalty configuration.
+        // Penalty configuration – integer selectors.
         // ----------------------------------------------------------------
         $mform->addElement('header', 'penaltyhdr', get_string('penaltyconfig', 'mod_attendancecontrol'));
 
-        $mform->addElement(
-            'text',
-            'max_unjustified_absence_pct',
-            get_string('maxunjustifiedpct', 'mod_attendancecontrol'),
-            ['size' => 5]
-        );
-        $mform->setType('max_unjustified_absence_pct', PARAM_FLOAT);
-        $mform->setDefault('max_unjustified_absence_pct', 15.00);
-        $mform->addRule('max_unjustified_absence_pct', null, 'required', null, 'client');
+        // % máximo de faltas permitido – selector 1 % … 50 %.
+        $pctOptions = [];
+        for ($i = 1; $i <= 50; $i++) {
+            $pctOptions[$i] = "{$i}%";
+        }
+        $mform->addElement('select', 'max_unjustified_absence_pct',
+            get_string('maxunjustifiedpct', 'mod_attendancecontrol'), $pctOptions);
+        $mform->setType('max_unjustified_absence_pct', PARAM_INT);
+        $mform->setDefault('max_unjustified_absence_pct', 15);
         $mform->addHelpButton('max_unjustified_absence_pct', 'maxunjustifiedpct', 'mod_attendancecontrol');
 
-        $mform->addElement(
-            'text',
-            'delay_to_unjustified_ratio',
-            get_string('delayratio', 'mod_attendancecontrol'),
-            ['size' => 5]
-        );
-        $mform->setType('delay_to_unjustified_ratio', PARAM_FLOAT);
-        $mform->setDefault('delay_to_unjustified_ratio', 0.50);
-        $mform->addRule('delay_to_unjustified_ratio', null, 'required', null, 'client');
+        // Cuántos retrasos equivalen a 1 falta injustificada – selector 1 … 10.
+        $nOptions = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $nOptions[$i] = $i;
+        }
+        $mform->addElement('select', 'delay_to_unjustified_ratio',
+            get_string('delayratio', 'mod_attendancecontrol'), $nOptions);
+        $mform->setType('delay_to_unjustified_ratio', PARAM_INT);
+        $mform->setDefault('delay_to_unjustified_ratio', 2);
         $mform->addHelpButton('delay_to_unjustified_ratio', 'delayratio', 'mod_attendancecontrol');
 
-        $mform->addElement(
-            'text',
-            'justified_to_unjustified_ratio',
-            get_string('justifiedratio', 'mod_attendancecontrol'),
-            ['size' => 5]
-        );
-        $mform->setType('justified_to_unjustified_ratio', PARAM_FLOAT);
-        $mform->setDefault('justified_to_unjustified_ratio', 0.50);
-        $mform->addRule('justified_to_unjustified_ratio', null, 'required', null, 'client');
+        // Cuántas faltas justificadas equivalen a 1 falta injustificada – selector 1 … 10.
+        $mform->addElement('select', 'justified_to_unjustified_ratio',
+            get_string('justifiedratio', 'mod_attendancecontrol'), $nOptions);
+        $mform->setType('justified_to_unjustified_ratio', PARAM_INT);
+        $mform->setDefault('justified_to_unjustified_ratio', 2);
         $mform->addHelpButton('justified_to_unjustified_ratio', 'justifiedratio', 'mod_attendancecontrol');
 
         // Standard grade/completion elements.
@@ -190,11 +164,112 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
     }
 
     /**
+     * Converts stored float ratios → integer N for the select display,
+     * and loads existing schedule/holiday data into the AMD module.
+     *
+     * Called automatically by Moodle after set_data().
+     */
+    public function definition_after_data(): void {
+        global $DB, $PAGE;
+
+        parent::definition_after_data();
+
+        $scheduleData = [];
+        $holidayData  = [];
+
+        // If there is POST schedule data (re-display after a server-side validation
+        // error), restore from the submitted values so the user does not lose them.
+        $submittedDays = optional_param_array('schedule_day', [], PARAM_INT);
+        if (!empty($submittedDays)) {
+            $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
+            $ends   = optional_param_array('schedule_end',   [], PARAM_TEXT);
+            foreach ($submittedDays as $i => $day) {
+                if (!empty($day)) {
+                    $scheduleData[] = [
+                        'day'   => (int) $day,
+                        'start' => clean_param($starts[$i] ?? '', PARAM_TEXT),
+                        'end'   => clean_param($ends[$i]   ?? '', PARAM_TEXT),
+                    ];
+                }
+            }
+            $dates = optional_param_array('holiday_date', [], PARAM_TEXT);
+            $descs = optional_param_array('holiday_description', [], PARAM_TEXT);
+            foreach ($dates as $i => $date) {
+                if (!empty($date)) {
+                    $holidayData[] = [
+                        'date'        => clean_param($date,          PARAM_TEXT),
+                        'description' => clean_param($descs[$i] ?? '', PARAM_TEXT),
+                    ];
+                }
+            }
+        } elseif ($this->_instance) {
+            // Editing an existing instance – load from DB.
+            $slots = $DB->get_records('attendancecontrol_schedule',
+                ['attendancecontrolid' => $this->_instance], 'day_of_week ASC, start_time ASC');
+            foreach ($slots as $slot) {
+                $scheduleData[] = [
+                    'day'   => (int) $slot->day_of_week,
+                    'start' => $slot->start_time,
+                    'end'   => $slot->end_time,
+                ];
+            }
+
+            $holidays = $DB->get_records('attendancecontrol_holiday',
+                ['attendancecontrolid' => $this->_instance], 'holiday_date ASC');
+            foreach ($holidays as $h) {
+                $holidayData[] = [
+                    'date'        => date('Y-m-d', (int) $h->holiday_date),
+                    'description' => $h->description ?? '',
+                ];
+            }
+        }
+
+        // Localised weekday names passed to JS so the select renders correctly.
+        $dayNames = [
+            1 => get_string('monday',    'calendar'),
+            2 => get_string('tuesday',   'calendar'),
+            3 => get_string('wednesday', 'calendar'),
+            4 => get_string('thursday',  'calendar'),
+            5 => get_string('friday',    'calendar'),
+        ];
+
+        $PAGE->requires->js_call_amd('mod_attendancecontrol/mod_form', 'init', [
+            array_values($scheduleData),
+            array_values($holidayData),
+            $dayNames,
+        ]);
+    }
+
+    /**
+     * Converts stored float ratios to the integer N shown in the select
+     * when the form is opened for editing.
+     *
+     * @param  array $defaultvalues  Data loaded from DB (passed by reference).
+     */
+    public function data_preprocessing(&$defaultvalues): void {
+        parent::data_preprocessing($defaultvalues);
+
+        // Stored ratio = 1/N  →  display integer N = round(1/ratio).
+        foreach (['delay_to_unjustified_ratio', 'justified_to_unjustified_ratio'] as $field) {
+            if (!empty($defaultvalues[$field]) && (float) $defaultvalues[$field] > 0) {
+                $n = (int) round(1.0 / (float) $defaultvalues[$field]);
+                $defaultvalues[$field] = max(1, min(10, $n));
+            }
+        }
+
+        // Float % → integer (e.g. 15.00 → 15).
+        if (isset($defaultvalues['max_unjustified_absence_pct'])) {
+            $v = (int) round((float) $defaultvalues['max_unjustified_absence_pct']);
+            $defaultvalues['max_unjustified_absence_pct'] = max(1, min(50, $v));
+        }
+    }
+
+    /**
      * Extra server-side validation.
      *
-     * @param  array  $data   Submitted form data.
-     * @param  array  $files  Uploaded files.
-     * @return array          Associative array of errors (fieldname => message).
+     * @param  array $data   Submitted form data.
+     * @param  array $files  Uploaded files.
+     * @return array         Associative array of errors (fieldname => message).
      */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
@@ -207,12 +282,6 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
 
         if (!empty($data['total_hours']) && $data['total_hours'] <= 0) {
             $errors['total_hours'] = get_string('err_hourspositive', 'mod_attendancecontrol');
-        }
-
-        foreach (['max_unjustified_absence_pct', 'delay_to_unjustified_ratio', 'justified_to_unjustified_ratio'] as $field) {
-            if (isset($data[$field]) && ($data[$field] < 0 || $data[$field] > 100)) {
-                $errors[$field] = get_string('err_invalidratio', 'mod_attendancecontrol');
-            }
         }
 
         return $errors;

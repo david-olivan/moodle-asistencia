@@ -10,10 +10,9 @@ When starting a new implementation task:
 
 ---
 
-## PRD resume line: 551
+## PRD resume line: 611
 
-> Start reading the PRD from line **551** (`## 11. Criterios de Aceptación`).
-> Lines 1–548 are fully covered by existing deliverables (sections 1–10 done or noted out of scope).
+> All PRD sections (1–12) are fully covered. No further implementation required.
 
 ---
 
@@ -49,7 +48,7 @@ When starting a new implementation task:
 
 ### 6. Requisitos Técnicos (PRD lines 375–398) — `[x] Done`
 - 6.1 Estándares de Desarrollo Moodle — GPL v3 headers, namespaces, XMLDB, capabilities, privacy API, AMD.
-- 6.2 Requisitos de Testing — `tests/attendance_calculator_test.php` (2 tests), `tests/session_manager_test.php` (3 tests), `tests/behat/mod_attendancecontrol.feature` (3 scenarios).
+- 6.2 Requisitos de Testing — `tests/attendance_calculator_test.php` (4 tests), `tests/session_manager_test.php` (7 tests), `tests/behat/mod_attendancecontrol.feature` (7 scenarios).
 - 6.3 Rendimiento — Single-query aggregation in `attendance_calculator::build_student_summary()`.
 
 ### 7. Interfaz de Usuario (PRD lines 401–487) — `[x] Done`
@@ -68,15 +67,16 @@ When starting a new implementation task:
 ### 10. Fuera de Alcance v1 (PRD lines 537–548) — `[x] Noted`
 - No implementar: app móvil, gradebook, notificaciones, migración, multi-idioma, etc.
 
-### 11. Criterios de Aceptación (PRD lines 551–597) — `[ ] Pending`
-- 11.1 Configuración
-- 11.2 Registro de Asistencia
-- 11.3 Resumen y Cálculos
-- 11.4 Vista del Alumno
-- 11.5 Exportación
-- 11.6 Gestión de Sesiones
+### 11. Criterios de Aceptación (PRD lines 551–597) — `[x] Done`
+- 11.1 Configuración — covered by Behat scenarios 1, 3 (add activity, session generation) + `test_generate_sessions_*` + `test_compute_duration_hours`.
+- 11.2 Registro de Asistencia — covered by `test_save_attendance_records_inserts_new` (AC 11.2.5), `test_save_attendance_records_updates_existing` (AC 11.2.6), `test_save_attendance_records_retroactive` (AC 11.2.7); Behat scenario 3 (teacher sees register button).
+- 11.3 Resumen y Cálculos — covered by `test_prd_example_calculation` (formula, AC 11.3.3 formula), `test_student_below_threshold` (AC 11.3.3 red flag), `test_get_student_detail_returns_rows` (AC 11.3.4).
+- 11.4 Vista del Alumno — covered by Behat scenarios 2 (student sees own summary, AC 11.4.1/11.4.4), 4 (student isolation, AC 11.4.3), 6 (breakdown link, AC 11.4.2).
+- 11.5 Exportación — covered by Behat scenario 5 (export button visible to teacher, AC 11.5.1).
+- 11.6 Gestión de Sesiones — covered by `test_regenerate_future_sessions_preserves_sessions_with_records` (AC 11.6.3) + existing `test_generate_sessions_*`.
 
-### 12. Glosario (PRD lines 600–610) — `[ ] Pending`
+### 12. Glosario (PRD lines 600–610) — `[x] Noted`
+- Informational only; definitions are reflected in code comments, lang strings, and template contexts throughout the plugin.
 
 ---
 

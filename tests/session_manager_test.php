@@ -172,4 +172,224 @@ class session_manager_test extends \advanced_testcase {
         $count = $DB->count_records('attendancecontrol_session', ['attendancecontrolid' => $instance->id]);
         $this->assertSame(2, $count);
     }
+
+    // -----------------------------------------------------------------------
+    // save_attendance_records – requires DB.
+    // -----------------------------------------------------------------------
+
+    /**
+     * Builds and inserts a minimal instance record; returns it with ->id set.
+     *
+     * @param  int $courseid
+     * @return \stdClass
+     */
+    private function make_instance_record(int $courseid): \stdClass {
+        global $DB;
+
+        $instance = (object) [
+            'course'                          => $courseid,
+            'name'                            => 'Test',
+            'intro'                           => '',
+            'introformat'                     => FORMAT_HTML,
+            'groupid'                         => 0,
+            'total_hours'                     => 100,
+            'course_start_date'               => mktime(0, 0, 0, 9, 1, 2025),
+            'course_end_date'                 => mktime(0, 0, 0, 6, 30, 2030),
+            'max_unjustified_absence_pct'     => 15.00,
+            'delay_to_unjustified_ratio'      => 0.50,
+            'justified_to_unjustified_ratio'  => 0.50,
+            'timecreated'                     => time(),
+            'timemodified'                    => time(),
+        ];
+
+        $instance->id = $DB->insert_record('attendancecontrol', $instance);
+
+        return $instance;
+    }
+
+    /**
+     * Inserts a session row and returns the full record.
+     *
+     * @param  int $instanceid
+     * @param  int $timestamp  Midnight Unix timestamp for the session date.
+     * @return \stdClass
+     */
+    private function make_session_record(int $instanceid, int $timestamp): \stdClass {
+        global $DB;
+
+        $now = time();
+        $id  = $DB->insert_record('attendancecontrol_session', (object) [
+            'attendancecontrolid' => $instanceid,
+            'session_date'        => $timestamp,
+            'start_time'          => '09:00',
+            'end_time'            => '11:00',
+            'duration_hours'      => 2,
+            'status'              => 0,
+            'timecreated'         => $now,
+            'timemodified'        => $now,
+        ]);
+
+        return $DB->get_record('attendancecontrol_session', ['id' => $id]);
+    }
+
+    /**
+     * AC 11.2.5 — Saving attendance creates a persisted record.
+     *
+     * @covers ::save_attendance_records
+     */
+    public function test_save_attendance_records_inserts_new(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course   = $this->getDataGenerator()->create_course();
+        $student  = $this->getDataGenerator()->create_user();
+        $instance = $this->make_instance_record($course->id);
+        $session  = $this->make_session_record($instance->id, mktime(0, 0, 0, 9, 15, 2025));
+
+        $data = (object) [
+            'student_status'  => [$student->id => 1],
+            'student_remarks' => [$student->id => 'On time'],
+        ];
+
+        $manager = new session_manager($instance);
+        $manager->save_attendance_records($session, $data);
+
+        $record = $DB->get_record(
+            'attendancecontrol_record',
+            ['sessionid' => $session->id, 'userid' => $student->id]
+        );
+
+        $this->assertNotFalse($record, 'Attendance record should have been created.');
+        $this->assertSame(1, (int) $record->status, 'Status should be present (1).');
+        $this->assertSame('On time', $record->remarks);
+
+        // Session should also be marked as recorded (status = 1).
+        $updated = $DB->get_field('attendancecontrol_session', 'status', ['id' => $session->id]);
+        $this->assertSame(1, (int) $updated, 'Session status should be set to recorded (1).');
+    }
+
+    /**
+     * AC 11.2.6 — Saving attendance a second time updates, not duplicates.
+     *
+     * @covers ::save_attendance_records
+     */
+    public function test_save_attendance_records_updates_existing(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course   = $this->getDataGenerator()->create_course();
+        $student  = $this->getDataGenerator()->create_user();
+        $instance = $this->make_instance_record($course->id);
+        $session  = $this->make_session_record($instance->id, mktime(0, 0, 0, 9, 15, 2025));
+
+        $manager = new session_manager($instance);
+
+        // First save: present.
+        $manager->save_attendance_records($session, (object) [
+            'student_status'  => [$student->id => 1],
+            'student_remarks' => [$student->id => 'Initial save'],
+        ]);
+
+        // Second save: correct to unjustified.
+        $manager->save_attendance_records($session, (object) [
+            'student_status'  => [$student->id => 4],
+            'student_remarks' => [$student->id => 'Corrected to unjustified'],
+        ]);
+
+        $records = $DB->get_records(
+            'attendancecontrol_record',
+            ['sessionid' => $session->id, 'userid' => $student->id]
+        );
+
+        $this->assertCount(1, $records, 'Only one record should exist after two saves.');
+        $rec = reset($records);
+        $this->assertSame(4, (int) $rec->status, 'Status should reflect the second save (unjustified = 4).');
+        $this->assertSame('Corrected to unjustified', $rec->remarks);
+    }
+
+    /**
+     * AC 11.2.7 — Retroactive recording: records can be saved for past sessions.
+     *
+     * @covers ::save_attendance_records
+     */
+    public function test_save_attendance_records_retroactive(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course   = $this->getDataGenerator()->create_course();
+        $student  = $this->getDataGenerator()->create_user();
+        $instance = $this->make_instance_record($course->id);
+
+        // Session firmly in the past (2025-01-10).
+        $session = $this->make_session_record($instance->id, mktime(0, 0, 0, 1, 10, 2025));
+
+        $manager = new session_manager($instance);
+        $manager->save_attendance_records($session, (object) [
+            'student_status'  => [$student->id => 3],
+            'student_remarks' => [$student->id => 'Retroactive justified'],
+        ]);
+
+        $record = $DB->get_record(
+            'attendancecontrol_record',
+            ['sessionid' => $session->id, 'userid' => $student->id]
+        );
+
+        $this->assertNotFalse($record, 'Retroactive record should have been created.');
+        $this->assertSame(3, (int) $record->status, 'Status should be justified (3).');
+    }
+
+    /**
+     * AC 11.6.3 — regenerate_future_sessions preserves future sessions
+     * that already have attendance records attached.
+     *
+     * @covers ::regenerate_future_sessions
+     */
+    public function test_regenerate_future_sessions_preserves_sessions_with_records(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course   = $this->getDataGenerator()->create_course();
+        $student  = $this->getDataGenerator()->create_user();
+        $instance = $this->make_instance_record($course->id);
+
+        // A session well in the future (2028-06-05, a Monday) with an attendance record.
+        $futureSessId = $DB->insert_record('attendancecontrol_session', (object) [
+            'attendancecontrolid' => $instance->id,
+            'session_date'        => mktime(0, 0, 0, 6, 5, 2028),
+            'start_time'          => '09:00',
+            'end_time'            => '11:00',
+            'duration_hours'      => 2,
+            'status'              => 1,
+            'timecreated'         => time(),
+            'timemodified'        => time(),
+        ]);
+
+        $now = time();
+        $DB->insert_record('attendancecontrol_record', (object) [
+            'sessionid'    => $futureSessId,
+            'userid'       => $student->id,
+            'status'       => 1,
+            'remarks'      => '',
+            'recorded_by'  => 2,
+            'timecreated'  => $now,
+            'timemodified' => $now,
+        ]);
+
+        // No schedule slots → regeneration adds nothing new but must not delete the recorded session.
+        $manager = new session_manager($instance);
+        $manager->regenerate_future_sessions();
+
+        $this->assertTrue(
+            $DB->record_exists('attendancecontrol_session', ['id' => $futureSessId]),
+            'Future session that has attendance records must not be deleted during regeneration.'
+        );
+    }
 }

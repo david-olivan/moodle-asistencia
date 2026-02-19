@@ -56,3 +56,49 @@ Feature: Control de Asistencia – flujos principales
     And I follow "Asistencia Programación"
     Then I should see "Registrar asistencia hoy"
     And I should see "Ver datos completos"
+
+  @javascript
+  Scenario: El alumno solo ve sus propios datos y no puede editar
+    # AC 11.4.3 — student cannot see another student's data.
+    # AC 11.4.4 — student cannot edit any data.
+    Given the following "activities" exist:
+      | activity           | course | name                    | groupid | total_hours |
+      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+    And the following "users" exist:
+      | username  | firstname | lastname | email                |
+      | student2  | Laura     | López    | student2@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student2 | FP001  | student |
+    When I log in as "student1"
+    And I am on "FP Test" course homepage
+    And I follow "Asistencia Programación"
+    Then I should see "Mi asistencia"
+    And I should not see "Laura"
+    And I should not see "Registrar asistencia"
+    And I should not see "Guardar asistencia"
+
+  @javascript
+  Scenario: El profesor ve el botón de exportación en la página de resumen
+    # AC 11.5.1 — export button is accessible to teachers.
+    Given the following "activities" exist:
+      | activity           | course | name                    | groupid | total_hours |
+      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+    When I log in as "teacher1"
+    And I am on "FP Test" course homepage
+    And I follow "Asistencia Programación"
+    And I follow "Ver datos completos"
+    Then I should see "Exportar a Excel"
+
+  @javascript
+  Scenario: El alumno puede navegar al desglose de sus propias sesiones
+    # AC 11.4.2 — student can navigate to their own session breakdown.
+    Given the following "activities" exist:
+      | activity           | course | name                    | groupid | total_hours |
+      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+    When I log in as "student1"
+    And I am on "FP Test" course homepage
+    And I follow "Asistencia Programación"
+    Then I should see "Mi asistencia"
+    And I follow "Ver desglose por sesión"
+    Then I should see "Desglose por sesión"

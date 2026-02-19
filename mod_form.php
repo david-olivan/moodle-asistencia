@@ -45,6 +45,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $this->standard_intro_elements();
+        $mform->setDefault('name', get_string('pluginname', 'mod_attendancecontrol'));
 
         // ----------------------------------------------------------------
         // Group selection.

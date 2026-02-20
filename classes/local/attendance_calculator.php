@@ -136,7 +136,7 @@ class attendance_calculator {
         global $DB;
 
         $sql = '
-            SELECT r.status, s.duration_hours
+            SELECT r.id, r.status, s.duration_hours
               FROM {attendancecontrol_record} r
               JOIN {attendancecontrol_session} s ON s.id = r.sessionid
              WHERE r.userid = :userid

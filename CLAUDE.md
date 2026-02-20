@@ -1,6 +1,6 @@
 # CLAUDE.md — Development Tracker
 
-This file tracks implementation progress against the PRD (`PRD_mod_attendance_kings.md`).
+This file tracks implementation progress against the PRD (`PRD_mod_attendance.md`).
 
 ## How to use this file
 

@@ -19,31 +19,20 @@
     @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
     Context variables:
-        action_url   {string} Form POST URL
-        sesskey      {string} Moodle session key
-        id           {int}    Course-module ID
-        sessionid    {int}    Session ID
-        cancel_url   {string} URL to return to without saving
-        bulk_options {array}  [{value, label}] Status options for bulk selector
-        students     {array}  [{uid, fullname, remarks, statuses: [{uid, value, label, btn_class, checked, input_id}]}]
-        str_save     {string}
-        str_cancel   {string}
-        str_markall  {string}
+        action_url  {string} Form POST URL
+        sesskey     {string} Moodle session key
+        id          {int}    Course-module ID
+        sessionid   {int}    Session ID
+        cancel_url  {string} URL to return to without saving
+        students    {array}  [{uid, fullname, remarks, statuses: [{uid, value, label, btn_class, checked, input_id}]}]
+        str_save    {string}
+        str_cancel  {string}
+        str_markall {string} Label for the "mark all" column-header buttons
 }}
 <form method="post" action="{{action_url}}" data-region="attendance-form">
     <input type="hidden" name="sesskey"   value="{{sesskey}}">
     <input type="hidden" name="id"        value="{{id}}">
     <input type="hidden" name="sessionid" value="{{sessionid}}">
-
-    {{! Bulk action row }}
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <label for="bulk_status" class="mb-0 fw-semibold">{{str_markall}}</label>
-        <select id="bulk_status" name="bulk_status" class="form-select form-select-sm w-auto">
-            {{#bulk_options}}
-            <option value="{{value}}">{{label}}</option>
-            {{/bulk_options}}
-        </select>
-    </div>
 
     {{! Student attendance table }}
     <div class="table-responsive">
@@ -51,10 +40,42 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col">{{#str}}studentname, mod_attendancecontrol{{/str}}</th>
-                    <th scope="col" class="text-center text-success">{{#str}}statuspresent, mod_attendancecontrol{{/str}}</th>
-                    <th scope="col" class="text-center text-warning">{{#str}}statuslate, mod_attendancecontrol{{/str}}</th>
-                    <th scope="col" class="text-center text-info">{{#str}}statusjustified, mod_attendancecontrol{{/str}}</th>
-                    <th scope="col" class="text-center text-danger">{{#str}}statusunjustified, mod_attendancecontrol{{/str}}</th>
+                    <th scope="col" class="text-center text-success">
+                        {{#str}}statuspresent, mod_attendancecontrol{{/str}}
+                        <div class="mt-1">
+                            <button type="button"
+                                    class="btn btn-outline-success btn-sm"
+                                    data-action="mark-all"
+                                    data-status="1">{{str_markall}}</button>
+                        </div>
+                    </th>
+                    <th scope="col" class="text-center text-warning">
+                        {{#str}}statuslate, mod_attendancecontrol{{/str}}
+                        <div class="mt-1">
+                            <button type="button"
+                                    class="btn btn-outline-warning btn-sm"
+                                    data-action="mark-all"
+                                    data-status="2">{{str_markall}}</button>
+                        </div>
+                    </th>
+                    <th scope="col" class="text-center text-info">
+                        {{#str}}statusjustified, mod_attendancecontrol{{/str}}
+                        <div class="mt-1">
+                            <button type="button"
+                                    class="btn btn-outline-info btn-sm"
+                                    data-action="mark-all"
+                                    data-status="3">{{str_markall}}</button>
+                        </div>
+                    </th>
+                    <th scope="col" class="text-center text-danger">
+                        {{#str}}statusunjustified, mod_attendancecontrol{{/str}}
+                        <div class="mt-1">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-action="mark-all"
+                                    data-status="4">{{str_markall}}</button>
+                        </div>
+                    </th>
                     <th scope="col">{{#str}}remarks, mod_attendancecontrol{{/str}}</th>
                 </tr>
             </thead>

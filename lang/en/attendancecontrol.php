@@ -40,8 +40,8 @@ $string['courseenddate']           = 'End date';
 $string['totalhours']              = 'Total subject hours';
 $string['schedule']                = 'Weekly time slots';
 $string['dayofweek']               = 'Day of the week';
-$string['starttime']               = 'Start time (HH:MM)';
-$string['endtime']                 = 'End time (HH:MM)';
+$string['starttime']               = 'Start time';
+$string['endtime']                 = 'End time';
 $string['addslot']                 = 'Add another time slot';
 $string['holidays']                = 'Holidays';
 $string['holidaydate']             = 'Holiday date';
@@ -49,11 +49,11 @@ $string['holidaydescription']      = 'Description (optional)';
 $string['addholiday']              = 'Add holiday';
 $string['penaltyconfig']           = 'Penalty configuration';
 $string['maxunjustifiedpct']       = 'Maximum allowed absence percentage';
-$string['maxunjustifiedpct_help']  = 'Maximum percentage of equivalent unjustified absence hours over the total hours. Students above this threshold are highlighted in red.';
-$string['delayratio']              = 'Late → unjustified absence ratio';
-$string['delayratio_help']         = 'A late arrival counts as this fraction of one unjustified absence hour. Example: 0.5 means a 1-hour late arrival counts as 0.5 unjustified absence hours.';
-$string['justifiedratio']          = 'Justified absence → unjustified absence ratio';
-$string['justifiedratio_help']     = 'A justified absence counts as this fraction of one unjustified absence hour. Example: 0.5 means 1 justified hour counts as 0.5 unjustified absence hours.';
+$string['maxunjustifiedpct_help']  = 'Maximum percentage of equivalent unjustified absence hours over total subject hours (1%–50%). Students above this threshold are highlighted in red.';
+$string['delayratio']              = 'How many late arrivals equal 1 unjustified absence?';
+$string['delayratio_help']         = 'Number of one-hour late arrivals needed to accumulate 1 unjustified absence hour. Example: 2 means it takes 2 late arrivals to count as 1 unjustified absence hour.';
+$string['justifiedratio']          = 'How many justified absences equal 1 unjustified absence?';
+$string['justifiedratio_help']     = 'Number of justified absence hours needed to accumulate 1 unjustified absence hour. Example: 2 means it takes 2 justified hours to count as 1 unjustified absence hour.';
 
 // ── Validation errors ────────────────────────────────────────────────────────
 $string['err_enddatebeforestart'] = 'The end date must be after the start date.';
@@ -79,7 +79,7 @@ $string['nosessionsthisweek']  = 'No sessions scheduled for this week.';
 // ── attendance.php ───────────────────────────────────────────────────────────
 $string['recordattendance']  = 'Record attendance';
 $string['sessionheading']    = 'Session: {$a}';
-$string['markallpresent']    = 'Mark all as:';
+$string['markallpresent']    = 'Mark all';
 $string['studentname']       = 'Student';
 $string['statuspresent']     = 'Present';
 $string['statuslate']        = 'Late';

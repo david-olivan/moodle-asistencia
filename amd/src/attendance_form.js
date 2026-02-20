@@ -16,13 +16,13 @@
 /**
  * AMD module: attendance_form
  *
- * Handles the "Mark all as ..." bulk action on the attendance registration
- * form (attendance.php). When the teacher selects a status from the bulk
- * selector, all radio buttons in each student row are updated to match.
+ * Handles the "Mark all" column-header buttons on the attendance registration
+ * form (attendance.php).  Clicking the button above a status column marks
+ * every student in that column with one action and no page reload.
  *
  * @module     mod_attendancecontrol/attendance_form
  * @copyright  2026 David Oliván Malagón
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU GPL v3 or later
  */
 
 /**
@@ -38,18 +38,14 @@ export const init = (formSelector = 'form[data-region="attendance-form"]') => {
         return;
     }
 
-    const bulkSelect = form.querySelector('[name="bulk_status"]');
-    if (!bulkSelect) {
-        return;
-    }
-
-    // Apply bulk status: check the radio with matching value in every student row.
-    const applyBulk = () => {
-        const value = bulkSelect.value;
-        form.querySelectorAll('input[type="radio"][name^="student_status"]').forEach((radio) => {
-            radio.checked = (radio.value === value);
+    // Each column header has a button with data-action="mark-all" and
+    // data-status="N" (1=present, 2=late, 3=justified, 4=unjustified).
+    form.querySelectorAll('button[data-action="mark-all"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const status = btn.dataset.status;
+            form.querySelectorAll('input[type="radio"][name^="student_status"]').forEach((radio) => {
+                radio.checked = (radio.value === status);
+            });
         });
-    };
-
-    bulkSelect.addEventListener('change', applyBulk);
+    });
 };

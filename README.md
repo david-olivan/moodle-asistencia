@@ -50,4 +50,4 @@ Plugin de Moodle para el control de asistencia de alumnos en centros de formaci�
 
 ## Desarrollo
 
-El proyecto sigue la [Moodle Plugin Development Guide](https://moodledev.io/docs/apis). Consulta el documento `PRD_mod_attendance_kings.md` para la especificación completa de requisitos, modelo de datos y arquitectura técnica.
+El proyecto sigue la [Moodle Plugin Development Guide](https://moodledev.io/docs/apis). Consulta el documento `PRD_mod_attendance.md` para la especificación completa de requisitos, modelo de datos y arquitectura técnica.

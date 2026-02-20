@@ -40,8 +40,8 @@ $string['courseenddate']           = 'Fecha de fin';
 $string['totalhours']              = 'Horas totales de la asignatura';
 $string['schedule']                = 'Franjas horarias semanales';
 $string['dayofweek']               = 'Día de la semana';
-$string['starttime']               = 'Hora de inicio (HH:MM)';
-$string['endtime']                 = 'Hora de fin (HH:MM)';
+$string['starttime']               = 'Hora de inicio';
+$string['endtime']                 = 'Hora de fin';
 $string['addslot']                 = 'Añadir otra franja horaria';
 $string['holidays']                = 'Festivos';
 $string['holidaydate']             = 'Fecha del festivo';
@@ -49,11 +49,11 @@ $string['holidaydescription']      = 'Descripción (opcional)';
 $string['addholiday']              = 'Añadir festivo';
 $string['penaltyconfig']           = 'Configuración de penalización';
 $string['maxunjustifiedpct']       = '% máximo de faltas permitido';
-$string['maxunjustifiedpct_help']  = 'Porcentaje máximo de horas equivalentes de falta injustificada sobre el total de horas. Por encima de este umbral el alumno se muestra en rojo.';
-$string['delayratio']              = 'Ratio retraso → falta injustificada';
-$string['delayratio_help']         = 'Un retraso cuenta como esta fracción de una hora de falta injustificada. Ejemplo: 0,5 significa que un retraso de 1 hora cuenta como 0,5 horas de falta injustificada.';
-$string['justifiedratio']          = 'Ratio falta justificada → falta injustificada';
-$string['justifiedratio_help']     = 'Una falta justificada cuenta como esta fracción de una hora de falta injustificada. Ejemplo: 0,5 significa que 1 hora justificada cuenta como 0,5 horas de falta injustificada.';
+$string['maxunjustifiedpct_help']  = 'Porcentaje máximo de faltas injustificadas equivalentes sobre el total de horas de la asignatura (1 %–50 %). Por encima de este umbral el alumno se muestra en rojo.';
+$string['delayratio']              = '¿Cuántos retrasos equivalen a 1 falta injustificada?';
+$string['delayratio_help']         = 'Número de retrasos de una hora necesarios para sumar 1 hora de falta injustificada. Ejemplo: 2 significa que hacen falta 2 retrasos de 1 hora para acumular 1 hora de falta injustificada.';
+$string['justifiedratio']          = '¿Cuántas faltas justificadas equivalen a 1 falta injustificada?';
+$string['justifiedratio_help']     = 'Número de horas de falta justificada necesarias para sumar 1 hora de falta injustificada. Ejemplo: 2 significa que hacen falta 2 horas justificadas para acumular 1 hora de falta injustificada.';
 
 // ── Validation errors ────────────────────────────────────────────────────────
 $string['err_enddatebeforestart'] = 'La fecha de fin debe ser posterior a la de inicio.';
@@ -79,7 +79,7 @@ $string['nosessionsthisweek']  = 'No hay sesiones programadas para esta semana.'
 // ── attendance.php ───────────────────────────────────────────────────────────
 $string['recordattendance']  = 'Registrar asistencia';
 $string['sessionheading']    = 'Sesión: {$a}';
-$string['markallpresent']    = 'Marcar todos como:';
+$string['markallpresent']    = 'Marcar todos';
 $string['studentname']       = 'Alumno/a';
 $string['statuspresent']     = 'Presente';
 $string['statuslate']        = 'Retraso';

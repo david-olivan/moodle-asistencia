@@ -70,7 +70,8 @@ class attendance_calculator {
     public function get_group_summary(): array {
         global $DB;
 
-        $students = groups_get_members($this->instance->groupid, 'u.id, u.firstname, u.lastname');
+        $students = groups_get_members($this->instance->groupid,
+            'u.id, u.firstname, u.lastname, u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename');
 
         $result = [];
         foreach ($students as $student) {

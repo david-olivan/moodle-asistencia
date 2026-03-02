@@ -35,7 +35,6 @@ namespace mod_attendancecontrol\local;
  *   4 = unjustified  (duration_hours × 1.0)
  */
 class attendance_calculator {
-
     /** @var \stdClass Plugin instance record. */
     protected \stdClass $instance;
 
@@ -48,9 +47,7 @@ class attendance_calculator {
         $this->instance = $instance;
     }
 
-    // -----------------------------------------------------------------------
     // Public API.
-    // -----------------------------------------------------------------------
 
     /**
      * Returns one summary row per student in the configured group.
@@ -70,8 +67,10 @@ class attendance_calculator {
     public function get_group_summary(): array {
         global $DB;
 
-        $students = groups_get_members($this->instance->groupid,
-            'u.id, u.firstname, u.lastname, u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename');
+        $students = groups_get_members(
+            $this->instance->groupid,
+            'u.id, u.firstname, u.lastname, u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename'
+        );
 
         $result = [];
         foreach ($students as $student) {
@@ -79,9 +78,12 @@ class attendance_calculator {
         }
 
         // Sort alphabetically by lastname, firstname.
-        usort($result, static fn($a, $b) =>
-            strcmp($a['student']->lastname . $a['student']->firstname,
-                   $b['student']->lastname . $b['student']->firstname)
+        usort(
+            $result,
+            static fn($a, $b) => strcmp(
+                $a['student']->lastname . $a['student']->firstname,
+                $b['student']->lastname . $b['student']->firstname
+            )
         );
 
         return $result;
@@ -122,9 +124,7 @@ class attendance_calculator {
         return $result;
     }
 
-    // -----------------------------------------------------------------------
     // Core calculation.
-    // -----------------------------------------------------------------------
 
     /**
      * Computes the equivalent absence hours for a student.
@@ -188,9 +188,7 @@ class attendance_calculator {
         return 100.0 - (float) $this->instance->max_unjustified_absence_pct;
     }
 
-    // -----------------------------------------------------------------------
     // Private helpers.
-    // -----------------------------------------------------------------------
 
     /**
      * Maps an attendance status to its equivalent absence hours.

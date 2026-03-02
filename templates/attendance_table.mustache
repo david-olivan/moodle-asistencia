@@ -1,33 +1,35 @@
 {{!
-    This file is part of Moodle - https://moodle.org/
+    @template mod_attendancecontrol/attendance_table
 
-    Moodle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    Attendance registration form for a single session.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    Example context (json):
+    {
+        "action_url": "/mod/attendancecontrol/attendance.php?id=1&sessionid=1",
+        "sesskey": "abc123",
+        "id": 1,
+        "sessionid": 1,
+        "cancel_url": "/mod/attendancecontrol/view.php?id=1",
+        "str_save": "Save attendance",
+        "str_cancel": "Cancel",
+        "str_markall": "Mark all",
+        "students": [
+            {
+                "uid": 2,
+                "fullname": "Jane Doe",
+                "remarks": "",
+                "statuses": [
+                    {"uid": 2, "value": 1, "label": "Present", "btn_class": "btn-outline-success", "checked": true, "input_id": "status_2_1"},
+                    {"uid": 2, "value": 2, "label": "Late", "btn_class": "btn-outline-warning", "checked": false, "input_id": "status_2_2"},
+                    {"uid": 2, "value": 3, "label": "Justified absence", "btn_class": "btn-outline-info", "checked": false, "input_id": "status_2_3"},
+                    {"uid": 2, "value": 4, "label": "Unjustified absence", "btn_class": "btn-outline-danger", "checked": false, "input_id": "status_2_4"}
+                ]
+            }
+        ]
+    }
 
-    You should have received a copy of the GNU General Public License
-    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
-    @template   mod_attendancecontrol/attendance_table
     @copyright  2026 David Oliván Malagón
     @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-
-    Context variables:
-        action_url  {string} Form POST URL
-        sesskey     {string} Moodle session key
-        id          {int}    Course-module ID
-        sessionid   {int}    Session ID
-        cancel_url  {string} URL to return to without saving
-        students    {array}  [{uid, fullname, remarks, statuses: [{uid, value, label, btn_class, checked, input_id}]}]
-        str_save    {string}
-        str_cancel  {string}
-        str_markall {string} Label for the "mark all" column-header buttons
 }}
 <form method="post" action="{{action_url}}" data-region="attendance-form">
     <input type="hidden" name="sesskey"   value="{{sesskey}}">

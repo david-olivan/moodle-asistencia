@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/mod/attendancecontrol/backup/moodle2/restore_atte
  * Provides the steps required to restore one attendancecontrol activity.
  */
 class restore_attendancecontrol_activity_task extends restore_activity_task {
-
     /**
      * No specific settings.
      */

@@ -83,3 +83,29 @@ When starting a new implementation task:
 ## Technical Debt
 
 - **License conflict**: `LICENSE.md` is currently "All Rights Reserved" (private project). The PRD specifies GPL v3+, which is mandatory for any plugin distributed through the Moodle plugin directory. If distribution is ever planned, `LICENSE.md` must be replaced with GPL v3+ and the license header added to every source file.
+
+---
+
+## Moodle PHPCS / Code-checker rules (MUST follow always)
+
+Violations found by the Moodle automated checker — never introduce these again:
+
+### PHP
+1. **1 space after comma** — never align arguments with extra spaces: `foo($a, $b)` not `foo($a,   $b)`.
+2. **Multi-line function calls** — opening `(` must be last on its line; each arg on its own line indented +4; closing `)` alone on its line.
+3. **snake_case variables** — all PHP variables must be `$snake_case`; never `$camelCase` (e.g. `$pct_options` not `$pctOptions`).
+4. **Inline comments** — must start with capital letter/digit/`...` AND end with `.`, `!` or `?`.
+5. **No blank line after opening brace** — `class Foo {\n    // no blank line here`.
+6. **`else if`** not `elseif`.
+7. **Ternary/null-coalesce spacing** — exactly 1 space each side: `$a ?? $b`, `$a ? $b : $c`.
+8. **No `MOODLE_INTERNAL` check** in `lib.php` or `settings.php` (no side-effects files).
+9. **Lang string files** — keys must be in strict alphabetical order; no inline `//` comments between entries.
+10. **Test classes** must be declared `final`; every test method phpdoc must have a one-line description and complete `@param` list.
+11. **Multi-line `if` conditions** — first expression on line after `(`; each condition indented once; closing `)` on its own line.
+
+### JavaScript (ESLint)
+- No multiple spaces before `=` (`no-multi-spaces`).
+
+### Mustache templates
+- Every template must have a `{{! @template component/name, { ... } }}` block with an example context.
+- `<form action="">` must never be empty — use a real URL or `action` attribute must be omitted/populated.

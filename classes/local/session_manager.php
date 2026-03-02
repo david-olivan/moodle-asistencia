@@ -28,7 +28,6 @@ namespace mod_attendancecontrol\local;
  * Handles session generation, regeneration and attendance record persistence.
  */
 class session_manager {
-
     /** @var \stdClass Plugin instance record. */
     protected \stdClass $instance;
 
@@ -40,10 +39,6 @@ class session_manager {
     public function __construct(\stdClass $instance) {
         $this->instance = $instance;
     }
-
-    // -----------------------------------------------------------------------
-    // Session generation.
-    // -----------------------------------------------------------------------
 
     /**
      * Generates all sessions for the full date range.
@@ -148,11 +143,13 @@ class session_manager {
                 }
 
                 // Skip if a session already exists for this date+time (kept because it has records).
-                if ($DB->record_exists('attendancecontrol_session', [
-                    'attendancecontrolid' => $this->instance->id,
-                    'session_date'        => $ts,
-                    'start_time'          => $slot->start_time,
-                ])) {
+                if (
+                    $DB->record_exists('attendancecontrol_session', [
+                        'attendancecontrolid' => $this->instance->id,
+                        'session_date'        => $ts,
+                        'start_time'          => $slot->start_time,
+                    ])
+                ) {
                     continue;
                 }
 
@@ -173,10 +170,6 @@ class session_manager {
             }
         }
     }
-
-    // -----------------------------------------------------------------------
-    // Attendance record persistence.
-    // -----------------------------------------------------------------------
 
     /**
      * Saves (upserts) attendance records submitted from attendance_form.
@@ -225,10 +218,6 @@ class session_manager {
         $DB->set_field('attendancecontrol_session', 'status', 1, ['id' => $session->id]);
         $DB->set_field('attendancecontrol_session', 'timemodified', $now, ['id' => $session->id]);
     }
-
-    // -----------------------------------------------------------------------
-    // Helpers.
-    // -----------------------------------------------------------------------
 
     /**
      * Returns an array of holiday timestamps (midnight) for this instance.

@@ -30,7 +30,6 @@ namespace mod_attendancecontrol\event;
  * Triggered after a teacher successfully saves attendance for a session.
  */
 class attendance_recorded extends \core\event\base {
-
     /**
      * Initialises the event properties.
      */

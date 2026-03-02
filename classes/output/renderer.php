@@ -34,11 +34,6 @@ use plugin_renderer_base;
  * All public methods return HTML strings produced via Mustache templates.
  */
 class renderer extends plugin_renderer_base {
-
-    // -----------------------------------------------------------------------
-    // Teacher views.
-    // -----------------------------------------------------------------------
-
     /**
      * Renders the teacher main view (session list + action buttons).
      *
@@ -88,22 +83,30 @@ class renderer extends plugin_renderer_base {
                 'status_label' => ((int) $s->status === 1)
                     ? get_string('statusrecorded', 'mod_attendancecontrol')
                     : get_string('statuspending', 'mod_attendancecontrol'),
-                'url_record'   => (new moodle_url('/mod/attendancecontrol/attendance.php',
-                    ['id' => $cm->id, 'sessionid' => $s->id]))->out(false),
+                'url_record'   => (new moodle_url(
+                    '/mod/attendancecontrol/attendance.php',
+                    ['id' => $cm->id, 'sessionid' => $s->id]
+                ))->out(false),
             ];
         }
 
         $data = [
             'cmid'         => $cm->id,
             'url_today'    => $todaysession
-                ? (new moodle_url('/mod/attendancecontrol/attendance.php',
-                    ['id' => $cm->id, 'sessionid' => $todaysession->id]))->out(false)
+                ? (new moodle_url(
+                    '/mod/attendancecontrol/attendance.php',
+                    ['id' => $cm->id, 'sessionid' => $todaysession->id]
+                ))->out(false)
                 : '',
-            'url_report'   => (new moodle_url('/mod/attendancecontrol/report.php',    ['id' => $cm->id]))->out(false),
-            'url_prevweek' => (new moodle_url('/mod/attendancecontrol/view.php',
-                ['id' => $cm->id, 'week' => $weekoffset - 1]))->out(false),
-            'url_nextweek' => (new moodle_url('/mod/attendancecontrol/view.php',
-                ['id' => $cm->id, 'week' => $weekoffset + 1]))->out(false),
+            'url_report'   => (new moodle_url('/mod/attendancecontrol/report.php', ['id' => $cm->id]))->out(false),
+            'url_prevweek' => (new moodle_url(
+                '/mod/attendancecontrol/view.php',
+                ['id' => $cm->id, 'week' => $weekoffset - 1]
+            ))->out(false),
+            'url_nextweek' => (new moodle_url(
+                '/mod/attendancecontrol/view.php',
+                ['id' => $cm->id, 'week' => $weekoffset + 1]
+            ))->out(false),
             'week_label'   => userdate($monday, get_string('strftimedatefullshort')) . ' – ' .
                               userdate($sunday, get_string('strftimedatefullshort')),
             'sessions'     => array_values($sessiondata),
@@ -134,8 +137,10 @@ class renderer extends plugin_renderer_base {
             $rows[] = [
                 'student_name'     => fullname($data['student']),
                 'userid'           => $data['student']->id,
-                'url_detail'       => (new moodle_url('/mod/attendancecontrol/student_detail.php',
-                    ['id' => $cm->id, 'userid' => $data['student']->id]))->out(false),
+                'url_detail'       => (new moodle_url(
+                    '/mod/attendancecontrol/student_detail.php',
+                    ['id' => $cm->id, 'userid' => $data['student']->id]
+                ))->out(false),
                 'presences'        => $data['presences'],
                 'lates'            => $data['lates'],
                 'justified'        => $data['justified'],
@@ -202,10 +207,6 @@ class renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_attendancecontrol/student_detail', $data);
     }
 
-    // -----------------------------------------------------------------------
-    // Student view.
-    // -----------------------------------------------------------------------
-
     /**
      * Renders the student's personal attendance summary.
      *
@@ -241,8 +242,10 @@ class renderer extends plugin_renderer_base {
             'unjustified'     => $summary['unjustified'],
             'pct'             => number_format($summary['pct'], 1),
             'below_threshold' => $summary['below_threshold'],
-            'url_breakdown'   => (new moodle_url('/mod/attendancecontrol/student_detail.php',
-                ['id' => $cm->id, 'userid' => $USER->id]))->out(false),
+            'url_breakdown'   => (new moodle_url(
+                '/mod/attendancecontrol/student_detail.php',
+                ['id' => $cm->id, 'userid' => $USER->id]
+            ))->out(false),
             'str_breakdown'   => get_string('viewbreakdown', 'mod_attendancecontrol'),
         ];
 

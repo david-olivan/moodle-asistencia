@@ -45,7 +45,7 @@ $capabilities = [
         'archetypes'   => [
             'editingteacher' => CAP_ALLOW,
             'manager'        => CAP_ALLOW,
-            'teacher'        => CAP_ALLOW,  // Non-editing teacher.
+            'teacher'        => CAP_ALLOW, // Non-editing teacher.
         ],
     ],
 

@@ -22,12 +22,6 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-// ---------------------------------------------------------------------------
-// CRUD callbacks required by Moodle.
-// ---------------------------------------------------------------------------
-
 /**
  * Adds a new instance of attendancecontrol.
  *
@@ -124,17 +118,13 @@ function attendancecontrol_delete_instance(int $id): bool {
         $DB->delete_records_select('attendancecontrol_record', "sessionid $insql", $inparams);
     }
 
-    $DB->delete_records('attendancecontrol_session',  ['attendancecontrolid' => $id]);
+    $DB->delete_records('attendancecontrol_session', ['attendancecontrolid' => $id]);
     $DB->delete_records('attendancecontrol_schedule', ['attendancecontrolid' => $id]);
-    $DB->delete_records('attendancecontrol_holiday',  ['attendancecontrolid' => $id]);
-    $DB->delete_records('attendancecontrol',          ['id'                  => $id]);
+    $DB->delete_records('attendancecontrol_holiday', ['attendancecontrolid' => $id]);
+    $DB->delete_records('attendancecontrol', ['id' => $id]);
 
     return true;
 }
-
-// ---------------------------------------------------------------------------
-// Feature-support flags.
-// ---------------------------------------------------------------------------
 
 /**
  * Returns the features this module supports.
@@ -161,10 +151,6 @@ function attendancecontrol_supports(string $feature): ?bool {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Helper functions used internally by the callbacks above.
-// ---------------------------------------------------------------------------
-
 /**
  * Persists schedule slots submitted by the dynamic JS table.
  *
@@ -177,9 +163,9 @@ function attendancecontrol_supports(string $feature): ?bool {
 function attendancecontrol_save_schedule(stdClass $data): void {
     global $DB;
 
-    $days   = optional_param_array('schedule_day',   [], PARAM_INT);
+    $days   = optional_param_array('schedule_day', [], PARAM_INT);
     $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
-    $ends   = optional_param_array('schedule_end',   [], PARAM_TEXT);
+    $ends   = optional_param_array('schedule_end', [], PARAM_TEXT);
 
     foreach ($days as $i => $day) {
         if (empty($day)) {
@@ -189,7 +175,7 @@ function attendancecontrol_save_schedule(stdClass $data): void {
             'attendancecontrolid' => $data->id,
             'day_of_week'         => (int) $day,
             'start_time'          => clean_param($starts[$i] ?? '', PARAM_TEXT),
-            'end_time'            => clean_param($ends[$i]   ?? '', PARAM_TEXT),
+            'end_time'            => clean_param($ends[$i] ?? '', PARAM_TEXT),
         ]);
     }
 }
@@ -205,15 +191,15 @@ function attendancecontrol_save_schedule(stdClass $data): void {
 function attendancecontrol_save_holidays(stdClass $data): void {
     global $DB;
 
-    $dates = optional_param_array('holiday_date',        [], PARAM_TEXT);
+    $dates = optional_param_array('holiday_date', [], PARAM_TEXT);
     $descs = optional_param_array('holiday_description', [], PARAM_TEXT);
 
-    foreach ($dates as $i => $dateStr) {
-        if (empty($dateStr)) {
+    foreach ($dates as $i => $date_str) {
+        if (empty($date_str)) {
             continue;
         }
-        // Convert YYYY-MM-DD → midnight Unix timestamp.
-        $timestamp = strtotime($dateStr . ' 00:00:00');
+        // Convert YYYY-MM-DD to midnight Unix timestamp.
+        $timestamp = strtotime($date_str . ' 00:00:00');
         if ($timestamp === false || $timestamp <= 0) {
             continue;
         }

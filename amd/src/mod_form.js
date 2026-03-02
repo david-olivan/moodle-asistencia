@@ -28,7 +28,7 @@
 
 /** Running counter used to generate unique input name indices. */
 let scheduleCounter = 0;
-let holidayCounter  = 0;
+let holidayCounter = 0;
 
 /** Localised weekday map { 1: 'Lunes', 2: 'Martes', … } passed from PHP. */
 let dayNames = {};
@@ -82,7 +82,7 @@ const addScheduleRow = (day = 1, start = '', end = '') => {
     }
 
     const idx = scheduleCounter++;
-    const tr  = document.createElement('tr');
+    const tr = document.createElement('tr');
 
     tr.innerHTML = `
         <td>
@@ -129,7 +129,7 @@ const addHolidayRow = (date = '', description = '') => {
     }
 
     const idx = holidayCounter++;
-    const tr  = document.createElement('tr');
+    const tr = document.createElement('tr');
 
     tr.innerHTML = `
         <td>

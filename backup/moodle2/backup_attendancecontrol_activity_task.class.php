@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/mod/attendancecontrol/backup/moodle2/backup_atten
  * Provides the steps required to backup one attendancecontrol activity.
  */
 class backup_attendancecontrol_activity_task extends backup_activity_task {
-
     /**
      * No specific settings for this activity.
      */
@@ -59,7 +58,7 @@ class backup_attendancecontrol_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // view.php.
+        // Encode view.php links.
         $search  = "/({$base}\/mod\/attendancecontrol\/view\.php\?id=)([0-9]+)/";
         $content = preg_replace($search, '$@ATTENDANCECONTROLVIEWBYID*$2@$', $content);
 

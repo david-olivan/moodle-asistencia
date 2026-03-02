@@ -38,7 +38,6 @@ require_once($GLOBALS['CFG']->libdir . '/formslib.php');
  *   - context   \context_module
  */
 class attendance_form extends \moodleform {
-
     /**
      * Defines form elements – one row per group member.
      */
@@ -51,16 +50,16 @@ class attendance_form extends \moodleform {
         // Allow the attendance_form AMD module to locate this form element.
         $mform->updateAttributes(['data-region' => 'attendance-form']);
 
-        $mform->addElement('hidden', 'id',        $cm->id);
+        $mform->addElement('hidden', 'id', $cm->id);
         $mform->addElement('hidden', 'sessionid', $session->id);
-        $mform->setType('id',        PARAM_INT);
+        $mform->setType('id', PARAM_INT);
         $mform->setType('sessionid', PARAM_INT);
 
-        // "Mark all as" bulk action.
+        // Bulk action: mark all as.
         $bulkoptions = [
-            1 => get_string('statuspresent',     'mod_attendancecontrol'),
-            2 => get_string('statuslate',        'mod_attendancecontrol'),
-            3 => get_string('statusjustified',   'mod_attendancecontrol'),
+            1 => get_string('statuspresent', 'mod_attendancecontrol'),
+            2 => get_string('statuslate', 'mod_attendancecontrol'),
+            3 => get_string('statusjustified', 'mod_attendancecontrol'),
             4 => get_string('statusunjustified', 'mod_attendancecontrol'),
         ];
         $mform->addElement('select', 'bulk_status', get_string('markallpresent', 'mod_attendancecontrol'), $bulkoptions);
@@ -71,9 +70,9 @@ class attendance_form extends \moodleform {
         uasort($students, static fn($a, $b) => strcmp($a->lastname, $b->lastname));
 
         $statusoptions = [
-            1 => get_string('statuspresent',     'mod_attendancecontrol'),
-            2 => get_string('statuslate',        'mod_attendancecontrol'),
-            3 => get_string('statusjustified',   'mod_attendancecontrol'),
+            1 => get_string('statuspresent', 'mod_attendancecontrol'),
+            2 => get_string('statuslate', 'mod_attendancecontrol'),
+            3 => get_string('statusjustified', 'mod_attendancecontrol'),
             4 => get_string('statusunjustified', 'mod_attendancecontrol'),
         ];
 

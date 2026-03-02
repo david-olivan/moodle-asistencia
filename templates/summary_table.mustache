@@ -1,15 +1,30 @@
 {{!
-  Template: summary_table.mustache
+    @template mod_attendancecontrol/summary_table
 
-  Context:
-    rows              - array  Student summary rows (see renderer.php)
-    url_export        - string Excel export URL
-    threshold_notice  - string Formatted threshold notice
-    str_export        - string Localised export button label
+    Teacher attendance report table listing all students with their attendance stats.
 
-  @package mod_attendancecontrol
-  @copyright 2026 David Oliván Malagón
-  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+    Example context (json):
+    {
+        "url_export": "/mod/attendancecontrol/export.php?id=1",
+        "threshold_notice": "Minimum attendance: 85%",
+        "str_export": "Export to Excel",
+        "rows": [
+            {
+                "student_name": "Jane Doe",
+                "url_detail": "/mod/attendancecontrol/student_detail.php?id=1&userid=2",
+                "presences": 10,
+                "lates": 2,
+                "justified": 1,
+                "unjustified": 0,
+                "equiv_hours": 12,
+                "pct": "92.5",
+                "below_threshold": false
+            }
+        ]
+    }
+
+    @copyright  2026 David Oliván Malagón
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 <div class="mod-attendancecontrol-report" data-region="attendancecontrol-report">
 

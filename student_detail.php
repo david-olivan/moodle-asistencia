@@ -28,7 +28,7 @@
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-$cmid   = required_param('id',     PARAM_INT); // Course-module ID.
+$cmid = required_param('id', PARAM_INT); // Course-module ID.
 $userid = required_param('userid', PARAM_INT); // Target student user ID.
 
 [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'attendancecontrol');

@@ -31,7 +31,6 @@ namespace mod_attendancecontrol\event;
  * completion tracking and the standard log report work out of the box.
  */
 class course_module_viewed extends \core\event\course_module_viewed {
-
     /**
      * Initialises the event properties.
      */

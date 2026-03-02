@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Pre-commit hook: run Moodle phpcs on staged PHP files.
+# Install with: bash scripts/install-hooks.sh
+
+set -euo pipefail
+
+STAGED_PHP=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+
+if [ -z "$STAGED_PHP" ]; then
+    exit 0
+fi
+
+# Prefer the local vendor binary; fall back to a globally installed phpcs.
+if [ -f "vendor/bin/phpcs" ]; then
+    PHPCS="vendor/bin/phpcs"
+elif command -v phpcs &>/dev/null; then
+    PHPCS="phpcs"
+else
+    echo "ERROR: phpcs not found."
+    echo "Run: composer install"
+    exit 1
+fi
+
+echo "Running Moodle phpcs on staged PHP files..."
+# phpcs.xml.dist is picked up automatically from the repo root.
+$PHPCS $STAGED_PHP
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "Commit blocked: fix the phpcs violations above, then stage and retry."
+    exit 1
+fi

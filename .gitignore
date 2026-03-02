@@ -1,0 +1,14 @@
+# Composer dependencies (installed locally for the pre-commit hook).
+vendor/
+
+# moodle-plugin-ci working directory (created during GitHub Actions runs).
+ci/
+
+# Node / Grunt (if used locally for AMD builds).
+node_modules/
+
+# OS and editor noise.
+.DS_Store
+Thumbs.db
+.idea/
+*.swp

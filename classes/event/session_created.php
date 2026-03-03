@@ -34,8 +34,7 @@ class session_created extends \core\event\base
     /**
      * Initialises the event properties.
      */
-    protected function init(): void
-    {
+    protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'attendancecontrol_session';
@@ -46,8 +45,7 @@ class session_created extends \core\event\base
      *
      * @return string
      */
-    public static function get_name(): string
-    {
+    public static function get_name(): string {
         return get_string('eventsessioncreated', 'mod_attendancecontrol');
     }
 
@@ -56,8 +54,7 @@ class session_created extends \core\event\base
      *
      * @return string
      */
-    public function get_description(): string
-    {
+    public function get_description(): string {
         return "The user with id '{$this->userid}' created a session with id '{$this->objectid}'.";
     }
 
@@ -66,8 +63,7 @@ class session_created extends \core\event\base
      *
      * @return \moodle_url
      */
-    public function get_url(): \moodle_url
-    {
+    public function get_url(): \moodle_url {
         return new \moodle_url('/mod/attendancecontrol/view.php', [
             'id' => $this->contextinstanceid,
         ]);

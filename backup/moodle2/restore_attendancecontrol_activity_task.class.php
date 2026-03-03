@@ -34,16 +34,14 @@ class restore_attendancecontrol_activity_task extends restore_activity_task
     /**
      * No specific settings.
      */
-    protected function define_my_settings(): void
-    {
+    protected function define_my_settings(): void {
         // Nothing to do.
     }
 
     /**
      * Registers the structure restore step.
      */
-    protected function define_my_steps(): void
-    {
+    protected function define_my_steps(): void {
         $this->add_step(new restore_attendancecontrol_activity_structure_step(
             'attendancecontrol_structure',
             'attendancecontrol.xml'
@@ -55,8 +53,7 @@ class restore_attendancecontrol_activity_task extends restore_activity_task
      *
      * @return array
      */
-    public static function define_decode_contents(): array
-    {
+    public static function define_decode_contents(): array {
         return [
             new restore_decode_content('attendancecontrol', ['intro'], 'attendancecontrol'),
         ];
@@ -67,8 +64,7 @@ class restore_attendancecontrol_activity_task extends restore_activity_task
      *
      * @return array
      */
-    public static function define_decode_rules(): array
-    {
+    public static function define_decode_rules(): array {
         return [
             new restore_decode_rule(
                 'ATTENDANCECONTROLVIEWBYID',
@@ -83,8 +79,7 @@ class restore_attendancecontrol_activity_task extends restore_activity_task
      *
      * @return array
      */
-    public static function define_restore_log_rules(): array
-    {
+    public static function define_restore_log_rules(): array {
         return [];
     }
 
@@ -93,8 +88,7 @@ class restore_attendancecontrol_activity_task extends restore_activity_task
      *
      * @return array
      */
-    public static function define_restore_log_rules_for_course(): array
-    {
+    public static function define_restore_log_rules_for_course(): array {
         return [];
     }
 }

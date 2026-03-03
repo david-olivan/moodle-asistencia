@@ -34,16 +34,14 @@ class backup_attendancecontrol_activity_task extends backup_activity_task
     /**
      * No specific settings for this activity.
      */
-    protected function define_my_settings(): void
-    {
+    protected function define_my_settings(): void {
         // Nothing to do.
     }
 
     /**
      * Registers the structure backup step.
      */
-    protected function define_my_steps(): void
-    {
+    protected function define_my_steps(): void {
         $this->add_step(new backup_attendancecontrol_activity_structure_step(
             'attendancecontrol_structure',
             'attendancecontrol.xml'
@@ -56,8 +54,7 @@ class backup_attendancecontrol_activity_task extends backup_activity_task
      * @param  string $content
      * @return string
      */
-    public static function encode_content_links(string $content): string
-    {
+    public static function encode_content_links(string $content): string {
         global $CFG;
 
         $base = preg_quote($CFG->wwwroot, '/');

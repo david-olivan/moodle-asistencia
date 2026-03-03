@@ -43,8 +43,7 @@ class renderer extends plugin_renderer_base
      * @param  \context_module    $context
      * @return string  HTML
      */
-    public function render_teacher_view(\stdClass $instance, $cm, \context_module $context): string
-    {
+    public function render_teacher_view(\stdClass $instance, $cm, \context_module $context): string {
         global $DB;
 
         // Week navigation parameter.
@@ -130,8 +129,7 @@ class renderer extends plugin_renderer_base
      * @param  \cm_info|\stdClass $cm
      * @return string  HTML
      */
-    public function render_summary_table(array $summary, \stdClass $instance, $cm): string
-    {
+    public function render_summary_table(array $summary, \stdClass $instance, $cm): string {
         $calculator = new attendance_calculator($instance);
         $threshold = $calculator->get_threshold();
 
@@ -176,8 +174,7 @@ class renderer extends plugin_renderer_base
      * @param  \stdClass $student  Moodle user object.
      * @return string  HTML
      */
-    public function render_student_detail(array $detail, \stdClass $instance, \stdClass $student): string
-    {
+    public function render_student_detail(array $detail, \stdClass $instance, \stdClass $student): string {
         $calculator = new attendance_calculator($instance);
         $pct = $calculator->compute_attendance_pct((int) $student->id);
         $threshold = $calculator->get_threshold();
@@ -219,8 +216,7 @@ class renderer extends plugin_renderer_base
      * @param  \context_module    $context
      * @return string  HTML
      */
-    public function render_student_view(\stdClass $instance, $cm, \context_module $context): string
-    {
+    public function render_student_view(\stdClass $instance, $cm, \context_module $context): string {
         global $USER;
 
         $calculator = new attendance_calculator($instance);

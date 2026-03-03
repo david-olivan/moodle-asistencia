@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- Applied PHPCS / Moodle code-style rules across all PHP, JS, and Mustache files.
+- Behat scenarios: corrected activity generator, Mustache template context, and feature steps.
+- `session_list.mustache`: "Record today's attendance" button now always visible (disabled when no session exists for today).
+- CI badge added to README.
+
 ## [1.0.0] — 2026-02-20
 
 ### Added

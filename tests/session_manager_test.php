@@ -43,8 +43,7 @@ final class session_manager_test extends \advanced_testcase
      * @covers ::compute_duration_hours
      * @dataProvider duration_provider
      */
-    public function test_compute_duration_hours(string $start, string $end, int $expected): void
-    {
+    public function test_compute_duration_hours(string $start, string $end, int $expected): void {
         $result = session_manager::compute_duration_hours($start, $end);
         $this->assertSame($expected, $result);
     }
@@ -54,8 +53,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @return array[]
      */
-    public static function duration_provider(): array
-    {
+    public static function duration_provider(): array {
         return [
             'exactly 1 hour' => ['09:00', '10:00', 1],
             '55 minutes rounds to 1' => ['09:00', '09:55', 1],
@@ -71,8 +69,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::generate_sessions
      */
-    public function test_generate_sessions_excludes_holidays(): void
-    {
+    public function test_generate_sessions_excludes_holidays(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -128,8 +125,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::generate_sessions
      */
-    public function test_generate_sessions_creates_correct_count(): void
-    {
+    public function test_generate_sessions_creates_correct_count(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -184,8 +180,7 @@ final class session_manager_test extends \advanced_testcase
      * @param  int $courseid
      * @return \stdClass
      */
-    private function make_instance_record(int $courseid): \stdClass
-    {
+    private function make_instance_record(int $courseid): \stdClass {
         global $DB;
 
         $instance = (object) [
@@ -216,8 +211,7 @@ final class session_manager_test extends \advanced_testcase
      * @param  int $timestamp  Midnight Unix timestamp for the session date.
      * @return \stdClass
      */
-    private function make_session_record(int $instanceid, int $timestamp): \stdClass
-    {
+    private function make_session_record(int $instanceid, int $timestamp): \stdClass {
         global $DB;
 
         $now = time();
@@ -240,8 +234,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::save_attendance_records
      */
-    public function test_save_attendance_records_inserts_new(): void
-    {
+    public function test_save_attendance_records_inserts_new(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -279,8 +272,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::save_attendance_records
      */
-    public function test_save_attendance_records_updates_existing(): void
-    {
+    public function test_save_attendance_records_updates_existing(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -321,8 +313,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::save_attendance_records
      */
-    public function test_save_attendance_records_retroactive(): void
-    {
+    public function test_save_attendance_records_retroactive(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -356,8 +347,7 @@ final class session_manager_test extends \advanced_testcase
      *
      * @covers ::regenerate_future_sessions
      */
-    public function test_regenerate_future_sessions_preserves_sessions_with_records(): void
-    {
+    public function test_regenerate_future_sessions_preserves_sessions_with_records(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -368,7 +358,7 @@ final class session_manager_test extends \advanced_testcase
         $instance = $this->make_instance_record($course->id);
 
         // A session well in the future (2028-06-05, a Monday) with an attendance record.
-        $future_sess_id = $DB->insert_record('attendancecontrol_session', (object) [
+        $futuresessid = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
             'session_date' => mktime(0, 0, 0, 6, 5, 2028),
             'start_time' => '09:00',
@@ -381,7 +371,7 @@ final class session_manager_test extends \advanced_testcase
 
         $now = time();
         $DB->insert_record('attendancecontrol_record', (object) [
-            'sessionid' => $future_sess_id,
+            'sessionid' => $futuresessid,
             'userid' => $student->id,
             'status' => 1,
             'remarks' => '',
@@ -395,7 +385,7 @@ final class session_manager_test extends \advanced_testcase
         $manager->regenerate_future_sessions();
 
         $this->assertTrue(
-            $DB->record_exists('attendancecontrol_session', ['id' => $future_sess_id]),
+            $DB->record_exists('attendancecontrol_session', ['id' => $futuresessid]),
             'Future session that has attendance records must not be deleted during regeneration.'
         );
     }

@@ -37,7 +37,12 @@ require_login($course, true, $cm);
 
 $context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
-$session = $DB->get_record('attendancecontrol_session', ['id' => $sessionid, 'attendancecontrolid' => $instance->id], '*', MUST_EXIST);
+$session = $DB->get_record(
+    'attendancecontrol_session',
+    ['id' => $sessionid, 'attendancecontrolid' => $instance->id],
+    '*',
+    MUST_EXIST
+);
 
 require_capability('mod/attendancecontrol:recordattendance', $context);
 
@@ -126,7 +131,11 @@ foreach ($students as $student) {
 }
 
 $templatecontext = [
-    'action_url' => (new moodle_url('/mod/attendancecontrol/attendance.php', ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
+    'action_url' => (new moodle_url(
+        '/mod/attendancecontrol/attendance.php',
+        ['id' => $cmid,
+        'sessionid' => $sessionid]
+    ))->out(false),
     'sesskey' => sesskey(),
     'id' => $cmid,
     'sessionid' => $sessionid,

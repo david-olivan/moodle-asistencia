@@ -35,8 +35,7 @@ class course_module_viewed extends \core\event\course_module_viewed
     /**
      * Initialises the event properties.
      */
-    protected function init(): void
-    {
+    protected function init(): void {
         $this->data['objecttable'] = 'attendancecontrol';
         parent::init();
     }

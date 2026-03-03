@@ -79,7 +79,9 @@ const addScheduleRow = async (day = 1, start = '', end = '') => {
         str_delete: 'Eliminar franja',
     };
     const {html} = await Templates.render('mod_attendancecontrol/schedule_row', context);
-    Templates.appendNodeContents(tbody, html, '');
+    new DOMParser().parseFromString(html, 'text/html')
+        .querySelectorAll('tr')
+        .forEach((row) => tbody.appendChild(row));
 };
 
 // ---------------------------------------------------------------------------
@@ -107,7 +109,9 @@ const addHolidayRow = async (date = '', description = '') => {
         str_delete: 'Eliminar festivo',
     };
     const {html} = await Templates.render('mod_attendancecontrol/holiday_row', context);
-    Templates.appendNodeContents(tbody, html, '');
+    new DOMParser().parseFromString(html, 'text/html')
+        .querySelectorAll('tr')
+        .forEach((row) => tbody.appendChild(row));
 };
 
 // ---------------------------------------------------------------------------

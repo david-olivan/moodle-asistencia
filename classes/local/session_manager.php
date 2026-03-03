@@ -110,14 +110,20 @@ class session_manager
         );
 
         $allids = [];
-        $sessionswithrec = [];
         foreach ($futurerecordset as $s) {
             $allids[] = $s->id;
-            if ($DB->record_exists('attendancecontrol_record', ['sessionid' => $s->id])) {
-                $sessionswithrec[] = $s->id;
-            }
         }
         $futurerecordset->close();
+
+        // Preload all session IDs that have records in one query.
+        $sessionswithrec = [];
+        if (!empty($allids)) {
+            [$insql, $inparams] = $DB->get_in_or_equal($allids);
+            $sessionswithrec = $DB->get_fieldset_sql(
+                "SELECT DISTINCT sessionid FROM {attendancecontrol_record} WHERE sessionid $insql",
+                $inparams
+            );
+        }
 
         // Delete future sessions without records.
         $deletable = array_diff($allids, $sessionswithrec);
@@ -189,13 +195,18 @@ class session_manager
 
         $now = time();
 
+        // Preload all existing records for this session, keyed by userid.
+        $existing_records = $DB->get_records(
+            'attendancecontrol_record',
+            ['sessionid' => $session->id],
+            '',
+            'userid, id, status, remarks, recorded_by, timecreated, timemodified'
+        );
+
         foreach ($data->student_status as $userid => $status) {
             $remarks = $data->student_remarks[$userid] ?? '';
 
-            $existing = $DB->get_record('attendancecontrol_record', [
-                'sessionid' => $session->id,
-                'userid' => $userid,
-            ]);
+            $existing = $existing_records[$userid] ?? false;
 
             if ($existing) {
                 $existing->status = (int) $status;

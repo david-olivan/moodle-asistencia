@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026022001;        // YYYYMMDDXX.
+$plugin->version = 2026030301;        // YYYYMMDDXX.
 $plugin->requires = 2024100700;        // Moodle 4.5 (2024100700).
 $plugin->component = 'mod_attendancecontrol';
 $plugin->release = '1.0.0';

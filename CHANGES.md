@@ -7,13 +7,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Fixed
-- Applied PHPCS / Moodle code-style rules across all PHP, JS, and Mustache files.
-- Behat scenarios: corrected activity generator, Mustache template context, and feature steps.
-- `session_list.mustache`: "Record today's attendance" button now always visible (disabled when no session exists for today).
-- CI badge added to README.
+## [1.0.0] — 2026-03-03
 
-## [1.0.0] — 2026-02-20
+### Added
+- AMD build files (`amd/build/`) added to the repository (previously generated inside Moodle root).
+- Moodle code-checker CI step and local pre-commit hook (`scripts/`).
+- CI status badge in README.
+
+### Fixed
+- Resolved all Moodle PHPCS / code-style violations across PHP, JS, and Mustache files.
+- Renamed camelCase PHP variables to snake_case; removed non-English inline comments.
+- Eliminated N+1 DB queries by preloading attendance records before student loops.
+- Switched `get_records` calls to recordsets for memory-efficient iteration over large datasets.
+- Fatal errors on course module duplication resolved (issue #19).
+- Replaced unsafe `innerHTML` DOM manipulation with `core/templates` for schedule and holiday rows (issue #18).
+- Wrapped row templates in `<table>/<tbody>` for Mustache linter compatibility; switched to DOMParser for safe insertion.
+- Resolved ESLint warnings in `mod_form.js` (`space-before-function-paren`, `camelcase`).
+- `session_list.mustache`: "Record today's attendance" button now always visible (disabled when no session exists for today).
+- Behat scenarios: corrected activity generator, Mustache template context, and feature step definitions.
+
+## [0.0.1] — 2026-02-20
 
 ### Added
 - Activity module `mod_attendancecontrol` for daily attendance tracking in vocational training courses.

@@ -26,7 +26,6 @@
  * Defines the structure step for restoring attendancecontrol data.
  */
 class restore_attendancecontrol_activity_structure_step extends restore_activity_structure_step {
-
     /**
      * Defines the XML paths and DB targets.
      *
@@ -36,10 +35,10 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
         $paths   = [];
         $userinfo = $this->get_setting_value('userinfo');
 
-        $paths[] = new restore_path_element('attendancecontrol',        '/activity/attendancecontrol');
+        $paths[] = new restore_path_element('attendancecontrol', '/activity/attendancecontrol');
         $paths[] = new restore_path_element('attendancecontrol_schedule', '/activity/attendancecontrol/schedule');
-        $paths[] = new restore_path_element('attendancecontrol_holiday',  '/activity/attendancecontrol/holiday');
-        $paths[] = new restore_path_element('attendancecontrol_session',  '/activity/attendancecontrol/session');
+        $paths[] = new restore_path_element('attendancecontrol_holiday', '/activity/attendancecontrol/holiday');
+        $paths[] = new restore_path_element('attendancecontrol_session', '/activity/attendancecontrol/session');
 
         if ($userinfo) {
             $paths[] = new restore_path_element(
@@ -104,7 +103,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
 
         $data = (object) $data;
         $data->attendancecontrolid = $this->get_new_parentid('attendancecontrol');
-        $data->timecreated         = isset($data->timecreated)  ? $data->timecreated  : time();
+        $data->timecreated         = isset($data->timecreated) ? $data->timecreated : time();
         $data->timemodified        = isset($data->timemodified) ? $data->timemodified : time();
 
         $newitemid = $DB->insert_record('attendancecontrol_session', $data);
@@ -123,7 +122,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
         $data->sessionid  = $this->get_new_parentid('attendancecontrol_session');
         $data->userid     = $this->get_mappingid('user', $data->userid);
         $data->recorded_by = $this->get_mappingid('user', $data->recorded_by);
-        $data->timecreated  = isset($data->timecreated)  ? $data->timecreated  : time();
+        $data->timecreated  = isset($data->timecreated) ? $data->timecreated : time();
         $data->timemodified = isset($data->timemodified) ? $data->timemodified : time();
 
         $DB->insert_record('attendancecontrol_record', $data);

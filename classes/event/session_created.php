@@ -30,7 +30,6 @@ namespace mod_attendancecontrol\event;
  * Logged whenever the session_manager generates a new session record.
  */
 class session_created extends \core\event\base {
-
     /**
      * Initialises the event properties.
      */

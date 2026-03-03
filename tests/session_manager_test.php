@@ -32,13 +32,13 @@ use mod_attendancecontrol\local\session_manager;
  *
  * @coversDefaultClass \mod_attendancecontrol\local\session_manager
  */
-class session_manager_test extends \advanced_testcase {
-
-    // -----------------------------------------------------------------------
-    // compute_duration_hours – pure function, no DB needed.
-    // -----------------------------------------------------------------------
-
+final class session_manager_test extends \advanced_testcase {
     /**
+     * Verifies duration calculation rounds up to the nearest whole hour.
+     *
+     * @param string $start    Start time in HH:MM format.
+     * @param string $end      End time in HH:MM format.
+     * @param int    $expected Expected duration in hours (ceiling).
      * @covers ::compute_duration_hours
      * @dataProvider duration_provider
      */
@@ -63,11 +63,9 @@ class session_manager_test extends \advanced_testcase {
         ];
     }
 
-    // -----------------------------------------------------------------------
-    // generate_sessions – requires DB.
-    // -----------------------------------------------------------------------
-
     /**
+     * Verifies that sessions on holidays are skipped during generation.
+     *
      * @covers ::generate_sessions
      */
     public function test_generate_sessions_excludes_holidays(): void {
@@ -86,8 +84,8 @@ class session_manager_test extends \advanced_testcase {
             'introformat'                  => FORMAT_HTML,
             'groupid'                      => 0,
             'total_hours'                  => 100,
-            'course_start_date'            => mktime(0, 0, 0, 9, 1, 2025),  // Mon 2025-09-01.
-            'course_end_date'              => mktime(0, 0, 0, 9, 7, 2025),  // Sun 2025-09-07.
+            'course_start_date'            => mktime(0, 0, 0, 9, 1, 2025), // Mon 2025-09-01.
+            'course_end_date'              => mktime(0, 0, 0, 9, 7, 2025), // Sun 2025-09-07.
             'max_unjustified_absence_pct'  => 15.00,
             'delay_to_unjustified_ratio'   => 0.50,
             'justified_to_unjustified_ratio' => 0.50,
@@ -122,6 +120,8 @@ class session_manager_test extends \advanced_testcase {
     }
 
     /**
+     * Verifies that the correct number of sessions is created for a date range.
+     *
      * @covers ::generate_sessions
      */
     public function test_generate_sessions_creates_correct_count(): void {
@@ -172,10 +172,6 @@ class session_manager_test extends \advanced_testcase {
         $count = $DB->count_records('attendancecontrol_session', ['attendancecontrolid' => $instance->id]);
         $this->assertSame(2, $count);
     }
-
-    // -----------------------------------------------------------------------
-    // save_attendance_records – requires DB.
-    // -----------------------------------------------------------------------
 
     /**
      * Builds and inserts a minimal instance record; returns it with ->id set.
@@ -361,7 +357,7 @@ class session_manager_test extends \advanced_testcase {
         $instance = $this->make_instance_record($course->id);
 
         // A session well in the future (2028-06-05, a Monday) with an attendance record.
-        $futureSessId = $DB->insert_record('attendancecontrol_session', (object) [
+        $future_sess_id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
             'session_date'        => mktime(0, 0, 0, 6, 5, 2028),
             'start_time'          => '09:00',
@@ -374,7 +370,7 @@ class session_manager_test extends \advanced_testcase {
 
         $now = time();
         $DB->insert_record('attendancecontrol_record', (object) [
-            'sessionid'    => $futureSessId,
+            'sessionid'    => $future_sess_id,
             'userid'       => $student->id,
             'status'       => 1,
             'remarks'      => '',
@@ -388,7 +384,7 @@ class session_manager_test extends \advanced_testcase {
         $manager->regenerate_future_sessions();
 
         $this->assertTrue(
-            $DB->record_exists('attendancecontrol_session', ['id' => $futureSessId]),
+            $DB->record_exists('attendancecontrol_session', ['id' => $future_sess_id]),
             'Future session that has attendance records must not be deleted during regeneration.'
         );
     }

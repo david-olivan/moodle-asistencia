@@ -45,11 +45,6 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
-
-    // -----------------------------------------------------------------------
-    // Metadata.
-    // -----------------------------------------------------------------------
-
     /**
      * Describes the personal data stored by this plugin.
      *
@@ -72,10 +67,6 @@ class provider implements
 
         return $collection;
     }
-
-    // -----------------------------------------------------------------------
-    // Context discovery.
-    // -----------------------------------------------------------------------
 
     /**
      * Returns the contexts that contain personal data for the given user.
@@ -127,10 +118,6 @@ class provider implements
 
         $userlist->add_from_sql('userid', $sql, ['cmid' => $context->instanceid]);
     }
-
-    // -----------------------------------------------------------------------
-    // Export.
-    // -----------------------------------------------------------------------
 
     /**
      * Exports all personal data for the given approved context list.
@@ -184,10 +171,6 @@ class provider implements
             );
         }
     }
-
-    // -----------------------------------------------------------------------
-    // Deletion.
-    // -----------------------------------------------------------------------
 
     /**
      * Deletes all personal data for a specific context (all users).

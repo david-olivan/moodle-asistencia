@@ -32,12 +32,7 @@ use mod_attendancecontrol\local\attendance_calculator;
  *
  * @coversDefaultClass \mod_attendancecontrol\local\attendance_calculator
  */
-class attendance_calculator_test extends \advanced_testcase {
-
-    // -----------------------------------------------------------------------
-    // Helpers.
-    // -----------------------------------------------------------------------
-
+final class attendance_calculator_test extends \advanced_testcase {
     /**
      * Builds a minimal instance stdClass for the calculator.
      *
@@ -50,7 +45,7 @@ class attendance_calculator_test extends \advanced_testcase {
     private function make_instance(
         int $total = 100,
         float $delayr = 0.50,
-        float $justr  = 0.50,
+        float $justr = 0.50,
         float $maxpct = 15.00
     ): \stdClass {
         return (object) [
@@ -62,21 +57,15 @@ class attendance_calculator_test extends \advanced_testcase {
         ];
     }
 
-    // -----------------------------------------------------------------------
-    // get_threshold.
-    // -----------------------------------------------------------------------
-
     /**
+     * Verifies get_threshold returns 100 minus the max unjustified pct.
+     *
      * @covers ::get_threshold
      */
     public function test_get_threshold(): void {
         $calc = new attendance_calculator($this->make_instance(100, 0.5, 0.5, 15.0));
         $this->assertEqualsWithDelta(85.0, $calc->get_threshold(), 0.001);
     }
-
-    // -----------------------------------------------------------------------
-    // compute_equivalent_absence_hours & compute_attendance_pct (via DB).
-    // -----------------------------------------------------------------------
 
     /**
      * Verifies the PRD example calculation:
@@ -155,12 +144,14 @@ class attendance_calculator_test extends \advanced_testcase {
         ]);
 
         // Create attendance records.
-        foreach ([
-            [$s1id, 2], // late.
-            [$s2id, 2], // late.
-            [$s3id, 3], // justified.
-            [$s4id, 4], // unjustified.
-        ] as [$sid, $status]) {
+        foreach (
+            [
+                [$s1id, 2], // Late.
+                [$s2id, 2], // Late.
+                [$s3id, 3], // Justified.
+                [$s4id, 4], // Unjustified.
+            ] as [$sid, $status]
+        ) {
             $DB->insert_record('attendancecontrol_record', (object) [
                 'sessionid'    => $sid,
                 'userid'       => $student->id,
@@ -181,10 +172,6 @@ class attendance_calculator_test extends \advanced_testcase {
             '95% should be above the 85% threshold'
         );
     }
-
-    // -----------------------------------------------------------------------
-    // AC 11.3.3 — Student below threshold is flagged correctly.
-    // -----------------------------------------------------------------------
 
     /**
      * A student whose equivalent absence hours exceed the allowed maximum
@@ -234,7 +221,7 @@ class attendance_calculator_test extends \advanced_testcase {
         $DB->insert_record('attendancecontrol_record', (object) [
             'sessionid'    => $sessid,
             'userid'       => $student->id,
-            'status'       => 4,   // unjustified.
+            'status'       => 4, // Unjustified absence.
             'remarks'      => '',
             'recorded_by'  => 2,
             'timecreated'  => $now,
@@ -248,10 +235,6 @@ class attendance_calculator_test extends \advanced_testcase {
         $this->assertEqualsWithDelta(80.0, $pct, 0.001, 'Attendance should be 80%.');
         $this->assertLessThan($threshold, $pct, 'Student at 80% should be below the 85% threshold.');
     }
-
-    // -----------------------------------------------------------------------
-    // AC 11.3.4 / 11.4.2 — get_student_detail returns per-session rows.
-    // -----------------------------------------------------------------------
 
     /**
      * get_student_detail returns one row per session ordered by date.
@@ -298,7 +281,7 @@ class attendance_calculator_test extends \advanced_testcase {
         $DB->insert_record('attendancecontrol_record', (object) [
             'sessionid'    => $s1id,
             'userid'       => $student->id,
-            'status'       => 1,   // present.
+            'status'       => 1, // Present.
             'remarks'      => 'On time',
             'recorded_by'  => 2,
             'timecreated'  => $now,

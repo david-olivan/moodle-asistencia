@@ -28,7 +28,7 @@
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-$cmid      = required_param('id',        PARAM_INT); // Course-module ID.
+$cmid      = required_param('id', PARAM_INT); // Course-module ID.
 $sessionid = required_param('sessionid', PARAM_INT); // Session ID.
 
 [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'attendancecontrol');
@@ -37,8 +37,7 @@ require_login($course, true, $cm);
 
 $context  = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
-$session  = $DB->get_record('attendancecontrol_session',
-    ['id' => $sessionid, 'attendancecontrolid' => $instance->id], '*', MUST_EXIST);
+$session  = $DB->get_record('attendancecontrol_session', ['id' => $sessionid, 'attendancecontrolid' => $instance->id], '*', MUST_EXIST);
 
 require_capability('mod/attendancecontrol:recordattendance', $context);
 
@@ -47,7 +46,7 @@ $PAGE->set_title(get_string('recordattendance', 'mod_attendancecontrol'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// ── POST handler ──────────────────────────────────────────────────────────────
+// POST handler.
 if (data_submitted() && confirm_sesskey()) {
     $statuses = optional_param_array('student_status', [], PARAM_INT);
     $remarks  = optional_param_array('student_remarks', [], PARAM_TEXT);
@@ -76,7 +75,7 @@ if (data_submitted() && confirm_sesskey()) {
     );
 }
 
-// ── GET: build template context ───────────────────────────────────────────────
+// GET: build template context.
 
 // Fetch students with all name fields required by fullname().
 $students = groups_get_members(
@@ -90,14 +89,13 @@ uasort($students, static function ($a, $b) {
 });
 
 // Load existing records for this session, indexed by userid.
-$existingrecords = $DB->get_records('attendancecontrol_record',
-    ['sessionid' => $session->id], '', 'userid, status, remarks');
+$existingrecords = $DB->get_records('attendancecontrol_record', ['sessionid' => $session->id], '', 'userid, status, remarks');
 
 // Status definitions: value, lang string key, Bootstrap btn outline class.
 $statusdefs = [
-    1 => ['key' => 'statuspresent',     'btn' => 'btn-outline-success'],
-    2 => ['key' => 'statuslate',        'btn' => 'btn-outline-warning'],
-    3 => ['key' => 'statusjustified',   'btn' => 'btn-outline-info'],
+    1 => ['key' => 'statuspresent', 'btn' => 'btn-outline-success'],
+    2 => ['key' => 'statuslate', 'btn' => 'btn-outline-warning'],
+    3 => ['key' => 'statusjustified', 'btn' => 'btn-outline-info'],
     4 => ['key' => 'statusunjustified', 'btn' => 'btn-outline-danger'],
 ];
 
@@ -128,8 +126,7 @@ foreach ($students as $student) {
 }
 
 $templatecontext = [
-    'action_url'  => (new moodle_url('/mod/attendancecontrol/attendance.php',
-        ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
+    'action_url'  => (new moodle_url('/mod/attendancecontrol/attendance.php', ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
     'sesskey'     => sesskey(),
     'id'          => $cmid,
     'sessionid'   => $sessionid,
@@ -144,7 +141,9 @@ $PAGE->requires->js_call_amd('mod_attendancecontrol/attendance_form', 'init');
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(
-    get_string('sessionheading', 'mod_attendancecontrol',
+    get_string(
+        'sessionheading',
+        'mod_attendancecontrol',
         userdate($session->session_date) . ' — ' . $session->start_time . ' a ' . $session->end_time
     )
 );

@@ -43,4 +43,4 @@ require_capability('mod/attendancecontrol:export', $context);
 
 $manager = new \mod_attendancecontrol\local\export_manager($instance);
 $manager->send_excel();
-// send_excel() calls exit() after streaming the file.
+// The send_excel() method calls exit() after streaming the file.

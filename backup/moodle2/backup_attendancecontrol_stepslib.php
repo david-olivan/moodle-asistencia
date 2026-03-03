@@ -26,7 +26,6 @@
  * Defines the structure step for backing up attendancecontrol data.
  */
 class backup_attendancecontrol_activity_structure_step extends backup_activity_structure_step {
-
     /**
      * Defines the backup structure tree.
      *
@@ -89,8 +88,8 @@ class backup_attendancecontrol_activity_structure_step extends backup_activity_s
         // Set data sources.
         $attendancecontrol->set_source_table('attendancecontrol', ['id' => backup::VAR_ACTIVITYID]);
         $schedule->set_source_table('attendancecontrol_schedule', ['attendancecontrolid' => backup::VAR_PARENTID]);
-        $holidays->set_source_table('attendancecontrol_holiday',  ['attendancecontrolid' => backup::VAR_PARENTID]);
-        $sessions->set_source_table('attendancecontrol_session',  ['attendancecontrolid' => backup::VAR_PARENTID]);
+        $holidays->set_source_table('attendancecontrol_holiday', ['attendancecontrolid' => backup::VAR_PARENTID]);
+        $sessions->set_source_table('attendancecontrol_session', ['attendancecontrolid' => backup::VAR_PARENTID]);
 
         if ($userinfo) {
             $records->set_source_table('attendancecontrol_record', ['sessionid' => backup::VAR_PARENTID]);

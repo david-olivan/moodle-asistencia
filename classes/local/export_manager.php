@@ -30,7 +30,6 @@ namespace mod_attendancecontrol\local;
  * Requires Moodle's built-in MoodleExcelWorkbook (lib/excellib.class.php).
  */
 class export_manager {
-
     /** @var \stdClass Plugin instance record. */
     protected \stdClass $instance;
 
@@ -70,10 +69,6 @@ class export_manager {
         exit;
     }
 
-    // -----------------------------------------------------------------------
-    // Sheet builders.
-    // -----------------------------------------------------------------------
-
     /**
      * Sheet 1 – One row per student with aggregated counts.
      *
@@ -84,13 +79,13 @@ class export_manager {
         $sheet = $wb->add_worksheet(get_string('excel_sheet_summary', 'mod_attendancecontrol'));
 
         $headers = [
-            get_string('excel_col_student',    'mod_attendancecontrol'),
-            get_string('presences',            'mod_attendancecontrol'),
-            get_string('lates',                'mod_attendancecontrol'),
-            get_string('justifiedabsences',    'mod_attendancecontrol'),
-            get_string('unjustifiedabsences',  'mod_attendancecontrol'),
+            get_string('excel_col_student', 'mod_attendancecontrol'),
+            get_string('presences', 'mod_attendancecontrol'),
+            get_string('lates', 'mod_attendancecontrol'),
+            get_string('justifiedabsences', 'mod_attendancecontrol'),
+            get_string('unjustifiedabsences', 'mod_attendancecontrol'),
             get_string('excel_col_equivhours', 'mod_attendancecontrol'),
-            get_string('excel_col_pct',        'mod_attendancecontrol'),
+            get_string('excel_col_pct', 'mod_attendancecontrol'),
         ];
 
         foreach ($headers as $col => $h) {
@@ -121,12 +116,12 @@ class export_manager {
         $sheet = $wb->add_worksheet(get_string('excel_sheet_detail', 'mod_attendancecontrol'));
 
         $headers = [
-            get_string('excel_col_student',  'mod_attendancecontrol'),
-            get_string('excel_col_date',     'mod_attendancecontrol'),
+            get_string('excel_col_student', 'mod_attendancecontrol'),
+            get_string('excel_col_date', 'mod_attendancecontrol'),
             get_string('excel_col_schedule', 'mod_attendancecontrol'),
             get_string('excel_col_duration', 'mod_attendancecontrol'),
-            get_string('excel_col_status',   'mod_attendancecontrol'),
-            get_string('excel_col_remarks',  'mod_attendancecontrol'),
+            get_string('excel_col_status', 'mod_attendancecontrol'),
+            get_string('excel_col_remarks', 'mod_attendancecontrol'),
         ];
 
         foreach ($headers as $col => $h) {
@@ -160,29 +155,25 @@ class export_manager {
         global $DB;
 
         $sheet = $wb->add_worksheet(get_string('excel_sheet_config', 'mod_attendancecontrol'));
-        $sheet->write_string(0, 0, get_string('excel_param_subject',        'mod_attendancecontrol'));
+        $sheet->write_string(0, 0, get_string('excel_param_subject', 'mod_attendancecontrol'));
         $sheet->write_string(0, 1, format_string($this->instance->name));
 
         $group = $DB->get_record('groups', ['id' => $this->instance->groupid], 'name');
-        $sheet->write_string(1, 0, get_string('excel_param_group',          'mod_attendancecontrol'));
+        $sheet->write_string(1, 0, get_string('excel_param_group', 'mod_attendancecontrol'));
         $sheet->write_string(1, 1, $group ? format_string($group->name) : '');
 
-        $sheet->write_string(2, 0, get_string('excel_param_totalhours',     'mod_attendancecontrol'));
+        $sheet->write_string(2, 0, get_string('excel_param_totalhours', 'mod_attendancecontrol'));
         $sheet->write_number(2, 1, $this->instance->total_hours);
 
-        $sheet->write_string(3, 0, get_string('excel_param_delayratio',     'mod_attendancecontrol'));
+        $sheet->write_string(3, 0, get_string('excel_param_delayratio', 'mod_attendancecontrol'));
         $sheet->write_number(3, 1, $this->instance->delay_to_unjustified_ratio);
 
         $sheet->write_string(4, 0, get_string('excel_param_justifiedratio', 'mod_attendancecontrol'));
         $sheet->write_number(4, 1, $this->instance->justified_to_unjustified_ratio);
 
-        $sheet->write_string(5, 0, get_string('excel_param_maxpct',         'mod_attendancecontrol'));
+        $sheet->write_string(5, 0, get_string('excel_param_maxpct', 'mod_attendancecontrol'));
         $sheet->write_number(5, 1, $this->instance->max_unjustified_absence_pct);
     }
-
-    // -----------------------------------------------------------------------
-    // Helpers.
-    // -----------------------------------------------------------------------
 
     /**
      * Returns a localized label for an attendance status code.
@@ -192,9 +183,9 @@ class export_manager {
      */
     protected function status_label(int $status): string {
         return match ($status) {
-            1 => get_string('statuspresent',     'mod_attendancecontrol'),
-            2 => get_string('statuslate',        'mod_attendancecontrol'),
-            3 => get_string('statusjustified',   'mod_attendancecontrol'),
+            1 => get_string('statuspresent', 'mod_attendancecontrol'),
+            2 => get_string('statuslate', 'mod_attendancecontrol'),
+            3 => get_string('statusjustified', 'mod_attendancecontrol'),
             4 => get_string('statusunjustified', 'mod_attendancecontrol'),
             default => get_string('statuspending', 'mod_attendancecontrol'),
         };

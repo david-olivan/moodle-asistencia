@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="mod_attendancecontrol">
+    <description>Moodle coding standard configuration for mod_attendancecontrol.</description>
+
+    <!-- Use the Moodle coding standard. -->
+    <rule ref="moodle"/>
+
+    <!-- Files and directories to scan. -->
+    <file>.</file>
+
+    <!-- Ignore third-party and generated directories. -->
+    <exclude-pattern>vendor/</exclude-pattern>
+    <exclude-pattern>ci/</exclude-pattern>
+    <exclude-pattern>node_modules/</exclude-pattern>
+
+    <!-- Show progress and full error messages. -->
+    <arg value="ps"/>
+    <arg name="colors"/>
+</ruleset>

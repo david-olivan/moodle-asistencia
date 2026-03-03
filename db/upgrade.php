@@ -30,8 +30,7 @@
  */
 function xmldb_attendancecontrol_upgrade(int $oldversion): bool {
     // No upgrade steps required for v1.0.0.
-    // Add future migration blocks here as:
-    //   if ($oldversion < YYYYMMDDXX) { … upgrade_mod_savepoint(…); }
+    // Add future migration blocks as needed (if $oldversion < YYYYMMDDXX blocks).
 
     return true;
 }

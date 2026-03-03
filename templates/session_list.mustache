@@ -1,23 +1,35 @@
 {{!
-  Template: session_list.mustache
+    @template mod_attendancecontrol/session_list
 
-  Context:
-    cmid         - int   Course-module ID
-    url_today    - string URL to record today's attendance
-    url_report   - string URL to the full report
-    url_prevweek - string URL for previous week navigation
-    url_nextweek - string URL for next week navigation
-    week_label   - string Formatted week range label
-    sessions     - array  Session objects (see renderer.php)
-    hassessions  - bool   Whether there are sessions this week
-    str_register - string Localised button label
-    str_report   - string Localised button label
-    str_prev     - string Localised nav label
-    str_next     - string Localised nav label
+    Weekly session list for the teacher main view.
 
-  @package mod_attendancecontrol
-  @copyright 2026 David Oliván Malagón
-  @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+    Example context (json):
+    {
+        "cmid": 1,
+        "url_today": "/mod/attendancecontrol/attendance.php?id=1&sessionid=1",
+        "url_report": "/mod/attendancecontrol/report.php?id=1",
+        "url_prevweek": "/mod/attendancecontrol/view.php?id=1&week=-1",
+        "url_nextweek": "/mod/attendancecontrol/view.php?id=1&week=1",
+        "week_label": "Mon 1 Sep 2025 - Sun 7 Sep 2025",
+        "hassessions": true,
+        "str_register": "Record today's attendance",
+        "str_report": "View full data",
+        "str_prev": "Previous week",
+        "str_next": "Next week",
+        "sessions": [
+            {
+                "date_label": "Mon 1 Sep 2025",
+                "schedule": "09:00-11:00",
+                "is_today": true,
+                "is_recorded": false,
+                "status_label": "Pending",
+                "url_record": "/mod/attendancecontrol/attendance.php?id=1&sessionid=1"
+            }
+        ]
+    }
+
+    @copyright  2026 David Oliván Malagón
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 <div class="mod-attendancecontrol-view" data-region="attendancecontrol-view">
 

@@ -39,7 +39,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
 
         $mform = $this->_form;
 
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+        $mform->add_element('header', 'general', get_string('general', 'form'));
 
         $this->standard_intro_elements();
 
@@ -49,27 +49,27 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
             $groupoptions[$g->id] = format_string($g->name);
         }
 
-        $mform->addElement('select', 'groupid', get_string('group', 'mod_attendancecontrol'), $groupoptions);
-        $mform->addRule('groupid', null, 'required', null, 'client');
-        $mform->addHelpButton('groupid', 'group', 'mod_attendancecontrol');
+        $mform->add_element('select', 'groupid', get_string('group', 'mod_attendancecontrol'), $groupoptions);
+        $mform->add_rule('groupid', null, 'required', null, 'client');
+        $mform->add_help_button('groupid', 'group', 'mod_attendancecontrol');
 
-        $mform->addElement('header', 'daterangehdr', get_string('daterange', 'mod_attendancecontrol'));
+        $mform->add_element('header', 'daterangehdr', get_string('daterange', 'mod_attendancecontrol'));
 
-        $mform->addElement('date_selector', 'course_start_date', get_string('coursestartdate', 'mod_attendancecontrol'));
-        $mform->addRule('course_start_date', null, 'required', null, 'client');
+        $mform->add_element('date_selector', 'course_start_date', get_string('coursestartdate', 'mod_attendancecontrol'));
+        $mform->add_rule('course_start_date', null, 'required', null, 'client');
 
-        $mform->addElement('date_selector', 'course_end_date', get_string('courseenddate', 'mod_attendancecontrol'));
-        $mform->addRule('course_end_date', null, 'required', null, 'client');
+        $mform->add_element('date_selector', 'course_end_date', get_string('courseenddate', 'mod_attendancecontrol'));
+        $mform->add_rule('course_end_date', null, 'required', null, 'client');
 
-        $mform->addElement('text', 'total_hours', get_string('totalhours', 'mod_attendancecontrol'), ['size' => 5]);
-        $mform->setType('total_hours', PARAM_INT);
-        $mform->addRule('total_hours', null, 'required', null, 'client');
-        $mform->addRule('total_hours', null, 'numeric', null, 'client');
-        $mform->addRule('total_hours', null, 'nonzero', null, 'client');
+        $mform->add_element('text', 'total_hours', get_string('totalhours', 'mod_attendancecontrol'), ['size' => 5]);
+        $mform->set_type('total_hours', PARAM_INT);
+        $mform->add_rule('total_hours', null, 'required', null, 'client');
+        $mform->add_rule('total_hours', null, 'numeric', null, 'client');
+        $mform->add_rule('total_hours', null, 'nonzero', null, 'client');
 
-        $mform->addElement('header', 'schedulehdr', get_string('schedule', 'mod_attendancecontrol'));
+        $mform->add_element('header', 'schedulehdr', get_string('schedule', 'mod_attendancecontrol'));
 
-        $mform->addElement(
+        $mform->add_element(
             'html',
             '<div class="fitem"><div class="w-100">' .
             '<table class="table table-sm table-bordered mb-2" id="ac-schedule-table">' .
@@ -88,9 +88,9 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
         );
 
         // Holidays: dynamic JS table (no repeat_elements).
-        $mform->addElement('header', 'holidayshdr', get_string('holidays', 'mod_attendancecontrol'));
+        $mform->add_element('header', 'holidayshdr', get_string('holidays', 'mod_attendancecontrol'));
 
-        $mform->addElement(
+        $mform->add_element(
             'html',
             '<div class="fitem"><div class="w-100">' .
             '<table class="table table-sm table-bordered mb-2" id="ac-holiday-table">' .
@@ -108,48 +108,48 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
         );
 
         // Penalty configuration: integer selectors.
-        $mform->addElement('header', 'penaltyhdr', get_string('penaltyconfig', 'mod_attendancecontrol'));
+        $mform->add_element('header', 'penaltyhdr', get_string('penaltyconfig', 'mod_attendancecontrol'));
 
         // Max percentage of unjustified absences allowed (selector 1%...50%).
         $pctoptions = [];
         for ($i = 1; $i <= 50; $i++) {
             $pctoptions[$i] = "{$i}%";
         }
-        $mform->addElement(
+        $mform->add_element(
             'select',
             'max_unjustified_absence_pct',
             get_string('maxunjustifiedpct', 'mod_attendancecontrol'),
             $pctoptions
         );
-        $mform->setType('max_unjustified_absence_pct', PARAM_INT);
-        $mform->setDefault('max_unjustified_absence_pct', 15);
-        $mform->addHelpButton('max_unjustified_absence_pct', 'maxunjustifiedpct', 'mod_attendancecontrol');
+        $mform->set_type('max_unjustified_absence_pct', PARAM_INT);
+        $mform->set_default('max_unjustified_absence_pct', 15);
+        $mform->add_help_button('max_unjustified_absence_pct', 'maxunjustifiedpct', 'mod_attendancecontrol');
 
         // How many lates equal 1 unjustified absence (selector 1...10).
         $noptions = [];
         for ($i = 1; $i <= 10; $i++) {
             $noptions[$i] = $i;
         }
-        $mform->addElement(
+        $mform->add_element(
             'select',
             'delay_to_unjustified_ratio',
             get_string('delayratio', 'mod_attendancecontrol'),
             $noptions
         );
-        $mform->setType('delay_to_unjustified_ratio', PARAM_INT);
-        $mform->setDefault('delay_to_unjustified_ratio', 2);
-        $mform->addHelpButton('delay_to_unjustified_ratio', 'delayratio', 'mod_attendancecontrol');
+        $mform->set_type('delay_to_unjustified_ratio', PARAM_INT);
+        $mform->set_default('delay_to_unjustified_ratio', 2);
+        $mform->add_help_button('delay_to_unjustified_ratio', 'delayratio', 'mod_attendancecontrol');
 
         // How many justified absences equal 1 unjustified absence (selector 1...10).
-        $mform->addElement(
+        $mform->add_element(
             'select',
             'justified_to_unjustified_ratio',
             get_string('justifiedratio', 'mod_attendancecontrol'),
             $noptions
         );
-        $mform->setType('justified_to_unjustified_ratio', PARAM_INT);
-        $mform->setDefault('justified_to_unjustified_ratio', 2);
-        $mform->addHelpButton('justified_to_unjustified_ratio', 'justifiedratio', 'mod_attendancecontrol');
+        $mform->set_type('justified_to_unjustified_ratio', PARAM_INT);
+        $mform->set_default('justified_to_unjustified_ratio', 2);
+        $mform->add_help_button('justified_to_unjustified_ratio', 'justifiedratio', 'mod_attendancecontrol');
 
         // Standard grade/completion elements.
         $this->standard_coursemodule_elements();

@@ -44,13 +44,13 @@ let dayNames = {};
  * @returns {string} Concatenated <option> HTML.
  */
 const buildDayOptions = (selectedDay) =>
-	Object.entries(dayNames)
-		.map(([val, label]) => {
-			const sel =
-				String(val) === String(selectedDay) ? " selected" : "";
-			return `<option value="${val}"${sel}>${label}</option>`;
-		})
-		.join("");
+    Object.entries(dayNames)
+        .map(([val, label]) => {
+            const sel =
+                String(val) === String(selectedDay) ? " selected" : "";
+            return `<option value="${val}"${sel}>${label}</option>`;
+        })
+        .join("");
 
 /**
  * Escape a string for safe insertion into an HTML attribute value.
@@ -59,11 +59,11 @@ const buildDayOptions = (selectedDay) =>
  * @returns {string}
  */
 const escAttr = (str) =>
-	String(str)
-		.replace(/&/g, "&amp;")
-		.replace(/"/g, "&quot;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;");
+    String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 
 // ---------------------------------------------------------------------------
 // Schedule table.
@@ -77,15 +77,15 @@ const escAttr = (str) =>
  * @param {string}        end   End time in HH:MM format (default '').
  */
 const addScheduleRow = (day = 1, start = "", end = "") => {
-	const tbody = document.getElementById("ac-schedule-tbody");
-	if (!tbody) {
-		return;
-	}
+    const tbody = document.getElementById("ac-schedule-tbody");
+    if (!tbody) {
+        return;
+    }
 
-	const idx = scheduleCounter++;
-	const tr = document.createElement("tr");
+    const idx = scheduleCounter++;
+    const tr = document.createElement("tr");
 
-	tr.innerHTML = `
+    tr.innerHTML = `
         <td>
             <select name="schedule_day[${idx}]" class="form-select form-select-sm">
                 ${buildDayOptions(day)}
@@ -109,10 +109,10 @@ const addScheduleRow = (day = 1, start = "", end = "") => {
                     title="Eliminar franja">✕</button>
         </td>`;
 
-	tr.querySelector(".ac-del-schedule").addEventListener("click", () =>
-		tr.remove(),
-	);
-	tbody.appendChild(tr);
+    tr.querySelector(".ac-del-schedule").addEventListener("click", () =>
+        tr.remove(),
+    );
+    tbody.appendChild(tr);
 };
 
 // ---------------------------------------------------------------------------
@@ -126,15 +126,15 @@ const addScheduleRow = (day = 1, start = "", end = "") => {
  * @param {string} description Optional label for the holiday (default '').
  */
 const addHolidayRow = (date = "", description = "") => {
-	const tbody = document.getElementById("ac-holiday-tbody");
-	if (!tbody) {
-		return;
-	}
+    const tbody = document.getElementById("ac-holiday-tbody");
+    if (!tbody) {
+        return;
+    }
 
-	const idx = holidayCounter++;
-	const tr = document.createElement("tr");
+    const idx = holidayCounter++;
+    const tr = document.createElement("tr");
 
-	tr.innerHTML = `
+    tr.innerHTML = `
         <td>
             <input type="date"
                    name="holiday_date[${idx}]"
@@ -154,10 +154,10 @@ const addHolidayRow = (date = "", description = "") => {
                     title="Eliminar festivo">✕</button>
         </td>`;
 
-	tr.querySelector(".ac-del-holiday").addEventListener("click", () =>
-		tr.remove(),
-	);
-	tbody.appendChild(tr);
+    tr.querySelector(".ac-del-holiday").addEventListener("click", () =>
+        tr.remove(),
+    );
+    tbody.appendChild(tr);
 };
 
 // ---------------------------------------------------------------------------
@@ -177,29 +177,29 @@ const addHolidayRow = (date = "", description = "") => {
  *   Localised weekday map, e.g. { "1": "Lunes", "2": "Martes", … }.
  */
 export const init = (existingSchedule, existingHolidays, days) => {
-	dayNames = days || {};
+    dayNames = days || {};
 
-	// Populate existing schedule rows (edit mode or validation re-display).
-	if (Array.isArray(existingSchedule)) {
-		existingSchedule.forEach((s) =>
-			addScheduleRow(s.day, s.start, s.end),
-		);
-	}
+    // Populate existing schedule rows (edit mode or validation re-display).
+    if (Array.isArray(existingSchedule)) {
+        existingSchedule.forEach((s) =>
+            addScheduleRow(s.day, s.start, s.end),
+        );
+    }
 
-	// Populate existing holiday rows.
-	if (Array.isArray(existingHolidays)) {
-		existingHolidays.forEach((h) => addHolidayRow(h.date, h.description));
-	}
+    // Populate existing holiday rows.
+    if (Array.isArray(existingHolidays)) {
+        existingHolidays.forEach((h) => addHolidayRow(h.date, h.description));
+    }
 
-	// Wire up the "Add slot" button.
-	const btnSchedule = document.getElementById("btn-add-schedule");
-	if (btnSchedule) {
-		btnSchedule.addEventListener("click", () => addScheduleRow());
-	}
+    // Wire up the "Add slot" button.
+    const btnSchedule = document.getElementById("btn-add-schedule");
+    if (btnSchedule) {
+        btnSchedule.addEventListener("click", () => addScheduleRow());
+    }
 
-	// Wire up the "Add holiday" button.
-	const btnHoliday = document.getElementById("btn-add-holiday");
-	if (btnHoliday) {
-		btnHoliday.addEventListener("click", () => addHolidayRow());
-	}
+    // Wire up the "Add holiday" button.
+    const btnHoliday = document.getElementById("btn-add-holiday");
+    if (btnHoliday) {
+        btnHoliday.addEventListener("click", () => addHolidayRow());
+    }
 };

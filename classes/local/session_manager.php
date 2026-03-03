@@ -235,7 +235,7 @@ class session_manager
             'holiday_date'
         );
 
-        return array_column($rows, 'holiday_date');
+        return array_map('intval', array_column($rows, 'holiday_date'));
     }
 
     /**

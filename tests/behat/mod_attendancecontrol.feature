@@ -17,8 +17,8 @@ Feature: Control de Asistencia – flujos principales
       | teacher1 | FP001  | editingteacher |
       | student1 | FP001  | student        |
     And the following "groups" exist:
-      | name       | course |
-      | DAM1-Alumnos | FP001 |
+      | name         | course | idnumber     |
+      | DAM1-Alumnos | FP001  | DAM1-Alumnos |
     And the following "group members" exist:
       | user     | group        |
       | student1 | DAM1-Alumnos |

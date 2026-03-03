@@ -33,19 +33,21 @@
  * @param {string} formSelector CSS selector for the attendance form.
  */
 export const init = (formSelector = 'form[data-region="attendance-form"]') => {
-    const form = document.querySelector(formSelector);
-    if (!form) {
-        return;
-    }
+	const form = document.querySelector(formSelector);
+	if (!form) {
+		return;
+	}
 
-    // Each column header has a button with data-action="mark-all" and
-    // data-status="N" (1=present, 2=late, 3=justified, 4=unjustified).
-    form.querySelectorAll('button[data-action="mark-all"]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const status = btn.dataset.status;
-            form.querySelectorAll('input[type="radio"][name^="student_status"]').forEach((radio) => {
-                radio.checked = (radio.value === status);
-            });
-        });
-    });
+	// Each column header has a button with data-action="mark-all" and
+	// data-status="N" (1=present, 2=late, 3=justified, 4=unjustified).
+	form.querySelectorAll('button[data-action="mark-all"]').forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const status = btn.dataset.status;
+			form.querySelectorAll(
+				'input[type="radio"][name^="student_status"]',
+			).forEach((radio) => {
+				radio.checked = radio.value === status;
+			});
+		});
+	});
 };

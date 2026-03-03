@@ -29,14 +29,16 @@ namespace mod_attendancecontrol\event;
  *
  * Triggered after a teacher successfully saves attendance for a session.
  */
-class attendance_recorded extends \core\event\base {
+class attendance_recorded extends \core\event\base
+{
     /**
      * Initialises the event properties.
      */
-    protected function init(): void {
-        $this->data['crud']           = 'u'; // Update (also covers create on first save).
-        $this->data['edulevel']       = self::LEVEL_TEACHING;
-        $this->data['objecttable']    = 'attendancecontrol_session';
+    protected function init(): void
+    {
+        $this->data['crud'] = 'u'; // Update (also covers create on first save).
+        $this->data['edulevel'] = self::LEVEL_TEACHING;
+        $this->data['objecttable'] = 'attendancecontrol_session';
     }
 
     /**
@@ -44,7 +46,8 @@ class attendance_recorded extends \core\event\base {
      *
      * @return string
      */
-    public static function get_name(): string {
+    public static function get_name(): string
+    {
         return get_string('eventattendancerecorded', 'mod_attendancecontrol');
     }
 
@@ -53,10 +56,11 @@ class attendance_recorded extends \core\event\base {
      *
      * @return string
      */
-    public function get_description(): string {
+    public function get_description(): string
+    {
         return "The user with id '{$this->userid}' recorded attendance for session id " .
-               "'{$this->objectid}' in the attendancecontrol instance " .
-               "with id '{$this->other['sessionid']}'.";
+            "'{$this->objectid}' in the attendancecontrol instance " .
+            "with id '{$this->other['sessionid']}'.";
     }
 
     /**
@@ -64,9 +68,10 @@ class attendance_recorded extends \core\event\base {
      *
      * @return \moodle_url
      */
-    public function get_url(): \moodle_url {
+    public function get_url(): \moodle_url
+    {
         return new \moodle_url('/mod/attendancecontrol/attendance.php', [
-            'id'        => $this->contextinstanceid,
+            'id' => $this->contextinstanceid,
             'sessionid' => $this->objectid,
         ]);
     }

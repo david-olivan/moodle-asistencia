@@ -34,7 +34,7 @@ $id = required_param('id', PARAM_INT); // Course-module ID.
 
 require_login($course, true, $cm);
 
-$context  = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
 
 $PAGE->set_url('/mod/attendancecontrol/view.php', ['id' => $cm->id]);
@@ -45,7 +45,7 @@ $PAGE->set_context($context);
 // Trigger course-module viewed event.
 $event = \mod_attendancecontrol\event\course_module_viewed::create([
     'objectid' => $instance->id,
-    'context'  => $context,
+    'context' => $context,
 ]);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('attendancecontrol', $instance);

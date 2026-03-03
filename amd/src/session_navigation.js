@@ -30,28 +30,28 @@
  *
  * @param {string} region CSS data-region attribute value of the view container.
  */
-export const init = (region = 'attendancecontrol-view') => {
-    const container = document.querySelector(`[data-region="${region}"]`);
-    if (!container) {
-        return;
-    }
+export const init = (region = "attendancecontrol-view") => {
+	const container = document.querySelector(`[data-region="${region}"]`);
+	if (!container) {
+		return;
+	}
 
-    // Ensure today's rows receive the highlight class if not already set
-    // server-side (belt-and-suspenders approach).
-    const todayRows = container.querySelectorAll('tr.table-info');
-    todayRows.forEach((row) => {
-        row.setAttribute('aria-current', 'date');
-    });
+	// Ensure today's rows receive the highlight class if not already set
+	// server-side (belt-and-suspenders approach).
+	const todayRows = container.querySelectorAll("tr.table-info");
+	todayRows.forEach((row) => {
+		row.setAttribute("aria-current", "date");
+	});
 
-    // Add keyboard navigation between weeks (left/right arrow keys).
-    const prevBtn = container.querySelector('a[href*="week="]');
-    const nextBtn = container.querySelectorAll('a[href*="week="]')[1];
+	// Add keyboard navigation between weeks (left/right arrow keys).
+	const prevBtn = container.querySelector('a[href*="week="]');
+	const nextBtn = container.querySelectorAll('a[href*="week="]')[1];
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft' && prevBtn) {
-            prevBtn.click();
-        } else if (e.key === 'ArrowRight' && nextBtn) {
-            nextBtn.click();
-        }
-    });
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "ArrowLeft" && prevBtn) {
+			prevBtn.click();
+		} else if (e.key === "ArrowRight" && nextBtn) {
+			nextBtn.click();
+		}
+	});
 };

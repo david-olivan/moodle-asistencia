@@ -35,7 +35,7 @@ $userid = required_param('userid', PARAM_INT); // Target student user ID.
 
 require_login($course, true, $cm);
 
-$context  = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
 
 // Students may only view their own data.
@@ -54,7 +54,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
 $calculator = new \mod_attendancecontrol\local\attendance_calculator($instance);
-$detail     = $calculator->get_student_detail($userid);
+$detail = $calculator->get_student_detail($userid);
 
 $renderer = $PAGE->get_renderer('mod_attendancecontrol');
 

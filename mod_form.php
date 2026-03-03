@@ -29,11 +29,13 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
 /**
  * Form for adding/editing an attendancecontrol activity instance.
  */
-class mod_attendancecontrol_mod_form extends moodleform_mod {
+class mod_attendancecontrol_mod_form extends moodleform_mod
+{
     /**
      * Defines the form fields.
      */
-    public function definition(): void {
+    public function definition(): void
+    {
         global $COURSE;
 
         $mform = $this->_form;
@@ -68,13 +70,14 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'schedulehdr', get_string('schedule', 'mod_attendancecontrol'));
 
-        $mform->addElement('html',
+        $mform->addElement(
+            'html',
             '<div class="fitem"><div class="w-100">' .
             '<table class="table table-sm table-bordered mb-2" id="ac-schedule-table">' .
             '<thead class="table-light"><tr>' .
-            '<th>' . get_string('dayofweek',  'mod_attendancecontrol') . '</th>' .
-            '<th>' . get_string('starttime',  'mod_attendancecontrol') . '</th>' .
-            '<th>' . get_string('endtime',    'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('dayofweek', 'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('starttime', 'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('endtime', 'mod_attendancecontrol') . '</th>' .
             '<th></th>' .
             '</tr></thead>' .
             '<tbody id="ac-schedule-tbody"></tbody>' .
@@ -88,11 +91,12 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
         // Holidays: dynamic JS table (no repeat_elements).
         $mform->addElement('header', 'holidayshdr', get_string('holidays', 'mod_attendancecontrol'));
 
-        $mform->addElement('html',
+        $mform->addElement(
+            'html',
             '<div class="fitem"><div class="w-100">' .
             '<table class="table table-sm table-bordered mb-2" id="ac-holiday-table">' .
             '<thead class="table-light"><tr>' .
-            '<th>' . get_string('holidaydate',        'mod_attendancecontrol') . '</th>' .
+            '<th>' . get_string('holidaydate', 'mod_attendancecontrol') . '</th>' .
             '<th>' . get_string('holidaydescription', 'mod_attendancecontrol') . '</th>' .
             '<th></th>' .
             '</tr></thead>' .
@@ -159,26 +163,27 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
      *
      * Called automatically by Moodle after set_data().
      */
-    public function definition_after_data(): void {
+    public function definition_after_data(): void
+    {
         global $DB, $PAGE;
 
         parent::definition_after_data();
 
         $schedule_data = [];
-        $holiday_data  = [];
+        $holiday_data = [];
 
         // If there is POST schedule data (re-display after a server-side validation
         // error), restore from the submitted values so the user does not lose them.
         $submitted_days = optional_param_array('schedule_day', [], PARAM_INT);
         if (!empty($submitted_days)) {
             $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
-            $ends   = optional_param_array('schedule_end', [], PARAM_TEXT);
+            $ends = optional_param_array('schedule_end', [], PARAM_TEXT);
             foreach ($submitted_days as $i => $day) {
                 if (!empty($day)) {
                     $schedule_data[] = [
-                        'day'   => (int) $day,
+                        'day' => (int) $day,
                         'start' => clean_param($starts[$i] ?? '', PARAM_TEXT),
-                        'end'   => clean_param($ends[$i] ?? '', PARAM_TEXT),
+                        'end' => clean_param($ends[$i] ?? '', PARAM_TEXT),
                     ];
                 }
             }
@@ -187,7 +192,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
             foreach ($dates as $i => $date) {
                 if (!empty($date)) {
                     $holiday_data[] = [
-                        'date'        => clean_param($date, PARAM_TEXT),
+                        'date' => clean_param($date, PARAM_TEXT),
                         'description' => clean_param($descs[$i] ?? '', PARAM_TEXT),
                     ];
                 }
@@ -201,9 +206,9 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
             );
             foreach ($slots as $slot) {
                 $schedule_data[] = [
-                    'day'   => (int) $slot->day_of_week,
+                    'day' => (int) $slot->day_of_week,
                     'start' => $slot->start_time,
-                    'end'   => $slot->end_time,
+                    'end' => $slot->end_time,
                 ];
             }
 
@@ -214,7 +219,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
             );
             foreach ($holidays as $h) {
                 $holiday_data[] = [
-                    'date'        => date('Y-m-d', (int) $h->holiday_date),
+                    'date' => date('Y-m-d', (int) $h->holiday_date),
                     'description' => $h->description ?? '',
                 ];
             }
@@ -242,7 +247,8 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
      *
      * @param  array $defaultvalues  Data loaded from DB (passed by reference).
      */
-    public function data_preprocessing(&$defaultvalues): void {
+    public function data_preprocessing(&$defaultvalues): void
+    {
         parent::data_preprocessing($defaultvalues);
 
         // Stored ratio = 1/N  →  display integer N = round(1/ratio).
@@ -267,7 +273,8 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
      * @param  array $files  Uploaded files.
      * @return array         Associative array of errors (fieldname => message).
      */
-    public function validation($data, $files): array {
+    public function validation($data, $files): array
+    {
         $errors = parent::validation($data, $files);
 
         if (!empty($data['course_start_date']) && !empty($data['course_end_date'])) {
@@ -289,7 +296,8 @@ class mod_attendancecontrol_mod_form extends moodleform_mod {
  *
  * @return array Indexed by ISO day number (1 = Monday … 5 = Friday).
  */
-function attendancecontrol_get_day_options(): array {
+function attendancecontrol_get_day_options(): array
+{
     return [
         1 => get_string('monday', 'calendar'),
         2 => get_string('tuesday', 'calendar'),

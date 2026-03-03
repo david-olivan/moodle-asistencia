@@ -47,7 +47,7 @@ if (empty($instances)) {
 
 $table = new html_table();
 $table->attributes['class'] = 'generaltable';
-$table->head  = [
+$table->head = [
     get_string('name'),
     get_string('section'),
 ];

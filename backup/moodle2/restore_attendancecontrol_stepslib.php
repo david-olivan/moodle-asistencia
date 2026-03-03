@@ -25,14 +25,16 @@
 /**
  * Defines the structure step for restoring attendancecontrol data.
  */
-class restore_attendancecontrol_activity_structure_step extends restore_activity_structure_step {
+class restore_attendancecontrol_activity_structure_step extends restore_activity_structure_step
+{
     /**
      * Defines the XML paths and DB targets.
      *
      * @return array
      */
-    protected function define_structure(): array {
-        $paths   = [];
+    protected function define_structure(): array
+    {
+        $paths = [];
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('attendancecontrol', '/activity/attendancecontrol');
@@ -55,12 +57,13 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol($data): void {
+    protected function process_attendancecontrol($data): void
+    {
         global $DB;
 
-        $data             = (object) $data;
-        $data->course     = $this->get_courseid();
-        $data->timecreated  = time();
+        $data = (object) $data;
+        $data->course = $this->get_courseid();
+        $data->timecreated = time();
         $data->timemodified = time();
 
         $newitemid = $DB->insert_record('attendancecontrol', $data);
@@ -72,7 +75,8 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_schedule($data): void {
+    protected function process_attendancecontrol_schedule($data): void
+    {
         global $DB;
 
         $data = (object) $data;
@@ -85,7 +89,8 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_holiday($data): void {
+    protected function process_attendancecontrol_holiday($data): void
+    {
         global $DB;
 
         $data = (object) $data;
@@ -98,13 +103,14 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_session($data): void {
+    protected function process_attendancecontrol_session($data): void
+    {
         global $DB;
 
         $data = (object) $data;
         $data->attendancecontrolid = $this->get_new_parentid('attendancecontrol');
-        $data->timecreated         = isset($data->timecreated) ? $data->timecreated : time();
-        $data->timemodified        = isset($data->timemodified) ? $data->timemodified : time();
+        $data->timecreated = isset($data->timecreated) ? $data->timecreated : time();
+        $data->timemodified = isset($data->timemodified) ? $data->timemodified : time();
 
         $newitemid = $DB->insert_record('attendancecontrol_session', $data);
         $this->set_mapping('attendancecontrol_session', $data->id, $newitemid);
@@ -115,14 +121,15 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_record($data): void {
+    protected function process_attendancecontrol_record($data): void
+    {
         global $DB;
 
-        $data             = (object) $data;
-        $data->sessionid  = $this->get_new_parentid('attendancecontrol_session');
-        $data->userid     = $this->get_mappingid('user', $data->userid);
+        $data = (object) $data;
+        $data->sessionid = $this->get_new_parentid('attendancecontrol_session');
+        $data->userid = $this->get_mappingid('user', $data->userid);
         $data->recorded_by = $this->get_mappingid('user', $data->recorded_by);
-        $data->timecreated  = isset($data->timecreated) ? $data->timecreated : time();
+        $data->timecreated = isset($data->timecreated) ? $data->timecreated : time();
         $data->timemodified = isset($data->timemodified) ? $data->timemodified : time();
 
         $DB->insert_record('attendancecontrol_record', $data);
@@ -131,7 +138,8 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
     /**
      * Post-execution tasks after all data has been restored.
      */
-    protected function after_execute(): void {
+    protected function after_execute(): void
+    {
         $this->add_related_files('mod_attendancecontrol', 'intro', null);
     }
 }

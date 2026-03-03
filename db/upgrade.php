@@ -28,7 +28,8 @@
  * @param  int  $oldversion  Previously installed plugin version.
  * @return bool
  */
-function xmldb_attendancecontrol_upgrade(int $oldversion): bool {
+function xmldb_attendancecontrol_upgrade(int $oldversion): bool
+{
     // No upgrade steps required for v1.0.0.
     // Add future migration blocks as needed (if $oldversion < YYYYMMDDXX blocks).
 

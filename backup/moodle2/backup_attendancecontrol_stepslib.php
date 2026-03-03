@@ -25,13 +25,15 @@
 /**
  * Defines the structure step for backing up attendancecontrol data.
  */
-class backup_attendancecontrol_activity_structure_step extends backup_activity_structure_step {
+class backup_attendancecontrol_activity_structure_step extends backup_activity_structure_step
+{
     /**
      * Defines the backup structure tree.
      *
      * @return backup_nested_element
      */
-    protected function define_structure(): backup_nested_element {
+    protected function define_structure(): backup_nested_element
+    {
         $userinfo = $this->get_setting_value('userinfo');
 
         // Root element (instance).
@@ -39,12 +41,18 @@ class backup_attendancecontrol_activity_structure_step extends backup_activity_s
             'attendancecontrol',
             ['id'],
             [
-                'name', 'intro', 'introformat', 'groupid',
-                'total_hours', 'course_start_date', 'course_end_date',
+                'name',
+                'intro',
+                'introformat',
+                'groupid',
+                'total_hours',
+                'course_start_date',
+                'course_end_date',
                 'max_unjustified_absence_pct',
                 'delay_to_unjustified_ratio',
                 'justified_to_unjustified_ratio',
-                'timecreated', 'timemodified',
+                'timecreated',
+                'timemodified',
             ]
         );
 
@@ -67,8 +75,13 @@ class backup_attendancecontrol_activity_structure_step extends backup_activity_s
             'session',
             ['id'],
             [
-                'session_date', 'start_time', 'end_time',
-                'duration_hours', 'status', 'timecreated', 'timemodified',
+                'session_date',
+                'start_time',
+                'end_time',
+                'duration_hours',
+                'status',
+                'timecreated',
+                'timemodified',
             ]
         );
 

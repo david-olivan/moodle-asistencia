@@ -34,7 +34,8 @@ namespace mod_attendancecontrol\local;
  *   3 = justified    (duration_hours × justified_to_unjustified_ratio)
  *   4 = unjustified  (duration_hours × 1.0)
  */
-class attendance_calculator {
+class attendance_calculator
+{
     /** @var \stdClass Plugin instance record. */
     protected \stdClass $instance;
 
@@ -43,7 +44,8 @@ class attendance_calculator {
      *
      * @param \stdClass $instance  Row from the attendancecontrol table.
      */
-    public function __construct(\stdClass $instance) {
+    public function __construct(\stdClass $instance)
+    {
         $this->instance = $instance;
     }
 
@@ -64,7 +66,8 @@ class attendance_calculator {
      *
      * @return array
      */
-    public function get_group_summary(): array {
+    public function get_group_summary(): array
+    {
         global $DB;
 
         $students = groups_get_members(
@@ -99,7 +102,8 @@ class attendance_calculator {
      * @param  int   $userid
      * @return array
      */
-    public function get_student_detail(int $userid): array {
+    public function get_student_detail(int $userid): array
+    {
         global $DB;
 
         $sessions = $DB->get_records(
@@ -112,12 +116,12 @@ class attendance_calculator {
         foreach ($sessions as $session) {
             $record = $DB->get_record('attendancecontrol_record', [
                 'sessionid' => $session->id,
-                'userid'    => $userid,
+                'userid' => $userid,
             ]) ?: null;
 
             $result[] = [
                 'session' => $session,
-                'record'  => $record,
+                'record' => $record,
             ];
         }
 
@@ -132,7 +136,8 @@ class attendance_calculator {
      * @param  int    $userid
      * @return float
      */
-    public function compute_equivalent_absence_hours(int $userid): float {
+    public function compute_equivalent_absence_hours(int $userid): float
+    {
         global $DB;
 
         $sql = '
@@ -144,7 +149,7 @@ class attendance_calculator {
         ';
 
         $records = $DB->get_records_sql($sql, [
-            'userid'     => $userid,
+            'userid' => $userid,
             'instanceid' => $this->instance->id,
         ]);
 
@@ -164,7 +169,8 @@ class attendance_calculator {
      * @param  int    $userid
      * @return float  Clamped to [0, 100].
      */
-    public function compute_attendance_pct(int $userid): float {
+    public function compute_attendance_pct(int $userid): float
+    {
         $total = (int) $this->instance->total_hours;
 
         if ($total <= 0) {
@@ -172,7 +178,7 @@ class attendance_calculator {
         }
 
         $equiv = $this->compute_equivalent_absence_hours($userid);
-        $pct   = 100.0 - ($equiv / $total * 100.0);
+        $pct = 100.0 - ($equiv / $total * 100.0);
 
         return max(0.0, min(100.0, $pct));
     }
@@ -184,7 +190,8 @@ class attendance_calculator {
      *
      * @return float
      */
-    public function get_threshold(): float {
+    public function get_threshold(): float
+    {
         return 100.0 - (float) $this->instance->max_unjustified_absence_pct;
     }
 
@@ -197,7 +204,8 @@ class attendance_calculator {
      * @param  int   $duration  Session duration in hours.
      * @return float
      */
-    protected function status_to_equiv_hours(int $status, int $duration): float {
+    protected function status_to_equiv_hours(int $status, int $duration): float
+    {
         return match ($status) {
             2 => $duration * (float) $this->instance->delay_to_unjustified_ratio,
             3 => $duration * (float) $this->instance->justified_to_unjustified_ratio,
@@ -212,7 +220,8 @@ class attendance_calculator {
      * @param  \stdClass $student
      * @return array
      */
-    protected function build_student_summary(\stdClass $student): array {
+    protected function build_student_summary(\stdClass $student): array
+    {
         global $DB;
 
         $sql = '
@@ -225,7 +234,7 @@ class attendance_calculator {
         ';
 
         $rows = $DB->get_records_sql($sql, [
-            'userid'     => $student->id,
+            'userid' => $student->id,
             'instanceid' => $this->instance->id,
         ]);
 
@@ -234,19 +243,19 @@ class attendance_calculator {
             $counts[(int) $row->status] = (int) $row->cnt;
         }
 
-        $equiv     = $this->compute_equivalent_absence_hours($student->id);
-        $pct       = $this->compute_attendance_pct($student->id);
+        $equiv = $this->compute_equivalent_absence_hours($student->id);
+        $pct = $this->compute_attendance_pct($student->id);
         $threshold = $this->get_threshold();
 
         return [
-            'student'          => $student,
-            'presences'        => $counts[1],
-            'lates'            => $counts[2],
-            'justified'        => $counts[3],
-            'unjustified'      => $counts[4],
-            'equiv_hours'      => round($equiv, 2),
-            'pct'              => round($pct, 2),
-            'below_threshold'  => $pct < $threshold,
+            'student' => $student,
+            'presences' => $counts[1],
+            'lates' => $counts[2],
+            'justified' => $counts[3],
+            'unjustified' => $counts[4],
+            'equiv_hours' => round($equiv, 2),
+            'pct' => round($pct, 2),
+            'below_threshold' => $pct < $threshold,
         ];
     }
 }

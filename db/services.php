@@ -28,4 +28,4 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [];
-$services  = [];
+$services = [];

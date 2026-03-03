@@ -30,11 +30,13 @@ namespace mod_attendancecontrol\event;
  * Extends the Moodle core base event for "course module viewed" so that
  * completion tracking and the standard log report work out of the box.
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class course_module_viewed extends \core\event\course_module_viewed
+{
     /**
      * Initialises the event properties.
      */
-    protected function init(): void {
+    protected function init(): void
+    {
         $this->data['objecttable'] = 'attendancecontrol';
         parent::init();
     }

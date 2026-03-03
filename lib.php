@@ -31,10 +31,11 @@
  * @param  stdClass $data  Form data from mod_form.php.
  * @return int             New instance ID.
  */
-function attendancecontrol_add_instance(stdClass $data): int {
+function attendancecontrol_add_instance(stdClass $data): int
+{
     global $DB;
 
-    $data->timecreated  = time();
+    $data->timecreated = time();
     $data->timemodified = time();
 
     // Convert integer N (from select) → stored float ratio 1/N.
@@ -42,7 +43,7 @@ function attendancecontrol_add_instance(stdClass $data): int {
 
     // Persist base record.
     $instanceid = $DB->insert_record('attendancecontrol', $data);
-    $data->id   = $instanceid;
+    $data->id = $instanceid;
 
     // Persist schedule slots submitted via the repeatable element.
     attendancecontrol_save_schedule($data);
@@ -66,10 +67,11 @@ function attendancecontrol_add_instance(stdClass $data): int {
  * @param  stdClass $data  Form data from mod_form.php.
  * @return bool
  */
-function attendancecontrol_update_instance(stdClass $data): bool {
+function attendancecontrol_update_instance(stdClass $data): bool
+{
     global $DB;
 
-    $data->id           = $data->instance;
+    $data->id = $data->instance;
     $data->timemodified = time();
 
     // Convert integer N (from select) → stored float ratio 1/N.
@@ -98,7 +100,8 @@ function attendancecontrol_update_instance(stdClass $data): bool {
  * @param  int $id  Module instance ID.
  * @return bool
  */
-function attendancecontrol_delete_instance(int $id): bool {
+function attendancecontrol_delete_instance(int $id): bool
+{
     global $DB;
 
     if (!$DB->get_record('attendancecontrol', ['id' => $id])) {
@@ -132,7 +135,8 @@ function attendancecontrol_delete_instance(int $id): bool {
  * @param  string $feature  FEATURE_* constant.
  * @return bool|null        True/false or null when unknown.
  */
-function attendancecontrol_supports(string $feature): ?bool {
+function attendancecontrol_supports(string $feature): ?bool
+{
     switch ($feature) {
         case FEATURE_GROUPS:
             return true;
@@ -160,12 +164,13 @@ function attendancecontrol_supports(string $feature): ?bool {
  *
  * @param stdClass $data  Instance data (only $data->id is used).
  */
-function attendancecontrol_save_schedule(stdClass $data): void {
+function attendancecontrol_save_schedule(stdClass $data): void
+{
     global $DB;
 
-    $days   = optional_param_array('schedule_day', [], PARAM_INT);
+    $days = optional_param_array('schedule_day', [], PARAM_INT);
     $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
-    $ends   = optional_param_array('schedule_end', [], PARAM_TEXT);
+    $ends = optional_param_array('schedule_end', [], PARAM_TEXT);
 
     foreach ($days as $i => $day) {
         if (empty($day)) {
@@ -173,9 +178,9 @@ function attendancecontrol_save_schedule(stdClass $data): void {
         }
         $DB->insert_record('attendancecontrol_schedule', (object) [
             'attendancecontrolid' => $data->id,
-            'day_of_week'         => (int) $day,
-            'start_time'          => clean_param($starts[$i] ?? '', PARAM_TEXT),
-            'end_time'            => clean_param($ends[$i] ?? '', PARAM_TEXT),
+            'day_of_week' => (int) $day,
+            'start_time' => clean_param($starts[$i] ?? '', PARAM_TEXT),
+            'end_time' => clean_param($ends[$i] ?? '', PARAM_TEXT),
         ]);
     }
 }
@@ -188,7 +193,8 @@ function attendancecontrol_save_schedule(stdClass $data): void {
  *
  * @param stdClass $data  Instance data (only $data->id is used).
  */
-function attendancecontrol_save_holidays(stdClass $data): void {
+function attendancecontrol_save_holidays(stdClass $data): void
+{
     global $DB;
 
     $dates = optional_param_array('holiday_date', [], PARAM_TEXT);
@@ -205,8 +211,8 @@ function attendancecontrol_save_holidays(stdClass $data): void {
         }
         $DB->insert_record('attendancecontrol_holiday', (object) [
             'attendancecontrolid' => $data->id,
-            'holiday_date'        => $timestamp,
-            'description'         => clean_param($descs[$i] ?? '', PARAM_TEXT),
+            'holiday_date' => $timestamp,
+            'description' => clean_param($descs[$i] ?? '', PARAM_TEXT),
         ]);
     }
 }
@@ -222,7 +228,8 @@ function attendancecontrol_save_holidays(stdClass $data): void {
  *
  * @param stdClass $data  Form data modified in place.
  */
-function attendancecontrol_convert_ratios(stdClass $data): void {
+function attendancecontrol_convert_ratios(stdClass $data): void
+{
     foreach (['delay_to_unjustified_ratio', 'justified_to_unjustified_ratio'] as $field) {
         $n = (int) ($data->$field ?? 2);
         if ($n < 1) {

@@ -36,7 +36,7 @@ $id = required_param('id', PARAM_INT); // Course-module ID.
 
 require_login($course, true, $cm);
 
-$context  = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_capability('mod/attendancecontrol:export', $context);

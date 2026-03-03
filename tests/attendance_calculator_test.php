@@ -32,7 +32,8 @@ use mod_attendancecontrol\local\attendance_calculator;
  *
  * @coversDefaultClass \mod_attendancecontrol\local\attendance_calculator
  */
-final class attendance_calculator_test extends \advanced_testcase {
+final class attendance_calculator_test extends \advanced_testcase
+{
     /**
      * Builds a minimal instance stdClass for the calculator.
      *
@@ -49,11 +50,11 @@ final class attendance_calculator_test extends \advanced_testcase {
         float $maxpct = 15.00
     ): \stdClass {
         return (object) [
-            'id'                              => 1,
-            'total_hours'                     => $total,
-            'delay_to_unjustified_ratio'      => $delayr,
-            'justified_to_unjustified_ratio'  => $justr,
-            'max_unjustified_absence_pct'     => $maxpct,
+            'id' => 1,
+            'total_hours' => $total,
+            'delay_to_unjustified_ratio' => $delayr,
+            'justified_to_unjustified_ratio' => $justr,
+            'max_unjustified_absence_pct' => $maxpct,
         ];
     }
 
@@ -62,7 +63,8 @@ final class attendance_calculator_test extends \advanced_testcase {
      *
      * @covers ::get_threshold
      */
-    public function test_get_threshold(): void {
+    public function test_get_threshold(): void
+    {
         $calc = new attendance_calculator($this->make_instance(100, 0.5, 0.5, 15.0));
         $this->assertEqualsWithDelta(85.0, $calc->get_threshold(), 0.001);
     }
@@ -77,25 +79,26 @@ final class attendance_calculator_test extends \advanced_testcase {
      * @covers ::compute_equivalent_absence_hours
      * @covers ::compute_attendance_pct
      */
-    public function test_prd_example_calculation(): void {
+    public function test_prd_example_calculation(): void
+    {
         global $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $course   = $this->getDataGenerator()->create_course();
-        $student  = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_user();
 
         // Build instance.
         $instance = $this->make_instance(100, 0.5, 0.5, 15.0);
-        $instance->course       = $course->id;
-        $instance->name         = 'PRD test';
-        $instance->intro        = '';
-        $instance->introformat  = FORMAT_HTML;
-        $instance->groupid      = 0;
-        $instance->course_start_date           = mktime(0, 0, 0, 9, 1, 2025);
-        $instance->course_end_date             = mktime(0, 0, 0, 6, 30, 2026);
-        $instance->timecreated  = time();
+        $instance->course = $course->id;
+        $instance->name = 'PRD test';
+        $instance->intro = '';
+        $instance->introformat = FORMAT_HTML;
+        $instance->groupid = 0;
+        $instance->course_start_date = mktime(0, 0, 0, 9, 1, 2025);
+        $instance->course_end_date = mktime(0, 0, 0, 6, 30, 2026);
+        $instance->timecreated = time();
         $instance->timemodified = time();
 
         $instance->id = $DB->insert_record('attendancecontrol', $instance);
@@ -104,43 +107,43 @@ final class attendance_calculator_test extends \advanced_testcase {
         $now = time();
         $s1id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 15, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '10:00',
-            'duration_hours'      => 1, // 2 lates in 1h sessions.
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 15, 2025),
+            'start_time' => '09:00',
+            'end_time' => '10:00',
+            'duration_hours' => 1, // 2 lates in 1h sessions.
+            'status' => 1,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
         $s2id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 16, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '10:00',
-            'duration_hours'      => 1, // Second late.
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 16, 2025),
+            'start_time' => '09:00',
+            'end_time' => '10:00',
+            'duration_hours' => 1, // Second late.
+            'status' => 1,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
         $s3id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 17, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '13:00',
-            'duration_hours'      => 4, // Justified absence.
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 17, 2025),
+            'start_time' => '09:00',
+            'end_time' => '13:00',
+            'duration_hours' => 4, // Justified absence.
+            'status' => 1,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
         $s4id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 18, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '11:00',
-            'duration_hours'      => 2, // Unjustified absence.
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 18, 2025),
+            'start_time' => '09:00',
+            'end_time' => '11:00',
+            'duration_hours' => 2, // Unjustified absence.
+            'status' => 1,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
 
         // Create attendance records.
@@ -153,12 +156,12 @@ final class attendance_calculator_test extends \advanced_testcase {
             ] as [$sid, $status]
         ) {
             $DB->insert_record('attendancecontrol_record', (object) [
-                'sessionid'    => $sid,
-                'userid'       => $student->id,
-                'status'       => $status,
-                'remarks'      => '',
-                'recorded_by'  => 2,
-                'timecreated'  => $now,
+                'sessionid' => $sid,
+                'userid' => $student->id,
+                'status' => $status,
+                'remarks' => '',
+                'recorded_by' => 2,
+                'timecreated' => $now,
                 'timemodified' => $now,
             ]);
         }
@@ -183,53 +186,54 @@ final class attendance_calculator_test extends \advanced_testcase {
      * @covers ::compute_attendance_pct
      * @covers ::get_threshold
      */
-    public function test_student_below_threshold(): void {
+    public function test_student_below_threshold(): void
+    {
         global $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $course  = $this->getDataGenerator()->create_course();
+        $course = $this->getDataGenerator()->create_course();
         $student = $this->getDataGenerator()->create_user();
 
         $instance = $this->make_instance(100, 0.5, 0.5, 15.0);
-        $instance->course       = $course->id;
-        $instance->name         = 'Below threshold test';
-        $instance->intro        = '';
-        $instance->introformat  = FORMAT_HTML;
-        $instance->groupid      = 0;
-        $instance->course_start_date  = mktime(0, 0, 0, 9, 1, 2025);
-        $instance->course_end_date    = mktime(0, 0, 0, 6, 30, 2026);
-        $instance->timecreated  = time();
+        $instance->course = $course->id;
+        $instance->name = 'Below threshold test';
+        $instance->intro = '';
+        $instance->introformat = FORMAT_HTML;
+        $instance->groupid = 0;
+        $instance->course_start_date = mktime(0, 0, 0, 9, 1, 2025);
+        $instance->course_end_date = mktime(0, 0, 0, 6, 30, 2026);
+        $instance->timecreated = time();
         $instance->timemodified = time();
 
         $instance->id = $DB->insert_record('attendancecontrol', $instance);
 
-        $now    = time();
+        $now = time();
         // Single session worth 20 h of unjustified absence → pct = 80%.
         $sessid = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 10, 1, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '13:00',
-            'duration_hours'      => 20,
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
-        ]);
-
-        $DB->insert_record('attendancecontrol_record', (object) [
-            'sessionid'    => $sessid,
-            'userid'       => $student->id,
-            'status'       => 4, // Unjustified absence.
-            'remarks'      => '',
-            'recorded_by'  => 2,
-            'timecreated'  => $now,
+            'session_date' => mktime(0, 0, 0, 10, 1, 2025),
+            'start_time' => '09:00',
+            'end_time' => '13:00',
+            'duration_hours' => 20,
+            'status' => 1,
+            'timecreated' => $now,
             'timemodified' => $now,
         ]);
 
-        $calc      = new attendance_calculator($instance);
-        $pct       = $calc->compute_attendance_pct($student->id);
+        $DB->insert_record('attendancecontrol_record', (object) [
+            'sessionid' => $sessid,
+            'userid' => $student->id,
+            'status' => 4, // Unjustified absence.
+            'remarks' => '',
+            'recorded_by' => 2,
+            'timecreated' => $now,
+            'timemodified' => $now,
+        ]);
+
+        $calc = new attendance_calculator($instance);
+        $pct = $calc->compute_attendance_pct($student->id);
         $threshold = $calc->get_threshold();
 
         $this->assertEqualsWithDelta(80.0, $pct, 0.001, 'Attendance should be 80%.');
@@ -243,24 +247,25 @@ final class attendance_calculator_test extends \advanced_testcase {
      *
      * @covers ::get_student_detail
      */
-    public function test_get_student_detail_returns_rows(): void {
+    public function test_get_student_detail_returns_rows(): void
+    {
         global $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $course  = $this->getDataGenerator()->create_course();
+        $course = $this->getDataGenerator()->create_course();
         $student = $this->getDataGenerator()->create_user();
 
         $instance = $this->make_instance();
-        $instance->course       = $course->id;
-        $instance->name         = 'Detail test';
-        $instance->intro        = '';
-        $instance->introformat  = FORMAT_HTML;
-        $instance->groupid      = 0;
-        $instance->course_start_date  = mktime(0, 0, 0, 9, 1, 2025);
-        $instance->course_end_date    = mktime(0, 0, 0, 6, 30, 2026);
-        $instance->timecreated  = time();
+        $instance->course = $course->id;
+        $instance->name = 'Detail test';
+        $instance->intro = '';
+        $instance->introformat = FORMAT_HTML;
+        $instance->groupid = 0;
+        $instance->course_start_date = mktime(0, 0, 0, 9, 1, 2025);
+        $instance->course_end_date = mktime(0, 0, 0, 6, 30, 2026);
+        $instance->timecreated = time();
         $instance->timemodified = time();
 
         $instance->id = $DB->insert_record('attendancecontrol', $instance);
@@ -270,37 +275,37 @@ final class attendance_calculator_test extends \advanced_testcase {
         // Session 1 (Sep 15) — has an attendance record.
         $s1id = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 15, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '11:00',
-            'duration_hours'      => 2,
-            'status'              => 1,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 15, 2025),
+            'start_time' => '09:00',
+            'end_time' => '11:00',
+            'duration_hours' => 2,
+            'status' => 1,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
         $DB->insert_record('attendancecontrol_record', (object) [
-            'sessionid'    => $s1id,
-            'userid'       => $student->id,
-            'status'       => 1, // Present.
-            'remarks'      => 'On time',
-            'recorded_by'  => 2,
-            'timecreated'  => $now,
+            'sessionid' => $s1id,
+            'userid' => $student->id,
+            'status' => 1, // Present.
+            'remarks' => 'On time',
+            'recorded_by' => 2,
+            'timecreated' => $now,
             'timemodified' => $now,
         ]);
 
         // Session 2 (Sep 17) — no record yet.
         $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
-            'session_date'        => mktime(0, 0, 0, 9, 17, 2025),
-            'start_time'          => '09:00',
-            'end_time'            => '11:00',
-            'duration_hours'      => 2,
-            'status'              => 0,
-            'timecreated'         => $now,
-            'timemodified'        => $now,
+            'session_date' => mktime(0, 0, 0, 9, 17, 2025),
+            'start_time' => '09:00',
+            'end_time' => '11:00',
+            'duration_hours' => 2,
+            'status' => 0,
+            'timecreated' => $now,
+            'timemodified' => $now,
         ]);
 
-        $calc   = new attendance_calculator($instance);
+        $calc = new attendance_calculator($instance);
         $detail = $calc->get_student_detail($student->id);
 
         $this->assertCount(2, $detail, 'Should return one entry per session.');

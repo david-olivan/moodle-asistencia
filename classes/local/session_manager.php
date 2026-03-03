@@ -27,7 +27,8 @@ namespace mod_attendancecontrol\local;
 /**
  * Handles session generation, regeneration and attendance record persistence.
  */
-class session_manager {
+class session_manager
+{
     /** @var \stdClass Plugin instance record. */
     protected \stdClass $instance;
 
@@ -36,7 +37,8 @@ class session_manager {
      *
      * @param \stdClass $instance  Row from the attendancecontrol table.
      */
-    public function __construct(\stdClass $instance) {
+    public function __construct(\stdClass $instance)
+    {
         $this->instance = $instance;
     }
 
@@ -45,14 +47,15 @@ class session_manager {
      *
      * Called when a new instance is created.
      */
-    public function generate_sessions(): void {
+    public function generate_sessions(): void
+    {
         global $DB;
 
-        $slots    = $DB->get_records('attendancecontrol_schedule', ['attendancecontrolid' => $this->instance->id]);
+        $slots = $DB->get_records('attendancecontrol_schedule', ['attendancecontrolid' => $this->instance->id]);
         $holidays = $this->get_holiday_timestamps();
 
         $start = (int) $this->instance->course_start_date;
-        $end   = (int) $this->instance->course_end_date;
+        $end = (int) $this->instance->course_end_date;
 
         $now = time();
 
@@ -74,13 +77,13 @@ class session_manager {
 
                 $session = (object) [
                     'attendancecontrolid' => $this->instance->id,
-                    'session_date'        => $ts,
-                    'start_time'          => $slot->start_time,
-                    'end_time'            => $slot->end_time,
-                    'duration_hours'      => $duration,
-                    'status'              => 0,
-                    'timecreated'         => $now,
-                    'timemodified'        => $now,
+                    'session_date' => $ts,
+                    'start_time' => $slot->start_time,
+                    'end_time' => $slot->end_time,
+                    'duration_hours' => $duration,
+                    'status' => 0,
+                    'timecreated' => $now,
+                    'timemodified' => $now,
                 ];
 
                 $DB->insert_record('attendancecontrol_session', $session);
@@ -94,7 +97,8 @@ class session_manager {
      * Called when an instance is updated. Preserves past sessions and any
      * future session that already has records attached.
      */
-    public function regenerate_future_sessions(): void {
+    public function regenerate_future_sessions(): void
+    {
         global $DB;
 
         $today = mktime(0, 0, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
@@ -125,10 +129,10 @@ class session_manager {
         }
 
         // Regenerate from today.
-        $slots    = $DB->get_records('attendancecontrol_schedule', ['attendancecontrolid' => $this->instance->id]);
+        $slots = $DB->get_records('attendancecontrol_schedule', ['attendancecontrolid' => $this->instance->id]);
         $holidays = $this->get_holiday_timestamps();
-        $end      = (int) $this->instance->course_end_date;
-        $now      = time();
+        $end = (int) $this->instance->course_end_date;
+        $now = time();
 
         for ($ts = $today; $ts <= $end; $ts = strtotime('+1 day', $ts)) {
             $dow = (int) date('N', $ts);
@@ -146,8 +150,8 @@ class session_manager {
                 if (
                     $DB->record_exists('attendancecontrol_session', [
                         'attendancecontrolid' => $this->instance->id,
-                        'session_date'        => $ts,
-                        'start_time'          => $slot->start_time,
+                        'session_date' => $ts,
+                        'start_time' => $slot->start_time,
                     ])
                 ) {
                     continue;
@@ -157,13 +161,13 @@ class session_manager {
 
                 $session = (object) [
                     'attendancecontrolid' => $this->instance->id,
-                    'session_date'        => $ts,
-                    'start_time'          => $slot->start_time,
-                    'end_time'            => $slot->end_time,
-                    'duration_hours'      => $duration,
-                    'status'              => 0,
-                    'timecreated'         => $now,
-                    'timemodified'        => $now,
+                    'session_date' => $ts,
+                    'start_time' => $slot->start_time,
+                    'end_time' => $slot->end_time,
+                    'duration_hours' => $duration,
+                    'status' => 0,
+                    'timecreated' => $now,
+                    'timemodified' => $now,
                 ];
 
                 $DB->insert_record('attendancecontrol_session', $session);
@@ -177,7 +181,8 @@ class session_manager {
      * @param \stdClass $session  Session record.
      * @param \stdClass $data     Form submission data.
      */
-    public function save_attendance_records(\stdClass $session, \stdClass $data): void {
+    public function save_attendance_records(\stdClass $session, \stdClass $data): void
+    {
         global $DB, $USER;
 
         if (empty($data->student_status)) {
@@ -191,23 +196,23 @@ class session_manager {
 
             $existing = $DB->get_record('attendancecontrol_record', [
                 'sessionid' => $session->id,
-                'userid'    => $userid,
+                'userid' => $userid,
             ]);
 
             if ($existing) {
-                $existing->status       = (int) $status;
-                $existing->remarks      = $remarks;
-                $existing->recorded_by  = (int) $USER->id;
+                $existing->status = (int) $status;
+                $existing->remarks = $remarks;
+                $existing->recorded_by = (int) $USER->id;
                 $existing->timemodified = $now;
                 $DB->update_record('attendancecontrol_record', $existing);
             } else {
                 $record = (object) [
-                    'sessionid'    => $session->id,
-                    'userid'       => (int) $userid,
-                    'status'       => (int) $status,
-                    'remarks'      => $remarks,
-                    'recorded_by'  => (int) $USER->id,
-                    'timecreated'  => $now,
+                    'sessionid' => $session->id,
+                    'userid' => (int) $userid,
+                    'status' => (int) $status,
+                    'remarks' => $remarks,
+                    'recorded_by' => (int) $USER->id,
+                    'timecreated' => $now,
                     'timemodified' => $now,
                 ];
                 $DB->insert_record('attendancecontrol_record', $record);
@@ -224,7 +229,8 @@ class session_manager {
      *
      * @return int[]
      */
-    protected function get_holiday_timestamps(): array {
+    protected function get_holiday_timestamps(): array
+    {
         global $DB;
 
         $rows = $DB->get_records(
@@ -244,7 +250,8 @@ class session_manager {
      * @param  string $end    'HH:MM'
      * @return int
      */
-    public static function compute_duration_hours(string $start, string $end): int {
+    public static function compute_duration_hours(string $start, string $end): int
+    {
         [$sh, $sm] = array_map('intval', explode(':', $start));
         [$eh, $em] = array_map('intval', explode(':', $end));
 

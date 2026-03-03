@@ -44,22 +44,24 @@ use core_privacy\local\request\writer;
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,
-    \core_privacy\local\request\plugin\provider {
+    \core_privacy\local\request\plugin\provider
+{
     /**
      * Describes the personal data stored by this plugin.
      *
      * @param  collection $collection
      * @return collection
      */
-    public static function get_metadata(collection $collection): collection {
+    public static function get_metadata(collection $collection): collection
+    {
         $collection->add_database_table(
             'attendancecontrol_record',
             [
-                'userid'       => 'privacy:metadata:attendancecontrol_record:userid',
-                'status'       => 'privacy:metadata:attendancecontrol_record:status',
-                'remarks'      => 'privacy:metadata:attendancecontrol_record:remarks',
-                'recorded_by'  => 'privacy:metadata:attendancecontrol_record:recorded_by',
-                'timecreated'  => 'privacy:metadata:attendancecontrol_record:timecreated',
+                'userid' => 'privacy:metadata:attendancecontrol_record:userid',
+                'status' => 'privacy:metadata:attendancecontrol_record:status',
+                'remarks' => 'privacy:metadata:attendancecontrol_record:remarks',
+                'recorded_by' => 'privacy:metadata:attendancecontrol_record:recorded_by',
+                'timecreated' => 'privacy:metadata:attendancecontrol_record:timecreated',
                 'timemodified' => 'privacy:metadata:attendancecontrol_record:timemodified',
             ],
             'privacy:metadata:attendancecontrol_record'
@@ -74,7 +76,8 @@ class provider implements
      * @param  int          $userid
      * @return contextlist
      */
-    public static function get_contexts_for_userid(int $userid): contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist
+    {
         $contextlist = new contextlist();
 
         $sql = '
@@ -90,7 +93,7 @@ class provider implements
 
         $contextlist->add_from_sql($sql, [
             'ctxlevel' => CONTEXT_MODULE,
-            'userid'   => $userid,
+            'userid' => $userid,
         ]);
 
         return $contextlist;
@@ -101,7 +104,8 @@ class provider implements
      *
      * @param  userlist $userlist
      */
-    public static function get_users_in_context(userlist $userlist): void {
+    public static function get_users_in_context(userlist $userlist): void
+    {
         $context = $userlist->get_context();
 
         if (!$context instanceof \context_module) {
@@ -124,7 +128,8 @@ class provider implements
      *
      * @param approved_contextlist $contextlist
      */
-    public static function export_user_data(approved_contextlist $contextlist): void {
+    public static function export_user_data(approved_contextlist $contextlist): void
+    {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
@@ -147,21 +152,21 @@ class provider implements
             ';
 
             $records = $DB->get_records_sql($sql, [
-                'userid'     => $userid,
+                'userid' => $userid,
                 'instanceid' => $cm->instance,
             ]);
 
             $data = [];
             foreach ($records as $rec) {
                 $data[] = [
-                    'session_date'   => userdate($rec->session_date),
-                    'start_time'     => $rec->start_time,
-                    'end_time'       => $rec->end_time,
+                    'session_date' => userdate($rec->session_date),
+                    'start_time' => $rec->start_time,
+                    'end_time' => $rec->end_time,
                     'duration_hours' => $rec->duration_hours,
-                    'status'         => $rec->status,
-                    'remarks'        => $rec->remarks,
-                    'timecreated'    => userdate($rec->timecreated),
-                    'timemodified'   => userdate($rec->timemodified),
+                    'status' => $rec->status,
+                    'remarks' => $rec->remarks,
+                    'timecreated' => userdate($rec->timecreated),
+                    'timemodified' => userdate($rec->timemodified),
                 ];
             }
 
@@ -177,7 +182,8 @@ class provider implements
      *
      * @param \context $context
      */
-    public static function delete_data_for_all_users_in_context(\context $context): void {
+    public static function delete_data_for_all_users_in_context(\context $context): void
+    {
         global $DB;
 
         if (!$context instanceof \context_module) {
@@ -204,7 +210,8 @@ class provider implements
      *
      * @param approved_contextlist $contextlist
      */
-    public static function delete_data_for_user(approved_contextlist $contextlist): void {
+    public static function delete_data_for_user(approved_contextlist $contextlist): void
+    {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
@@ -240,7 +247,8 @@ class provider implements
      *
      * @param approved_userlist $userlist
      */
-    public static function delete_data_for_users(approved_userlist $userlist): void {
+    public static function delete_data_for_users(approved_userlist $userlist): void
+    {
         global $DB;
 
         $context = $userlist->get_context();

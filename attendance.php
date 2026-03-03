@@ -28,16 +28,16 @@
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-$cmid      = required_param('id', PARAM_INT); // Course-module ID.
+$cmid = required_param('id', PARAM_INT); // Course-module ID.
 $sessionid = required_param('sessionid', PARAM_INT); // Session ID.
 
 [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'attendancecontrol');
 
 require_login($course, true, $cm);
 
-$context  = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
-$session  = $DB->get_record('attendancecontrol_session', ['id' => $sessionid, 'attendancecontrolid' => $instance->id], '*', MUST_EXIST);
+$session = $DB->get_record('attendancecontrol_session', ['id' => $sessionid, 'attendancecontrolid' => $instance->id], '*', MUST_EXIST);
 
 require_capability('mod/attendancecontrol:recordattendance', $context);
 
@@ -49,10 +49,10 @@ $PAGE->set_context($context);
 // POST handler.
 if (data_submitted() && confirm_sesskey()) {
     $statuses = optional_param_array('student_status', [], PARAM_INT);
-    $remarks  = optional_param_array('student_remarks', [], PARAM_TEXT);
+    $remarks = optional_param_array('student_remarks', [], PARAM_TEXT);
 
     $data = (object) [
-        'student_status'  => $statuses,
+        'student_status' => $statuses,
         'student_remarks' => $remarks,
     ];
 
@@ -61,8 +61,8 @@ if (data_submitted() && confirm_sesskey()) {
 
     $event = \mod_attendancecontrol\event\attendance_recorded::create([
         'objectid' => $session->id,
-        'context'  => $context,
-        'other'    => ['sessionid' => $session->id],
+        'context' => $context,
+        'other' => ['sessionid' => $session->id],
     ]);
     $event->trigger();
 
@@ -101,39 +101,39 @@ $statusdefs = [
 
 $studentrows = [];
 foreach ($students as $student) {
-    $uid            = (int) $student->id;
+    $uid = (int) $student->id;
     $existingstatus = isset($existingrecords[$uid]) ? (int) $existingrecords[$uid]->status : 1;
     $existingremarks = $existingrecords[$uid]->remarks ?? '';
 
     $statuses = [];
     foreach ($statusdefs as $value => $def) {
         $statuses[] = [
-            'uid'       => $uid,
-            'value'     => $value,
-            'label'     => get_string($def['key'], 'mod_attendancecontrol'),
+            'uid' => $uid,
+            'value' => $value,
+            'label' => get_string($def['key'], 'mod_attendancecontrol'),
             'btn_class' => $def['btn'],
-            'checked'   => ($existingstatus === $value),
-            'input_id'  => "status_{$uid}_{$value}",
+            'checked' => ($existingstatus === $value),
+            'input_id' => "status_{$uid}_{$value}",
         ];
     }
 
     $studentrows[] = [
-        'uid'      => $uid,
+        'uid' => $uid,
         'fullname' => fullname($student),
-        'remarks'  => $existingremarks,
+        'remarks' => $existingremarks,
         'statuses' => $statuses,
     ];
 }
 
 $templatecontext = [
-    'action_url'  => (new moodle_url('/mod/attendancecontrol/attendance.php', ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
-    'sesskey'     => sesskey(),
-    'id'          => $cmid,
-    'sessionid'   => $sessionid,
-    'cancel_url'  => (new moodle_url('/mod/attendancecontrol/view.php', ['id' => $cmid]))->out(false),
-    'students'    => $studentrows,
-    'str_save'    => get_string('saveattendance', 'mod_attendancecontrol'),
-    'str_cancel'  => get_string('cancel'),
+    'action_url' => (new moodle_url('/mod/attendancecontrol/attendance.php', ['id' => $cmid, 'sessionid' => $sessionid]))->out(false),
+    'sesskey' => sesskey(),
+    'id' => $cmid,
+    'sessionid' => $sessionid,
+    'cancel_url' => (new moodle_url('/mod/attendancecontrol/view.php', ['id' => $cmid]))->out(false),
+    'students' => $studentrows,
+    'str_save' => get_string('saveattendance', 'mod_attendancecontrol'),
+    'str_cancel' => get_string('cancel'),
     'str_markall' => get_string('markallpresent', 'mod_attendancecontrol'),
 ];
 

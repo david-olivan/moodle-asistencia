@@ -28,66 +28,66 @@ $capabilities = [
 
     // Add the activity to a course.
     'mod/attendancecontrol:addinstance' => [
-        'riskbitmask'  => RISK_XSS,
-        'captype'      => 'write',
+        'riskbitmask' => RISK_XSS,
+        'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => [
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager'        => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
     // View full attendance summary for all students.
     'mod/attendancecontrol:viewsummary' => [
-        'captype'      => 'read',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes'   => [
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager'        => CAP_ALLOW,
-            'teacher'        => CAP_ALLOW, // Non-editing teacher.
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW, // Non-editing teacher.
         ],
     ],
 
     // Record and edit attendance.
     'mod/attendancecontrol:recordattendance' => [
-        'riskbitmask'  => RISK_PERSONAL,
-        'captype'      => 'write',
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes'   => [
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager'        => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
         ],
     ],
 
     // View own attendance data (students).
     'mod/attendancecontrol:viewownattendance' => [
-        'captype'      => 'read',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes'   => [
+        'archetypes' => [
             'student' => CAP_ALLOW,
         ],
     ],
 
     // Export attendance data to Excel.
     'mod/attendancecontrol:export' => [
-        'captype'      => 'read',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes'   => [
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager'        => CAP_ALLOW,
-            'teacher'        => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
         ],
     ],
 
     // Manage (add/edit/delete) future sessions.
     'mod/attendancecontrol:managesessions' => [
-        'riskbitmask'  => RISK_PERSONAL,
-        'captype'      => 'write',
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes'   => [
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager'        => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
         ],
     ],
 ];

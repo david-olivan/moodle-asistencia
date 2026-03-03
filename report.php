@@ -34,7 +34,7 @@ $id = required_param('id', PARAM_INT); // Course-module ID.
 
 require_login($course, true, $cm);
 
-$context  = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 $instance = $DB->get_record('attendancecontrol', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_capability('mod/attendancecontrol:viewsummary', $context);
@@ -45,7 +45,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
 $calculator = new \mod_attendancecontrol\local\attendance_calculator($instance);
-$summary    = $calculator->get_group_summary();
+$summary = $calculator->get_group_summary();
 
 $renderer = $PAGE->get_renderer('mod_attendancecontrol');
 

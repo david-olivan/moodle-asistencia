@@ -37,15 +37,17 @@ require_once($GLOBALS['CFG']->libdir . '/formslib.php');
  *   - cm        \cm_info   Course module info.
  *   - context   \context_module
  */
-class attendance_form extends \moodleform {
+class attendance_form extends \moodleform
+{
     /**
      * Defines form elements – one row per group member.
      */
-    public function definition(): void {
-        $mform    = $this->_form;
+    public function definition(): void
+    {
+        $mform = $this->_form;
         $instance = $this->_customdata['instance'];
-        $session  = $this->_customdata['session'];
-        $cm       = $this->_customdata['cm'];
+        $session = $this->_customdata['session'];
+        $cm = $this->_customdata['cm'];
 
         // Allow the attendance_form AMD module to locate this form element.
         $mform->updateAttributes(['data-region' => 'attendance-form']);
@@ -110,14 +112,15 @@ class attendance_form extends \moodleform {
      *
      * @param \stdClass $session
      */
-    protected function load_existing_records(\stdClass $session): void {
+    protected function load_existing_records(\stdClass $session): void
+    {
         global $DB;
 
         $records = $DB->get_records('attendancecontrol_record', ['sessionid' => $session->id]);
 
         $currentdata = [];
         foreach ($records as $rec) {
-            $currentdata["student_status[{$rec->userid}]"]  = $rec->status;
+            $currentdata["student_status[{$rec->userid}]"] = $rec->status;
             $currentdata["student_remarks[{$rec->userid}]"] = $rec->remarks;
         }
 

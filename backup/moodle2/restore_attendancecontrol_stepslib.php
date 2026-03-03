@@ -60,12 +60,14 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
         global $DB;
 
         $data = (object) $data;
+        $oldid = $data->id;
         $data->course = $this->get_courseid();
         $data->timecreated = time();
         $data->timemodified = time();
 
         $newitemid = $DB->insert_record('attendancecontrol', $data);
         $this->apply_activity_instance($newitemid);
+        $this->set_mapping('attendancecontrol', $oldid, $newitemid);
     }
 
     /**
@@ -103,12 +105,13 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
         global $DB;
 
         $data = (object) $data;
+        $oldid = $data->id;
         $data->attendancecontrolid = $this->get_new_parentid('attendancecontrol');
         $data->timecreated = isset($data->timecreated) ? $data->timecreated : time();
         $data->timemodified = isset($data->timemodified) ? $data->timemodified : time();
 
         $newitemid = $DB->insert_record('attendancecontrol_session', $data);
-        $this->set_mapping('attendancecontrol_session', $data->id, $newitemid);
+        $this->set_mapping('attendancecontrol_session', $oldid, $newitemid);
     }
 
     /**
@@ -133,6 +136,21 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      * Post-execution tasks after all data has been restored.
      */
     protected function after_execute(): void {
+        global $DB;
+
         $this->add_related_files('mod_attendancecontrol', 'intro', null);
+
+        // Sessions were restored verbatim from the backup (stale timestamps).
+        // Delete them and regenerate from the restored configuration so that
+        // the duplicated / restored activity has correct, up-to-date sessions.
+        $newid = $this->task->get_activityid();
+        if ($newid) {
+            $instance = $DB->get_record('attendancecontrol', ['id' => $newid]);
+            if ($instance) {
+                $DB->delete_records('attendancecontrol_session', ['attendancecontrolid' => $newid]);
+                $manager = new \mod_attendancecontrol\local\session_manager($instance);
+                $manager->generate_sessions();
+            }
+        }
     }
 }

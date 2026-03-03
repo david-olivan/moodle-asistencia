@@ -22,8 +22,6 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Data generator for mod_attendancecontrol activity instances.
  */
@@ -38,11 +36,17 @@ class mod_attendancecontrol_generator extends testing_module_generator {
      * @param array|null     $options Optional extra options passed to parent.
      * @return stdClass               The created course-module record.
      */
-    public function create_instance($record = null, array $options = null): stdClass {
+    public function create_instance($record = null, ?array $options = null): stdClass {
         $record = (object) (array) $record;
 
         if (!isset($record->groupid)) {
             $record->groupid = 0;
+        }
+        // Resolve groupid from group idnumber when a string is passed.
+        if (!empty($record->groupid) && !is_numeric($record->groupid)) {
+            global $DB;
+            $group = $DB->get_record('groups', ['idnumber' => $record->groupid], 'id', MUST_EXIST);
+            $record->groupid = (int) $group->id;
         }
         if (!isset($record->total_hours)) {
             $record->total_hours = 100;

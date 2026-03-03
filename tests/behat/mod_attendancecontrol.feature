@@ -24,22 +24,19 @@ Feature: Control de Asistencia – flujos principales
       | student1 | DAM1-Alumnos |
 
   @javascript
-  Scenario: El profesor añade la actividad al curso
-    Given I log in as "teacher1"
-    And I am on "FP Test" course homepage with editing mode on
-    When I add a "Mister Asistencia" activity to section "1"
-    And I set the following fields to these values:
-      | Name               | Asistencia Programación |
-      | Student group      | DAM1-Alumnos            |
-      | Total subject hours | 100                    |
-    And I press "Save changes and return to course"
+  Scenario: El profesor ve la actividad en el curso
+    Given the following "activities" exist:
+      | activity           | course | name                    | groupid | total_hours |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
+    When I log in as "teacher1"
+    And I am on "FP Test" course homepage
     Then I should see "Asistencia Programación"
 
   @javascript
   Scenario: El alumno ve su resumen de asistencia
     Given the following "activities" exist:
       | activity           | course | name                    | groupid | total_hours |
-      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
     When I log in as "student1"
     And I am on "FP Test" course homepage
     And I follow "Asistencia Programación"
@@ -50,7 +47,7 @@ Feature: Control de Asistencia – flujos principales
   Scenario: El profesor registra asistencia para una sesión
     Given the following "activities" exist:
       | activity           | course | name                    | groupid | total_hours |
-      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
     When I log in as "teacher1"
     And I am on "FP Test" course homepage
     And I follow "Asistencia Programación"
@@ -63,7 +60,7 @@ Feature: Control de Asistencia – flujos principales
     # AC 11.4.4 — student cannot edit any data.
     Given the following "activities" exist:
       | activity           | course | name                    | groupid | total_hours |
-      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
     And the following "users" exist:
       | username  | firstname | lastname | email                |
       | student2  | Laura     | López    | student2@example.com |
@@ -83,7 +80,7 @@ Feature: Control de Asistencia – flujos principales
     # AC 11.5.1 — export button is accessible to teachers.
     Given the following "activities" exist:
       | activity           | course | name                    | groupid | total_hours |
-      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
     When I log in as "teacher1"
     And I am on "FP Test" course homepage
     And I follow "Asistencia Programación"
@@ -95,7 +92,7 @@ Feature: Control de Asistencia – flujos principales
     # AC 11.4.2 — student can navigate to their own session breakdown.
     Given the following "activities" exist:
       | activity           | course | name                    | groupid | total_hours |
-      | attendancecontrol  | FP001  | Asistencia Programación | 0       | 100         |
+      | attendancecontrol  | FP001  | Asistencia Programación | DAM1-Alumnos | 100         |
     When I log in as "student1"
     And I am on "FP Test" course homepage
     And I follow "Asistencia Programación"

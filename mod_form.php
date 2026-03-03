@@ -197,7 +197,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
             }
         } else if ($this->_instance) {
             // Editing an existing instance: load from DB.
-            $slots = $DB->get_records(
+            $slots = $DB->get_recordset(
                 'attendancecontrol_schedule',
                 ['attendancecontrolid' => $this->_instance],
                 'day_of_week ASC, start_time ASC'
@@ -209,8 +209,9 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
                     'end' => $slot->end_time,
                 ];
             }
+            $slots->close();
 
-            $holidays = $DB->get_records(
+            $holidays = $DB->get_recordset(
                 'attendancecontrol_holiday',
                 ['attendancecontrolid' => $this->_instance],
                 'holiday_date ASC'
@@ -221,6 +222,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
                     'description' => $h->description ?? '',
                 ];
             }
+            $holidays->close();
         }
 
         // Localised weekday names passed to JS so the select renders correctly.

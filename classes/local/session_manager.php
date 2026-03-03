@@ -100,8 +100,8 @@ class session_manager
 
         $today = mktime(0, 0, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
 
-        // Collect future session IDs with records.
-        $futuresessions = $DB->get_records_select(
+        // Collect future session IDs; use a recordset to avoid loading all rows into memory.
+        $futurerecordset = $DB->get_recordset_select(
             'attendancecontrol_session',
             'attendancecontrolid = :id AND session_date >= :today',
             ['id' => $this->instance->id, 'today' => $today],
@@ -109,15 +109,17 @@ class session_manager
             'id'
         );
 
+        $allids = [];
         $sessionswithrec = [];
-        foreach ($futuresessions as $s) {
+        foreach ($futurerecordset as $s) {
+            $allids[] = $s->id;
             if ($DB->record_exists('attendancecontrol_record', ['sessionid' => $s->id])) {
                 $sessionswithrec[] = $s->id;
             }
         }
+        $futurerecordset->close();
 
         // Delete future sessions without records.
-        $allids = array_keys($futuresessions);
         $deletable = array_diff($allids, $sessionswithrec);
 
         if ($deletable) {

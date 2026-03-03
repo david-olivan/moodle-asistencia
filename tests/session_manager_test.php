@@ -358,7 +358,7 @@ final class session_manager_test extends \advanced_testcase
         $instance = $this->make_instance_record($course->id);
 
         // A session well in the future (2028-06-05, a Monday) with an attendance record.
-        $future_sess_id = $DB->insert_record('attendancecontrol_session', (object) [
+        $futuresessid = $DB->insert_record('attendancecontrol_session', (object) [
             'attendancecontrolid' => $instance->id,
             'session_date' => mktime(0, 0, 0, 6, 5, 2028),
             'start_time' => '09:00',
@@ -371,7 +371,7 @@ final class session_manager_test extends \advanced_testcase
 
         $now = time();
         $DB->insert_record('attendancecontrol_record', (object) [
-            'sessionid' => $future_sess_id,
+            'sessionid' => $futuresessid,
             'userid' => $student->id,
             'status' => 1,
             'remarks' => '',
@@ -385,7 +385,7 @@ final class session_manager_test extends \advanced_testcase
         $manager->regenerate_future_sessions();
 
         $this->assertTrue(
-            $DB->record_exists('attendancecontrol_session', ['id' => $future_sess_id]),
+            $DB->record_exists('attendancecontrol_session', ['id' => $futuresessid]),
             'Future session that has attendance records must not be deleted during regeneration.'
         );
     }

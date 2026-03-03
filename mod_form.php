@@ -111,30 +111,30 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
         $mform->addElement('header', 'penaltyhdr', get_string('penaltyconfig', 'mod_attendancecontrol'));
 
         // Max percentage of unjustified absences allowed (selector 1%...50%).
-        $pct_options = [];
+        $pctoptions = [];
         for ($i = 1; $i <= 50; $i++) {
-            $pct_options[$i] = "{$i}%";
+            $pctoptions[$i] = "{$i}%";
         }
         $mform->addElement(
             'select',
             'max_unjustified_absence_pct',
             get_string('maxunjustifiedpct', 'mod_attendancecontrol'),
-            $pct_options
+            $pctoptions
         );
         $mform->setType('max_unjustified_absence_pct', PARAM_INT);
         $mform->setDefault('max_unjustified_absence_pct', 15);
         $mform->addHelpButton('max_unjustified_absence_pct', 'maxunjustifiedpct', 'mod_attendancecontrol');
 
         // How many lates equal 1 unjustified absence (selector 1...10).
-        $n_options = [];
+        $noptions = [];
         for ($i = 1; $i <= 10; $i++) {
-            $n_options[$i] = $i;
+            $noptions[$i] = $i;
         }
         $mform->addElement(
             'select',
             'delay_to_unjustified_ratio',
             get_string('delayratio', 'mod_attendancecontrol'),
-            $n_options
+            $noptions
         );
         $mform->setType('delay_to_unjustified_ratio', PARAM_INT);
         $mform->setDefault('delay_to_unjustified_ratio', 2);
@@ -145,7 +145,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
             'select',
             'justified_to_unjustified_ratio',
             get_string('justifiedratio', 'mod_attendancecontrol'),
-            $n_options
+            $noptions
         );
         $mform->setType('justified_to_unjustified_ratio', PARAM_INT);
         $mform->setDefault('justified_to_unjustified_ratio', 2);
@@ -167,18 +167,18 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
 
         parent::definition_after_data();
 
-        $schedule_data = [];
-        $holiday_data = [];
+        $scheduledata = [];
+        $holidaydata = [];
 
         // If there is POST schedule data (re-display after a server-side validation
         // error), restore from the submitted values so the user does not lose them.
-        $submitted_days = optional_param_array('schedule_day', [], PARAM_INT);
-        if (!empty($submitted_days)) {
+        $submitteddays = optional_param_array('schedule_day', [], PARAM_INT);
+        if (!empty($submitteddays)) {
             $starts = optional_param_array('schedule_start', [], PARAM_TEXT);
             $ends = optional_param_array('schedule_end', [], PARAM_TEXT);
-            foreach ($submitted_days as $i => $day) {
+            foreach ($submitteddays as $i => $day) {
                 if (!empty($day)) {
-                    $schedule_data[] = [
+                    $scheduledata[] = [
                         'day' => (int) $day,
                         'start' => clean_param($starts[$i] ?? '', PARAM_TEXT),
                         'end' => clean_param($ends[$i] ?? '', PARAM_TEXT),
@@ -189,7 +189,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
             $descs = optional_param_array('holiday_description', [], PARAM_TEXT);
             foreach ($dates as $i => $date) {
                 if (!empty($date)) {
-                    $holiday_data[] = [
+                    $holidaydata[] = [
                         'date' => clean_param($date, PARAM_TEXT),
                         'description' => clean_param($descs[$i] ?? '', PARAM_TEXT),
                     ];
@@ -203,7 +203,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
                 'day_of_week ASC, start_time ASC'
             );
             foreach ($slots as $slot) {
-                $schedule_data[] = [
+                $scheduledata[] = [
                     'day' => (int) $slot->day_of_week,
                     'start' => $slot->start_time,
                     'end' => $slot->end_time,
@@ -216,7 +216,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
                 'holiday_date ASC'
             );
             foreach ($holidays as $h) {
-                $holiday_data[] = [
+                $holidaydata[] = [
                     'date' => date('Y-m-d', (int) $h->holiday_date),
                     'description' => $h->description ?? '',
                 ];
@@ -224,7 +224,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
         }
 
         // Localised weekday names passed to JS so the select renders correctly.
-        $day_names = [
+        $daynames = [
             1 => get_string('monday', 'calendar'),
             2 => get_string('tuesday', 'calendar'),
             3 => get_string('wednesday', 'calendar'),
@@ -233,9 +233,9 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
         ];
 
         $PAGE->requires->js_call_amd('mod_attendancecontrol/mod_form', 'init', [
-            array_values($schedule_data),
-            array_values($holiday_data),
-            $day_names,
+            array_values($scheduledata),
+            array_values($holidaydata),
+            $daynames,
         ]);
     }
 

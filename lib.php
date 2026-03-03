@@ -194,12 +194,12 @@ function attendancecontrol_save_holidays(stdClass $data): void {
     $dates = optional_param_array('holiday_date', [], PARAM_TEXT);
     $descs = optional_param_array('holiday_description', [], PARAM_TEXT);
 
-    foreach ($dates as $i => $date_str) {
-        if (empty($date_str)) {
+    foreach ($dates as $i => $datestr) {
+        if (empty($datestr)) {
             continue;
         }
         // Convert YYYY-MM-DD to midnight Unix timestamp.
-        $timestamp = strtotime($date_str . ' 00:00:00');
+        $timestamp = strtotime($datestr . ' 00:00:00');
         if ($timestamp === false || $timestamp <= 0) {
             continue;
         }

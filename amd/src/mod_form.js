@@ -26,6 +26,8 @@
  * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU GPL v3 or later
  */
 
+import Templates from 'core/templates';
+
 /** Running counter used to generate unique input name indices. */
 let scheduleCounter = 0;
 let holidayCounter = 0;
@@ -38,32 +40,17 @@ let dayNames = {};
 // ---------------------------------------------------------------------------
 
 /**
- * Build <option> HTML for a weekday <select>.
+ * Build day options array for a weekday select template context.
  *
  * @param {number|string} selectedDay  ISO weekday number to pre-select.
- * @returns {string} Concatenated <option> HTML.
+ * @returns {Array<{value: string, label: string, selected: boolean}>}
  */
-const buildDayOptions = (selectedDay) =>
-    Object.entries(dayNames)
-        .map(([val, label]) => {
-            const sel =
-                String(val) === String(selectedDay) ? " selected" : "";
-            return `<option value="${val}"${sel}>${label}</option>`;
-        })
-        .join("");
-
-/**
- * Escape a string for safe insertion into an HTML attribute value.
- *
- * @param {string} str
- * @returns {string}
- */
-const escAttr = (str) =>
-    String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+const buildDayOptionsArray = (selectedDay) =>
+    Object.entries(dayNames).map(([val, label]) => ({
+        value: val,
+        label,
+        selected: String(val) === String(selectedDay),
+    }));
 
 // ---------------------------------------------------------------------------
 // Schedule table.
@@ -75,44 +62,26 @@ const escAttr = (str) =>
  * @param {number|string} day   ISO weekday (default 1 = Monday).
  * @param {string}        start Start time in HH:MM format (default '').
  * @param {string}        end   End time in HH:MM format (default '').
+ * @returns {Promise<void>}
  */
-const addScheduleRow = (day = 1, start = "", end = "") => {
-    const tbody = document.getElementById("ac-schedule-tbody");
+const addScheduleRow = async(day = 1, start = '', end = '') => {
+    const tbody = document.getElementById('ac-schedule-tbody');
     if (!tbody) {
         return;
     }
 
     const idx = scheduleCounter++;
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-        <td>
-            <select name="schedule_day[${idx}]" class="form-select form-select-sm">
-                ${buildDayOptions(day)}
-            </select>
-        </td>
-        <td>
-            <input type="time"
-                   name="schedule_start[${idx}]"
-                   value="${escAttr(start)}"
-                   class="form-control form-control-sm">
-        </td>
-        <td>
-            <input type="time"
-                   name="schedule_end[${idx}]"
-                   value="${escAttr(end)}"
-                   class="form-control form-control-sm">
-        </td>
-        <td class="text-center">
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger ac-del-schedule"
-                    title="Eliminar franja">✕</button>
-        </td>`;
-
-    tr.querySelector(".ac-del-schedule").addEventListener("click", () =>
-        tr.remove(),
-    );
-    tbody.appendChild(tr);
+    const context = {
+        idx,
+        start,
+        end,
+        days: buildDayOptionsArray(day),
+        strDelete: 'Eliminar franja',
+    };
+    const {html} = await Templates.render('mod_attendancecontrol/schedule_row', context);
+    new DOMParser().parseFromString(html, 'text/html')
+        .querySelectorAll('tr')
+        .forEach((row) => tbody.appendChild(row));
 };
 
 // ---------------------------------------------------------------------------
@@ -124,40 +93,25 @@ const addScheduleRow = (day = 1, start = "", end = "") => {
  *
  * @param {string} date        Date string in YYYY-MM-DD format (default '').
  * @param {string} description Optional label for the holiday (default '').
+ * @returns {Promise<void>}
  */
-const addHolidayRow = (date = "", description = "") => {
-    const tbody = document.getElementById("ac-holiday-tbody");
+const addHolidayRow = async(date = '', description = '') => {
+    const tbody = document.getElementById('ac-holiday-tbody');
     if (!tbody) {
         return;
     }
 
     const idx = holidayCounter++;
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-        <td>
-            <input type="date"
-                   name="holiday_date[${idx}]"
-                   value="${escAttr(date)}"
-                   class="form-control form-control-sm">
-        </td>
-        <td>
-            <input type="text"
-                   name="holiday_description[${idx}]"
-                   value="${escAttr(description)}"
-                   class="form-control form-control-sm"
-                   maxlength="255">
-        </td>
-        <td class="text-center">
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger ac-del-holiday"
-                    title="Eliminar festivo">✕</button>
-        </td>`;
-
-    tr.querySelector(".ac-del-holiday").addEventListener("click", () =>
-        tr.remove(),
-    );
-    tbody.appendChild(tr);
+    const context = {
+        idx,
+        date,
+        description,
+        strDelete: 'Eliminar festivo',
+    };
+    const {html} = await Templates.render('mod_attendancecontrol/holiday_row', context);
+    new DOMParser().parseFromString(html, 'text/html')
+        .querySelectorAll('tr')
+        .forEach((row) => tbody.appendChild(row));
 };
 
 // ---------------------------------------------------------------------------
@@ -181,9 +135,7 @@ export const init = (existingSchedule, existingHolidays, days) => {
 
     // Populate existing schedule rows (edit mode or validation re-display).
     if (Array.isArray(existingSchedule)) {
-        existingSchedule.forEach((s) =>
-            addScheduleRow(s.day, s.start, s.end),
-        );
+        existingSchedule.forEach((s) => addScheduleRow(s.day, s.start, s.end));
     }
 
     // Populate existing holiday rows.
@@ -192,14 +144,22 @@ export const init = (existingSchedule, existingHolidays, days) => {
     }
 
     // Wire up the "Add slot" button.
-    const btnSchedule = document.getElementById("btn-add-schedule");
+    const btnSchedule = document.getElementById('btn-add-schedule');
     if (btnSchedule) {
-        btnSchedule.addEventListener("click", () => addScheduleRow());
+        btnSchedule.addEventListener('click', () => addScheduleRow());
     }
 
     // Wire up the "Add holiday" button.
-    const btnHoliday = document.getElementById("btn-add-holiday");
+    const btnHoliday = document.getElementById('btn-add-holiday');
     if (btnHoliday) {
-        btnHoliday.addEventListener("click", () => addHolidayRow());
+        btnHoliday.addEventListener('click', () => addHolidayRow());
     }
+
+    // Delete rows via event delegation (handles async-rendered rows).
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.ac-del-schedule, .ac-del-holiday');
+        if (btn) {
+            btn.closest('tr').remove();
+        }
+    });
 };

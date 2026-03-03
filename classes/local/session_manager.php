@@ -100,8 +100,8 @@ class session_manager
 
         $today = mktime(0, 0, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
 
-        // Collect future session IDs with records.
-        $futuresessions = $DB->get_records_select(
+        // Collect future session IDs; use a recordset to avoid loading all rows into memory.
+        $futurerecordset = $DB->get_recordset_select(
             'attendancecontrol_session',
             'attendancecontrolid = :id AND session_date >= :today',
             ['id' => $this->instance->id, 'today' => $today],
@@ -109,15 +109,23 @@ class session_manager
             'id'
         );
 
+        $allids = [];
+        foreach ($futurerecordset as $s) {
+            $allids[] = $s->id;
+        }
+        $futurerecordset->close();
+
+        // Preload all session IDs that have records in one query.
         $sessionswithrec = [];
-        foreach ($futuresessions as $s) {
-            if ($DB->record_exists('attendancecontrol_record', ['sessionid' => $s->id])) {
-                $sessionswithrec[] = $s->id;
-            }
+        if (!empty($allids)) {
+            [$insql, $inparams] = $DB->get_in_or_equal($allids);
+            $sessionswithrec = $DB->get_fieldset_sql(
+                "SELECT DISTINCT sessionid FROM {attendancecontrol_record} WHERE sessionid $insql",
+                $inparams
+            );
         }
 
         // Delete future sessions without records.
-        $allids = array_keys($futuresessions);
         $deletable = array_diff($allids, $sessionswithrec);
 
         if ($deletable) {
@@ -187,13 +195,18 @@ class session_manager
 
         $now = time();
 
+        // Preload all existing records for this session, keyed by userid.
+        $existingrecords = $DB->get_records(
+            'attendancecontrol_record',
+            ['sessionid' => $session->id],
+            '',
+            'userid, id, status, remarks, recorded_by, timecreated, timemodified'
+        );
+
         foreach ($data->student_status as $userid => $status) {
             $remarks = $data->student_remarks[$userid] ?? '';
 
-            $existing = $DB->get_record('attendancecontrol_record', [
-                'sessionid' => $session->id,
-                'userid' => $userid,
-            ]);
+            $existing = $existingrecords[$userid] ?? false;
 
             if ($existing) {
                 $existing->status = (int) $status;

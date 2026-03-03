@@ -51,10 +51,10 @@ class attendance_form extends \moodleform
         // Allow the attendance_form AMD module to locate this form element.
         $mform->updateAttributes(['data-region' => 'attendance-form']);
 
-        $mform->addElement('hidden', 'id', $cm->id);
-        $mform->addElement('hidden', 'sessionid', $session->id);
-        $mform->setType('id', PARAM_INT);
-        $mform->setType('sessionid', PARAM_INT);
+        $mform->add_element('hidden', 'id', $cm->id);
+        $mform->add_element('hidden', 'sessionid', $session->id);
+        $mform->set_type('id', PARAM_INT);
+        $mform->set_type('sessionid', PARAM_INT);
 
         // Bulk action: mark all as.
         $bulkoptions = [
@@ -63,8 +63,8 @@ class attendance_form extends \moodleform
             3 => get_string('statusjustified', 'mod_attendancecontrol'),
             4 => get_string('statusunjustified', 'mod_attendancecontrol'),
         ];
-        $mform->addElement('select', 'bulk_status', get_string('markallpresent', 'mod_attendancecontrol'), $bulkoptions);
-        $mform->setDefault('bulk_status', 1);
+        $mform->add_element('select', 'bulk_status', get_string('markallpresent', 'mod_attendancecontrol'), $bulkoptions);
+        $mform->set_default('bulk_status', 1);
 
         // Per-student rows.
         $students = groups_get_members($instance->groupid, 'u.id, u.firstname, u.lastname, u.middlename');
@@ -80,24 +80,24 @@ class attendance_form extends \moodleform
         foreach ($students as $student) {
             $uid = $student->id;
 
-            $mform->addElement('header', "student_hdr_{$uid}", fullname($student));
+            $mform->add_element('header', "student_hdr_{$uid}", fullname($student));
 
-            $mform->addElement(
+            $mform->add_element(
                 'select',
                 "student_status[{$uid}]",
                 get_string('sessionstatus', 'mod_attendancecontrol'),
                 $statusoptions
             );
-            $mform->setType("student_status[{$uid}]", PARAM_INT);
-            $mform->setDefault("student_status[{$uid}]", 1);
+            $mform->set_type("student_status[{$uid}]", PARAM_INT);
+            $mform->set_default("student_status[{$uid}]", 1);
 
-            $mform->addElement(
+            $mform->add_element(
                 'textarea',
                 "student_remarks[{$uid}]",
                 get_string('remarks', 'mod_attendancecontrol'),
                 ['rows' => 2, 'cols' => 40]
             );
-            $mform->setType("student_remarks[{$uid}]", PARAM_TEXT);
+            $mform->set_type("student_remarks[{$uid}]", PARAM_TEXT);
         }
 
         // Load existing records if already registered.

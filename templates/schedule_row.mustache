@@ -1,0 +1,46 @@
+{{!
+    @template mod_attendancecontrol/schedule_row
+
+    One row in the weekly schedule table of the mod_form activity settings.
+
+    @copyright  2026 David Oliván Malagón
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context (json):
+    {
+        "idx": 0,
+        "start": "09:00",
+        "end": "10:00",
+        "days": [
+            {"value": "1", "label": "Lunes", "selected": true},
+            {"value": "2", "label": "Martes", "selected": false}
+        ],
+        "strDelete": "Eliminar franja"
+    }
+}}
+<table><tbody>
+<tr>
+    <td>
+        <select name="schedule_day[{{idx}}]" class="form-select form-select-sm">
+            {{#days}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/days}}
+        </select>
+    </td>
+    <td>
+        <input type="time"
+               name="schedule_start[{{idx}}]"
+               value="{{start}}"
+               class="form-control form-control-sm">
+    </td>
+    <td>
+        <input type="time"
+               name="schedule_end[{{idx}}]"
+               value="{{end}}"
+               class="form-control form-control-sm">
+    </td>
+    <td class="text-center">
+        <button type="button"
+                class="btn btn-sm btn-outline-danger ac-del-schedule"
+                title="{{strDelete}}">✕</button>
+    </td>
+</tr>
+</tbody></table>

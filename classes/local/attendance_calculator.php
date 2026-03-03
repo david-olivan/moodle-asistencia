@@ -103,23 +103,59 @@ class attendance_calculator
     public function get_student_detail(int $userid): array {
         global $DB;
 
-        $sessions = $DB->get_records(
-            'attendancecontrol_session',
-            ['attendancecontrolid' => $this->instance->id],
-            'session_date ASC, start_time ASC'
-        );
+        // Single LEFT JOIN query to avoid one get_record() call per session.
+        $sql = 'SELECT s.id,
+                       s.attendancecontrolid,
+                       s.session_date,
+                       s.start_time,
+                       s.end_time,
+                       s.duration_hours,
+                       s.status        AS session_status,
+                       s.timecreated   AS session_timecreated,
+                       s.timemodified  AS session_timemodified,
+                       r.id            AS record_id,
+                       r.status        AS record_status,
+                       r.remarks,
+                       r.recorded_by,
+                       r.timecreated   AS record_timecreated,
+                       r.timemodified  AS record_timemodified
+                  FROM {attendancecontrol_session} s
+             LEFT JOIN {attendancecontrol_record} r
+                    ON r.sessionid = s.id AND r.userid = :userid
+                 WHERE s.attendancecontrolid = :instanceid
+              ORDER BY s.session_date ASC, s.start_time ASC';
+
+        $rows = $DB->get_records_sql($sql, ['userid' => $userid, 'instanceid' => $this->instance->id]);
 
         $result = [];
-        foreach ($sessions as $session) {
-            $record = $DB->get_record('attendancecontrol_record', [
-                'sessionid' => $session->id,
-                'userid' => $userid,
-            ]) ?: null;
-
-            $result[] = [
-                'session' => $session,
-                'record' => $record,
+        foreach ($rows as $row) {
+            $session = (object) [
+                'id'                  => $row->id,
+                'attendancecontrolid' => $row->attendancecontrolid,
+                'session_date'        => $row->session_date,
+                'start_time'          => $row->start_time,
+                'end_time'            => $row->end_time,
+                'duration_hours'      => $row->duration_hours,
+                'status'              => $row->session_status,
+                'timecreated'         => $row->session_timecreated,
+                'timemodified'        => $row->session_timemodified,
             ];
+
+            $record = null;
+            if ($row->record_id !== null) {
+                $record = (object) [
+                    'id'           => $row->record_id,
+                    'sessionid'    => $row->id,
+                    'userid'       => $userid,
+                    'status'       => $row->record_status,
+                    'remarks'      => $row->remarks,
+                    'recorded_by'  => $row->recorded_by,
+                    'timecreated'  => $row->record_timecreated,
+                    'timemodified' => $row->record_timemodified,
+                ];
+            }
+
+            $result[] = ['session' => $session, 'record' => $record];
         }
 
         return $result;

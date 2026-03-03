@@ -1,0 +1,38 @@
+{{!
+    @template mod_attendancecontrol/holiday_row
+
+    One row in the holiday dates table of the mod_form activity settings.
+
+    @copyright  2026 David Oliván Malagón
+    @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context (json):
+    {
+        "idx": 0,
+        "date": "2026-12-25",
+        "description": "Navidad",
+        "strDelete": "Eliminar festivo"
+    }
+}}
+<table><tbody>
+<tr>
+    <td>
+        <input type="date"
+               name="holiday_date[{{idx}}]"
+               value="{{date}}"
+               class="form-control form-control-sm">
+    </td>
+    <td>
+        <input type="text"
+               name="holiday_description[{{idx}}]"
+               value="{{description}}"
+               class="form-control form-control-sm"
+               maxlength="255">
+    </td>
+    <td class="text-center">
+        <button type="button"
+                class="btn btn-sm btn-outline-danger ac-del-holiday"
+                title="{{strDelete}}">✕</button>
+    </td>
+</tr>
+</tbody></table>

@@ -64,7 +64,7 @@ const buildDayOptionsArray = (selectedDay) =>
  * @param {string}        end   End time in HH:MM format (default '').
  * @returns {Promise<void>}
  */
-const addScheduleRow = async (day = 1, start = '', end = '') => {
+const addScheduleRow = async(day = 1, start = '', end = '') => {
     const tbody = document.getElementById('ac-schedule-tbody');
     if (!tbody) {
         return;
@@ -76,7 +76,7 @@ const addScheduleRow = async (day = 1, start = '', end = '') => {
         start,
         end,
         days: buildDayOptionsArray(day),
-        str_delete: 'Eliminar franja',
+        strDelete: 'Eliminar franja',
     };
     const {html} = await Templates.render('mod_attendancecontrol/schedule_row', context);
     new DOMParser().parseFromString(html, 'text/html')
@@ -95,7 +95,7 @@ const addScheduleRow = async (day = 1, start = '', end = '') => {
  * @param {string} description Optional label for the holiday (default '').
  * @returns {Promise<void>}
  */
-const addHolidayRow = async (date = '', description = '') => {
+const addHolidayRow = async(date = '', description = '') => {
     const tbody = document.getElementById('ac-holiday-tbody');
     if (!tbody) {
         return;
@@ -106,7 +106,7 @@ const addHolidayRow = async (date = '', description = '') => {
         idx,
         date,
         description,
-        str_delete: 'Eliminar festivo',
+        strDelete: 'Eliminar festivo',
     };
     const {html} = await Templates.render('mod_attendancecontrol/holiday_row', context);
     new DOMParser().parseFromString(html, 'text/html')

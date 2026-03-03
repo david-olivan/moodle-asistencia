@@ -196,7 +196,7 @@ class session_manager
         $now = time();
 
         // Preload all existing records for this session, keyed by userid.
-        $existing_records = $DB->get_records(
+        $existingrecords = $DB->get_records(
             'attendancecontrol_record',
             ['sessionid' => $session->id],
             '',
@@ -206,7 +206,7 @@ class session_manager
         foreach ($data->student_status as $userid => $status) {
             $remarks = $data->student_remarks[$userid] ?? '';
 
-            $existing = $existing_records[$userid] ?? false;
+            $existing = $existingrecords[$userid] ?? false;
 
             if ($existing) {
                 $existing->status = (int) $status;

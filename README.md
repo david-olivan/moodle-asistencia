@@ -1,5 +1,7 @@
 # Mister Asistencia (`mod_attendancecontrol`)
 
+[![Moodle Plugin CI](https://github.com/david-olivan/moodle-asistencia/actions/workflows/ci.yml/badge.svg)](https://github.com/david-olivan/moodle-asistencia/actions/workflows/ci.yml)
+
 > A lightweight, configurable attendance control activity module for Moodle, designed for vocational training centres.
 
 **Author:** David Oliván Malagón (misterdavs)

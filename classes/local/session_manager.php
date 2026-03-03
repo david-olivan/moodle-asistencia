@@ -37,8 +37,7 @@ class session_manager
      *
      * @param \stdClass $instance  Row from the attendancecontrol table.
      */
-    public function __construct(\stdClass $instance)
-    {
+    public function __construct(\stdClass $instance) {
         $this->instance = $instance;
     }
 
@@ -47,8 +46,7 @@ class session_manager
      *
      * Called when a new instance is created.
      */
-    public function generate_sessions(): void
-    {
+    public function generate_sessions(): void {
         global $DB;
 
         $slots = $DB->get_records('attendancecontrol_schedule', ['attendancecontrolid' => $this->instance->id]);
@@ -97,8 +95,7 @@ class session_manager
      * Called when an instance is updated. Preserves past sessions and any
      * future session that already has records attached.
      */
-    public function regenerate_future_sessions(): void
-    {
+    public function regenerate_future_sessions(): void {
         global $DB;
 
         $today = mktime(0, 0, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
@@ -181,8 +178,7 @@ class session_manager
      * @param \stdClass $session  Session record.
      * @param \stdClass $data     Form submission data.
      */
-    public function save_attendance_records(\stdClass $session, \stdClass $data): void
-    {
+    public function save_attendance_records(\stdClass $session, \stdClass $data): void {
         global $DB, $USER;
 
         if (empty($data->student_status)) {
@@ -229,8 +225,7 @@ class session_manager
      *
      * @return int[]
      */
-    protected function get_holiday_timestamps(): array
-    {
+    protected function get_holiday_timestamps(): array {
         global $DB;
 
         $rows = $DB->get_records(
@@ -250,8 +245,7 @@ class session_manager
      * @param  string $end    'HH:MM'
      * @return int
      */
-    public static function compute_duration_hours(string $start, string $end): int
-    {
+    public static function compute_duration_hours(string $start, string $end): int {
         [$sh, $sm] = array_map('intval', explode(':', $start));
         [$eh, $em] = array_map('intval', explode(':', $end));
 

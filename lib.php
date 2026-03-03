@@ -31,8 +31,7 @@
  * @param  stdClass $data  Form data from mod_form.php.
  * @return int             New instance ID.
  */
-function attendancecontrol_add_instance(stdClass $data): int
-{
+function attendancecontrol_add_instance(stdClass $data): int {
     global $DB;
 
     $data->timecreated = time();
@@ -67,8 +66,7 @@ function attendancecontrol_add_instance(stdClass $data): int
  * @param  stdClass $data  Form data from mod_form.php.
  * @return bool
  */
-function attendancecontrol_update_instance(stdClass $data): bool
-{
+function attendancecontrol_update_instance(stdClass $data): bool {
     global $DB;
 
     $data->id = $data->instance;
@@ -100,8 +98,7 @@ function attendancecontrol_update_instance(stdClass $data): bool
  * @param  int $id  Module instance ID.
  * @return bool
  */
-function attendancecontrol_delete_instance(int $id): bool
-{
+function attendancecontrol_delete_instance(int $id): bool {
     global $DB;
 
     if (!$DB->get_record('attendancecontrol', ['id' => $id])) {
@@ -135,8 +132,7 @@ function attendancecontrol_delete_instance(int $id): bool
  * @param  string $feature  FEATURE_* constant.
  * @return bool|null        True/false or null when unknown.
  */
-function attendancecontrol_supports(string $feature): ?bool
-{
+function attendancecontrol_supports(string $feature): ?bool {
     switch ($feature) {
         case FEATURE_GROUPS:
             return true;
@@ -164,8 +160,7 @@ function attendancecontrol_supports(string $feature): ?bool
  *
  * @param stdClass $data  Instance data (only $data->id is used).
  */
-function attendancecontrol_save_schedule(stdClass $data): void
-{
+function attendancecontrol_save_schedule(stdClass $data): void {
     global $DB;
 
     $days = optional_param_array('schedule_day', [], PARAM_INT);
@@ -193,8 +188,7 @@ function attendancecontrol_save_schedule(stdClass $data): void
  *
  * @param stdClass $data  Instance data (only $data->id is used).
  */
-function attendancecontrol_save_holidays(stdClass $data): void
-{
+function attendancecontrol_save_holidays(stdClass $data): void {
     global $DB;
 
     $dates = optional_param_array('holiday_date', [], PARAM_TEXT);
@@ -228,8 +222,7 @@ function attendancecontrol_save_holidays(stdClass $data): void
  *
  * @param stdClass $data  Form data modified in place.
  */
-function attendancecontrol_convert_ratios(stdClass $data): void
-{
+function attendancecontrol_convert_ratios(stdClass $data): void {
     foreach (['delay_to_unjustified_ratio', 'justified_to_unjustified_ratio'] as $field) {
         $n = (int) ($data->$field ?? 2);
         if ($n < 1) {

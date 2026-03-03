@@ -63,8 +63,7 @@ final class attendance_calculator_test extends \advanced_testcase
      *
      * @covers ::get_threshold
      */
-    public function test_get_threshold(): void
-    {
+    public function test_get_threshold(): void {
         $calc = new attendance_calculator($this->make_instance(100, 0.5, 0.5, 15.0));
         $this->assertEqualsWithDelta(85.0, $calc->get_threshold(), 0.001);
     }
@@ -79,8 +78,7 @@ final class attendance_calculator_test extends \advanced_testcase
      * @covers ::compute_equivalent_absence_hours
      * @covers ::compute_attendance_pct
      */
-    public function test_prd_example_calculation(): void
-    {
+    public function test_prd_example_calculation(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -186,8 +184,7 @@ final class attendance_calculator_test extends \advanced_testcase
      * @covers ::compute_attendance_pct
      * @covers ::get_threshold
      */
-    public function test_student_below_threshold(): void
-    {
+    public function test_student_below_threshold(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -247,8 +244,7 @@ final class attendance_calculator_test extends \advanced_testcase
      *
      * @covers ::get_student_detail
      */
-    public function test_get_student_detail_returns_rows(): void
-    {
+    public function test_get_student_detail_returns_rows(): void {
         global $DB;
 
         $this->resetAfterTest();

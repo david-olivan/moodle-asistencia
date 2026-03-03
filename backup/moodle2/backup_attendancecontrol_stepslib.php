@@ -32,8 +32,7 @@ class backup_attendancecontrol_activity_structure_step extends backup_activity_s
      *
      * @return backup_nested_element
      */
-    protected function define_structure(): backup_nested_element
-    {
+    protected function define_structure(): backup_nested_element {
         $userinfo = $this->get_setting_value('userinfo');
 
         // Root element (instance).

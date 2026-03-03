@@ -39,16 +39,14 @@ class export_manager
      *
      * @param \stdClass $instance  Row from the attendancecontrol table.
      */
-    public function __construct(\stdClass $instance)
-    {
+    public function __construct(\stdClass $instance) {
         $this->instance = $instance;
     }
 
     /**
      * Streams the Excel file to the browser and exits.
      */
-    public function send_excel(): void
-    {
+    public function send_excel(): void {
         global $CFG;
 
         require_once($CFG->libdir . '/excellib.class.php');
@@ -78,8 +76,7 @@ class export_manager
      * @param \MoodleExcelWorkbook $wb
      * @param array                $summary
      */
-    protected function build_summary_sheet(\MoodleExcelWorkbook $wb, array $summary): void
-    {
+    protected function build_summary_sheet(\MoodleExcelWorkbook $wb, array $summary): void {
         $sheet = $wb->add_worksheet(get_string('excel_sheet_summary', 'mod_attendancecontrol'));
 
         $headers = [
@@ -114,8 +111,7 @@ class export_manager
      * @param \MoodleExcelWorkbook $wb
      * @param array                $summary
      */
-    protected function build_detail_sheet(\MoodleExcelWorkbook $wb, array $summary): void
-    {
+    protected function build_detail_sheet(\MoodleExcelWorkbook $wb, array $summary): void {
         global $DB;
 
         $sheet = $wb->add_worksheet(get_string('excel_sheet_detail', 'mod_attendancecontrol'));
@@ -156,8 +152,7 @@ class export_manager
      *
      * @param \MoodleExcelWorkbook $wb
      */
-    protected function build_config_sheet(\MoodleExcelWorkbook $wb): void
-    {
+    protected function build_config_sheet(\MoodleExcelWorkbook $wb): void {
         global $DB;
 
         $sheet = $wb->add_worksheet(get_string('excel_sheet_config', 'mod_attendancecontrol'));
@@ -187,8 +182,7 @@ class export_manager
      * @param  int    $status
      * @return string
      */
-    protected function status_label(int $status): string
-    {
+    protected function status_label(int $status): string {
         return match ($status) {
             1 => get_string('statuspresent', 'mod_attendancecontrol'),
             2 => get_string('statuslate', 'mod_attendancecontrol'),

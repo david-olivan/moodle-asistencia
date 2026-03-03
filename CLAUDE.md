@@ -93,7 +93,7 @@ Violations found by the Moodle automated checker — never introduce these again
 ### PHP
 1. **1 space after comma** — never align arguments with extra spaces: `foo($a, $b)` not `foo($a,   $b)`.
 2. **Multi-line function calls** — opening `(` must be last on its line; each arg on its own line indented +4; closing `)` alone on its line.
-3. **snake_case variables** — all PHP variables must be `$snake_case`; never `$camelCase` (e.g. `$pct_options` not `$pctOptions`).
+3. **snake_case variables** — all PHP variables must be `$camelCase` (e.g. `$pctOptions`).
 4. **Inline comments** — must start with capital letter/digit/`...` AND end with `.`, `!` or `?`.
 5. **No blank line after opening brace** — `class Foo {\n    // no blank line here`.
 6. **`else if`** not `elseif`.

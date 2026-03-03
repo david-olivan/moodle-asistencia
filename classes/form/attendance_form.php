@@ -42,8 +42,7 @@ class attendance_form extends \moodleform
     /**
      * Defines form elements – one row per group member.
      */
-    public function definition(): void
-    {
+    public function definition(): void {
         $mform = $this->_form;
         $instance = $this->_customdata['instance'];
         $session = $this->_customdata['session'];
@@ -112,8 +111,7 @@ class attendance_form extends \moodleform
      *
      * @param \stdClass $session
      */
-    protected function load_existing_records(\stdClass $session): void
-    {
+    protected function load_existing_records(\stdClass $session): void {
         global $DB;
 
         $records = $DB->get_records('attendancecontrol_record', ['sessionid' => $session->id]);

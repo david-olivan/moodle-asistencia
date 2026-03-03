@@ -32,8 +32,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @return array
      */
-    protected function define_structure(): array
-    {
+    protected function define_structure(): array {
         $paths = [];
         $userinfo = $this->get_setting_value('userinfo');
 
@@ -57,8 +56,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol($data): void
-    {
+    protected function process_attendancecontrol($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -75,8 +73,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_schedule($data): void
-    {
+    protected function process_attendancecontrol_schedule($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -89,8 +86,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_holiday($data): void
-    {
+    protected function process_attendancecontrol_holiday($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -103,8 +99,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_session($data): void
-    {
+    protected function process_attendancecontrol_session($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -121,8 +116,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
      *
      * @param array|object $data
      */
-    protected function process_attendancecontrol_record($data): void
-    {
+    protected function process_attendancecontrol_record($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -138,8 +132,7 @@ class restore_attendancecontrol_activity_structure_step extends restore_activity
     /**
      * Post-execution tasks after all data has been restored.
      */
-    protected function after_execute(): void
-    {
+    protected function after_execute(): void {
         $this->add_related_files('mod_attendancecontrol', 'intro', null);
     }
 }

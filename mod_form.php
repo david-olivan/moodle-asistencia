@@ -34,8 +34,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
     /**
      * Defines the form fields.
      */
-    public function definition(): void
-    {
+    public function definition(): void {
         global $COURSE;
 
         $mform = $this->_form;
@@ -163,8 +162,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
      *
      * Called automatically by Moodle after set_data().
      */
-    public function definition_after_data(): void
-    {
+    public function definition_after_data(): void {
         global $DB, $PAGE;
 
         parent::definition_after_data();
@@ -247,8 +245,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
      *
      * @param  array $defaultvalues  Data loaded from DB (passed by reference).
      */
-    public function data_preprocessing(&$defaultvalues): void
-    {
+    public function data_preprocessing(&$defaultvalues): void {
         parent::data_preprocessing($defaultvalues);
 
         // Stored ratio = 1/N  →  display integer N = round(1/ratio).
@@ -273,8 +270,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
      * @param  array $files  Uploaded files.
      * @return array         Associative array of errors (fieldname => message).
      */
-    public function validation($data, $files): array
-    {
+    public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 
         if (!empty($data['course_start_date']) && !empty($data['course_end_date'])) {
@@ -296,8 +292,7 @@ class mod_attendancecontrol_mod_form extends moodleform_mod
  *
  * @return array Indexed by ISO day number (1 = Monday … 5 = Friday).
  */
-function attendancecontrol_get_day_options(): array
-{
+function attendancecontrol_get_day_options(): array {
     return [
         1 => get_string('monday', 'calendar'),
         2 => get_string('tuesday', 'calendar'),

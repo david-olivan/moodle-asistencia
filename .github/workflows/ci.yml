@@ -40,21 +40,32 @@ jobs:
         env:
           DB: pgsql
 
+      - name: Create logs directory
+        run: mkdir -p logs
+
       - name: PHP Lint
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phplint
+        run: moodle-plugin-ci phplint 2>&1 | tee logs/phplint.log; exit ${PIPESTATUS[0]}
 
       - name: PHP Code Checker (0 warnings allowed)
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpcs --max-warnings 0
+        run: moodle-plugin-ci phpcs --max-warnings 0 2>&1 | tee logs/phpcs.log; exit ${PIPESTATUS[0]}
 
       - name: Mustache Lint
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci mustachelint
+        run: moodle-plugin-ci mustachelint 2>&1 | tee logs/mustachelint.log; exit ${PIPESTATUS[0]}
 
       - name: Javascript Lint
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci jslint
+        run: moodle-plugin-ci jslint 2>&1 | tee logs/jslint.log; exit ${PIPESTATUS[0]}
+
+      - name: Upload lint logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-logs-php${{ matrix.php }}
+          path: logs/
+          retention-days: 7
 
   # ── PHPUnit tests (matrix: PHP × database) ────────────────────────────────
   phpunit:
@@ -123,6 +134,17 @@ jobs:
         env:
           DB: ${{ matrix.database }}
 
+      - name: Create logs directory
+        run: mkdir -p logs
+
       - name: PHPUnit
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpunit
+        run: moodle-plugin-ci phpunit 2>&1 | tee logs/phpunit.log; exit ${PIPESTATUS[0]}
+
+      - name: Upload PHPUnit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-logs-php${{ matrix.php }}-${{ matrix.database }}
+          path: logs/
+          retention-days: 7

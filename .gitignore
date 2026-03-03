@@ -7,6 +7,9 @@ ci/
 # Node / Grunt (if used locally for AMD builds).
 node_modules/
 
+# Local CI log (written by scripts/run-checks.sh, read by Claude).
+ci-last-run.log
+
 # OS and editor noise.
 .DS_Store
 Thumbs.db
